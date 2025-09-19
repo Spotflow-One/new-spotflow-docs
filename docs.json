@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Dodo Payments Documentation",
+  "name": "Spotflow Documentation",
   "colors": {
     "primary": "#81B700",
     "light": "#C6FE1E",
@@ -18,13 +18,10 @@
             "pages": [
               "introduction",
               {
-                "group": "Verification",
+                "group": "KYB Verification",
                 "icon": "id-card",
                 "pages": [
-                  "miscellaneous/verification-process",
-                  "features/payouts/compliance",
-                  "miscellaneous/tax-forms",
-                  "features/payouts/link-bank-account"
+                  "miscellaneous/verification-process"
                 ]
               }
             ]
@@ -44,10 +41,6 @@
             "pages": [
               "features/one-time-payment-products",
               "features/subscription",
-              "features/usage-based-billing",
-              "features/pricing",
-              "features/appstore-digital-goods",
-              "features/discount-codes",
               {
                 "group": "Transactions",
                 "icon": "credit-card",
@@ -57,21 +50,10 @@
                   "features/transactions/disputes"
                 ]
               },
-              "features/account-summary-payout-wallet",
-              "features/customers",
-              "features/adaptive-currency",
-              "features/license-keys",
-              "features/storefront",
-              "/features/digital-product-delivery",
-              "features/invoice-generation",
               "features/b2b-payments",
               "features/multi-brands",
               "features/team",
-              "miscellaneous/accounts",
-              "features/analytics-and-reporting",
-              "features/purchasing-power-parity",
-              "features/affiliates",
-              "features/mobile-app"
+              "miscellaneous/accounts"
             ]
           },
           {
@@ -113,6 +95,157 @@
         "tab": "Developer Resources",
         "groups": [
           {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/error-codes",
+              "api-reference/transaction-failures",
+              "api-reference/metadata"
+            ]
+          },
+          {
+            "group": "Checkout Sessions",
+            "tag": "NEW",
+            "pages": [
+              "api-reference/checkout-sessions/create"
+            ]
+          },
+          {
+            "group": "Payments",
+            "pages": [
+              "api-reference/payments/get-payments",
+              "api-reference/payments/post-payments",
+              "api-reference/payments/get-payments-1",
+              "api-reference/payments/get-invoice",
+              "api-reference/payments/retrieve-line-items"
+            ]
+          },
+          {
+            "group": "Subscriptions",
+            "pages": [
+              "api-reference/subscriptions/get-subscriptions-1",
+              "api-reference/subscriptions/post-subscriptions",
+              "api-reference/subscriptions/get-subscriptions",
+              "api-reference/subscriptions/change-plan",
+              "api-reference/subscriptions/patch-subscriptions",
+              "api-reference/subscriptions/create-charge",
+              "api-reference/subscriptions/get-usage-history"
+            ]
+          },
+          {
+            "group": "Discounts",
+            "pages": [
+              "api-reference/discounts/list-discounts",
+              "api-reference/discounts/create-discount",
+              "api-reference/discounts/validate-discount",
+              "api-reference/discounts/update-discount",
+              "api-reference/discounts/delete-discount"
+            ]
+          },
+          {
+            "group": "Licenses",
+            "pages": [
+              "api-reference/licenses/activate-license",
+              "api-reference/licenses/deactivate-license",
+              "api-reference/licenses/validate-license",
+              "api-reference/licenses/get-license-keys",
+              "api-reference/licenses/get-license-key",
+              "api-reference/licenses/update-license-key",
+              "api-reference/licenses/get-license-key-instances",
+              "api-reference/licenses/get-license-key-instance",
+              "api-reference/licenses/update-license-key-instance"
+            ]
+          },
+          {
+            "group": "Customers",
+            "pages": [
+              "api-reference/customers/create-customer",
+              "api-reference/customers/get-customers",
+              "api-reference/customers/get-customers-1",
+              "api-reference/customers/patch-customer",
+              "api-reference/customers/create-customer-portal-session",
+              "api-reference/customers/get-customer-wallets",
+              "api-reference/customers/get-customer-wallets-ledger-entries",
+              "api-reference/customers/post-customer-wallets-ledger-entries"
+            ]
+          },
+          {
+            "group": "Products",
+            "pages": [
+              "api-reference/products/get-products",
+              "api-reference/products/post-products",
+              "api-reference/products/get-products-1",
+              "api-reference/products/patch-products",
+              "api-reference/products/put-products-images",
+              "api-reference/products/archive-product",
+              "api-reference/products/unarchive-product",
+              "api-reference/products/update-files"
+            ]
+          },
+          {
+            "group": "Addons",
+            "pages": [
+              "api-reference/addons/create-addon",
+              "api-reference/addons/list-addons",
+              "api-reference/addons/get-addon",
+              "api-reference/addons/update-addon",
+              "api-reference/addons/update-addon-images"
+            ]
+          },
+          {
+            "group": "Meters",
+            "tag": "BETA",
+            "pages": [
+              "api-reference/meters/create-meter",
+              "api-reference/meters/get-meters",
+              "api-reference/meters/retrieve-meter",
+              "api-reference/meters/archive-meter",
+              "api-reference/meters/unarchive-meter"
+            ]
+          },
+          {
+            "group": "Usage Events",
+            "tag": "BETA",
+            "pages": [
+              "api-reference/usage-events/ingest-events",
+              "api-reference/usage-events/get-event",
+              "api-reference/usage-events/list-events"
+            ]
+          },
+          {
+            "group": "Refunds",
+            "pages": [
+              "api-reference/refunds/get-refunds",
+              "api-reference/refunds/post-refunds",
+              "api-reference/refunds/get-refunds-1",
+              "api-reference/refunds/get-refund-receipt"
+            ]
+          },
+          {
+            "group": "Disputes",
+            "pages": [
+              "api-reference/disputes/get-disputes",
+              "api-reference/disputes/get-disputes-1"
+            ]
+          },
+          {
+            "group": "Payouts",
+            "pages": [
+              "api-reference/payouts/get-payouts"
+            ]
+          },
+          {
+            "group": "Brands",
+            "pages": [
+              "api-reference/brands/list-brands",
+              "api-reference/brands/create-brand",
+              "api-reference/brands/get-brand",
+              "api-reference/brands/update-brand",
+              "api-reference/brands/update-brand-images"
+            ]
+          },
+          {
+            "group": "Webhooks",
             "group": "Developer Resources",
             "pages": [
               "developer-resources/introduction"
@@ -174,26 +307,12 @@
             ]
           },
           {
+            "group": "Miscellaneous",
             "group": "SDKs",
             "pages": [
               "developer-resources/dodo-payments-sdks",
               "developer-resources/react-native-integration",
               "developer-resources/supabase-boilerplate"
-            ]
-          },
-          {
-            "group": "Framework Adaptors",
-            "pages": [
-              "developer-resources/nextjs-adaptor",
-              "developer-resources/nuxt-adaptor",
-              "developer-resources/better-auth-adaptor",
-              "developer-resources/express-adaptor",
-              "developer-resources/astro-adaptor",
-              "developer-resources/sveltekit-adaptor",
-              "developer-resources/hono-adaptor",
-              "developer-resources/remix-adaptor",
-              "developer-resources/tanstack-adaptor",
-              "developer-resources/fastify-adaptor"
             ]
           }
         ]
@@ -374,59 +493,6 @@
         ]
       },
       {
-        "tab": "External Integrations",
-        "groups": [
-          {
-            "group": "External Integrations",
-            "pages": [
-              "integrations/introduction",
-              "integrations/woocommerce-plugin",
-              "integrations/framer-plugin",
-              "integrations/figma-plugin",
-              "integrations/raycast-extension"
-            ]
-          },
-          {
-            "group": "Messaging",
-            "pages": [
-              "integrations/slack",
-              "integrations/discord",
-              "integrations/microsoft-teams"
-            ]
-          },
-          {
-            "group": "Workflow Automation",
-            "pages": [
-              "integrations/zapier",
-              "integrations/windmill",
-              "integrations/inngest"
-            ]
-          },
-          {
-            "group": "CRM",
-            "pages": [
-              "integrations/hubspot",
-              "integrations/close-crm"
-            ]
-          },
-          {
-            "group": "Email",
-            "pages": [
-              "integrations/resend",
-              "integrations/loops",
-              "integrations/sendgrid"
-            ]
-          },
-          {
-            "group": "Analytics",
-            "pages": [
-              "integrations/segment",
-              "integrations/customer-io"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "Changelog",
         "groups": [
           {
@@ -548,8 +614,8 @@
     ]
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/logo-light.png",
+    "dark": "/logo/logo-dark.png"
   },
   "background": {
     "decoration": "grid",
@@ -563,23 +629,23 @@
       {
         "label": "llms-full.txt",
         "icon": "link",
-        "href": "https://docs.dodopayments.com/llms-full.txt"
+        "href": "https://docs.payments.com/llms-full.txt"
       },
       {
         "label": "Community",
-        "icon": "discord",
-        "href": "https://discord.gg/bYqAp4ayYh"
+        "icon": "slack",
+        "href": "https://discord.gg/bYqAp4a"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://app.dodopayments.com/"
+      "href": "https://app.spotflow.co/"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/dodopayments",
+       "x": "https://x.com/dodopayments",
       "linkedin": "https://linkedin.com/company/dodopayments",
       "website": "https://dodopayments.com",
       "discord": "https://discord.gg/bYqAp4ayYh",
