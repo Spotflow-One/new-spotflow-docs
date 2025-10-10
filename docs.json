@@ -86,7 +86,6 @@
       {
         "tab": "Developer Resources",
         "groups": [
-
           {
             "group": "Developer Resources",
             "pages": [
@@ -121,7 +120,7 @@
             ]
           },
           {
-            "group": "Cookbooks",
+            "group": "Tutorials",
             "tag": "New",
             "pages": [
               "developer-resources/usage-based-billing-build-ai-image-generator"
@@ -138,12 +137,13 @@
           {
             "group": "SDKs",
             "pages": [
-              "developer-resources/dodo-payments-sdks",
+              "developer-resources/spotflow-sdks",
               "developer-resources/react-native-integration"
             ]
           }
         ]
       },
+      
       {
         "tab": "API Reference",
         "groups": [
@@ -151,15 +151,15 @@
             "group": "API Reference",
             "pages": [
               "api-reference/introduction",
-              "api-reference/error-codes",
-              "api-reference/metadata"
+              "api-reference/authentication",
+              "api-reference/error-codes"
             ]
           },
           {
             "group": "Payment Collections",
             "pages": [
-              "api-reference/payments/get-payments",
-              "api-reference/payments/post-payments",
+              "api-reference/payments/create-collection",
+              "api-reference/payments/initialize-collection",
               "api-reference/payments/get-payments-1",
               "api-reference/payments/get-invoice",
               "api-reference/payments/retrieve-line-items"
@@ -408,8 +408,8 @@
       "destination": "/developer-resources/allowed-payment-methods"
     },
     {
-      "source": "/api-reference/dodo-payments-sdks",
-      "destination": "/developer-resources/dodo-payments-sdks"
+      "source": "/api-reference/spotflow-payments-sdks",
+      "destination": "/developer-resources/spotflow-payments-sdks"
     },
     {
       "source": "/api-reference/react-native-integration",

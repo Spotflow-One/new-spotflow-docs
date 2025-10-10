@@ -1,20 +1,20 @@
 ---
 title: Payments Integration Guide
-description: This guide will help you integrate the Dodo Payments API into your website.
+description: This guide will help you integrate the Spotflow API into your website.
 icon: "code-merge"
 ---
 
 ## Prerequisites
 
-To integrate the Dodo Payments API, you'll need:
-- A Dodo Payments merchant account
+To integrate the Spotflow API, you'll need:
+- A Spotflow merchant account
 - API Credentials (API key and webhook secret key) from dashboard
 
-If you don't have an account yet, you can get your business approved by [contacting the founder](https://demo.dodopayments.com/) or by filling out this [form](https://dodopayments.com/early-access).
+If you don't have an account yet, you can get your business approved by [contacting the founder](https://demo.spotflow.one/) or by filling out this [form](https://spotflow.com/early-access).
 
 ## Dashboard Setup
 
-1. Navigate to the [Dodo Payments Dashboard](https://app.dodopayments.com/)
+1. Navigate to the [Spotflow Dashboard](https://app.spotflow.one/)
 
 2. Create a product (one-time payment or subscription)
     - [Detailed Guide](/guides/one-time-product)
@@ -28,7 +28,7 @@ If you don't have an account yet, you can get your business approved by [contact
 4. Generate your API key:
    - Go to Settings > API
    - [Detailed Guide](/api-reference/introduction#api-key-generation)
-   - Copy the API key the in env named DODO_PAYMENTS_API_KEY
+   - Copy the API key the in env named SPOTFLOW_API_KEY
 
 5. Configure webhooks:
    - Go to Settings > Webhooks
@@ -40,11 +40,11 @@ If you don't have an account yet, you can get your business approved by [contact
 
 ### Payment Links
 
-Dodo Payments supports two types of payment links for integrating payments into your website:
+Spotflow supports two types of payment links for integrating payments into your website:
 - **Static Payment Links**: Instantly shareable URLs for quick, no-code payment collection.
 - **Dynamic Payment Links**: Programmatically generate payment links with custom details using the API or SDKs.
 
-For a seamless in-page experience, you can use our **Overlay Checkout** integration, which embeds the Dodo Payments checkout on your site by leveraging these payment links.
+For a seamless in-page experience, you can use our **Overlay Checkout** integration, which embeds the Spotflow checkout on your site by leveraging these payment links.
 
 #### 1. Static Payment Links
 
@@ -54,7 +54,7 @@ Static payment links let you quickly accept payments by sharing a simple URL. Yo
 <Step title="Construct your payment link">
   Start with the base URL and append your product ID:
   ```text
-  https://checkout.dodopayments.com/buy/{productid}
+  https://checkout.spotflow.com/buy/{productid}
   ```
 </Step>
 <Step title="Add core parameters">
@@ -144,10 +144,10 @@ For detailed instructions on integrating subscriptions, refer to this [Subscript
   
   <Tab title="Node.js SDK">
     ```javascript
-    import DodoPayments from 'dodopayments';
+    import Spotflow from 'spotflow';
 
-const client = new DodoPayments({
-  bearerToken: process.env['DODO_PAYMENTS_API_KEY'], // This is the default and can be omitted
+const client = new Spotflow({
+  bearerToken: process.env['SPOTFLOW_API_KEY'], // This is the default and can be omitted
 });
 
 async function main() {
@@ -168,10 +168,10 @@ main();
   <Tab title="Python SDK">
     ```python
     import os
-from dodopayments import DodoPayments
+from spotflow import Spotflow
 
-client = DodoPayments(
-    bearer_token=os.environ.get("DODO_PAYMENTS_API_KEY"),  # This is the default and can be omitted (if using same name `DODO_PAYMENTS_API_KEY`)
+client = Spotflow(
+    bearer_token=os.environ.get("SPOTFLOW_API_KEY"),  # This is the default and can be omitted (if using same name `SPOTFLOW_API_KEY`)
 )
 payment = client.payments.create(
     payment_link=True,
@@ -202,30 +202,30 @@ import (
   "context"
   "fmt"
 
-  "github.com/dodopayments/dodopayments-go"
-  "github.com/dodopayments/dodopayments-go/option"
+  "github.com/spotflow/spotflow-go"
+  "github.com/spotflow/spotflow-go/option"
 )
 
 func main() {
-  client := dodopayments.NewClient(
-    option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("DODO_PAYMENTS_API_KEY")
+  client := Spotflow.NewClient(
+    option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SPOTFLOW_API_KEY")
   )
-  payment, err := client.Payments.New(context.TODO(), dodopayments.PaymentNewParams{
-    PaymentLink: dodopayments.F(true),
-    Billing: dodopayments.F(dodopayments.PaymentNewParamsBilling{
-      City: dodopayments.F("city"),
-      Country: dodopayments.F(dodopayments.CountryCodeAf),
-      State: dodopayments.F("state"),
-      Street: dodopayments.F("street"),
-      Zipcode: dodopayments.F(int64(0)),
+  payment, err := client.Payments.New(context.TODO(), spotflow.PaymentNewParams{
+    PaymentLink: spotflow.F(true),
+    Billing: spotflow.F(spotflow.PaymentNewParamsBilling{
+      City: spotflow.F("city"),
+      Country: spotflow.F(spotflow.CountryCodeAf),
+      State: spotflow.F("state"),
+      Street: spotflow.F("street"),
+      Zipcode: spotflow.F(int64(0)),
     }),
-    Customer: dodopayments.F(dodopayments.PaymentNewParamsCustomer{
-      Email: dodopayments.F("email"),
-      Name: dodopayments.F("name"),
+    Customer: spotflow.F(spotflow.PaymentNewParamsCustomer{
+      Email: spotflow.F("email"),
+      Name: spotflow.F("name"),
     }),
-    ProductCart: dodopayments.F([]dodopayments.PaymentNewParamsProductCart{dodopayments.PaymentNewParamsProductCart{
-      ProductID: dodopayments.F("product_id"),
-      Quantity: dodopayments.F(int64(0)),
+    ProductCart: spotflow.F([]spotflow.PaymentNewParamsProductCart{spotflow.PaymentNewParamsProductCart{
+      ProductID: spotflow.F("product_id"),
+      Quantity: spotflow.F(int64(0)),
     }}),
   })
   if err != nil {
@@ -245,11 +245,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { formData, cartItems } = paymentRequestSchema.parse(body);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DODO_TEST_API}/payments`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTFLOW_TEST_API}/payments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.DODO_API_KEY}`, // Replace with your API secret key generated from the Dodo Payments Dashboard
+        Authorization: `Bearer ${process.env.SPOTFLOW_API_KEY}`, // Replace with your API secret key generated from the Spotflow Dashboard
       },
       body: JSON.stringify({
         billing: {
@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
 </Tabs>
 
 
-You can see all our available SDKs on [Dodo Payments SDK](developer-resources/dodo-payments-sdks) page.
+You can see all our available SDKs on [Spotflow SDK](developer-resources/spotflow-sdks) page.
 
 For detailed API request body requirements, consult our [API Reference](/api-reference/payments/post-payments). 
 
@@ -317,7 +317,7 @@ import { Webhook } from "standardwebhooks";
 import { headers } from "next/headers";
 import { WebhookPayload } from "@/types/api-types";
 
-const webhook = new Webhook(process.env.DODO_WEBHOOK_KEY!); // Replace with your secret key generated from the Dodo Payments Dashboard
+const webhook = new Webhook(process.env.SPOTFLOW_WEBHOOK_KEY!); // Replace with your secret key generated from the Spotflow Dashboard
 
 export async function POST(request: Request) {
   const headersList = headers();
@@ -338,6 +338,6 @@ export async function POST(request: Request) {
 
 Our webhook implementation follows the [Standard Webhooks](https://standardwebhooks.com/) specification. For webhook type definitions, refer to our [Webhook Event Guide](/developer-resources/webhooks/intents/webhook-events-guide).
 
-You can refer to this project with demo implementation on [GitHub](https://github.com/dodopayments/dodo-checkout-demo) using Next.js and TypeScript.
+You can refer to this project with demo implementation on [GitHub](https://github.com/spotflow/spotflow-checkout-demo) using Next.js and TypeScript.
 
-You can check out the live implementation [here](https://atlas.dodopayments.com/).
+You can check out the live implementation [here](https://atlas.spotflow.com/).

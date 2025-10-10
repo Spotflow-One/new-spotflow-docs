@@ -45,7 +45,7 @@ We are committed to providing a friendly, safe, and welcoming environment for al
 2. **Clone Your Fork**
    ```bash
    git clone https://github.com/YOUR_USERNAME/spotflow-documentation.git
-   cd dodo-docs
+   cd spotflow-documentation
    ```
 
 3. **Set Up Development Environment**
