@@ -1,0 +1,146 @@
+---
+title: React Library
+sidebarTitle: React Library
+icon: "react"
+description: The `Spotflow React SDK` helps you or rather enables users to make payments seamlessly. It integrates smoothly into your application, providing a streamlined checkout experience.
+---
+
+### Features
+- Collections: Card, Bank Transfer, Mobile Money and more
+- Recurring payments: Tokenization and Subscriptions.
+
+## Requirements
+- Spoflow Encryption keys
+- Spotflow API keys
+- Node versions >= 18.x.x
+- React version >= 18.8.0
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```JavaScript 
+    npm i @spot-flow/react-spotflow-checkout
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```JavaScript 
+    yarn add @spot-flow/react-spotflow-checkout
+    ```
+  </Tab>
+  <Tab title="pnpm">
+    ```JavaScript
+   pnpm add @spot-flow/react-spotflow-checkout
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Payment CheckoutButton
+
+ ```JavaScript
+  import React from "react";
+import { SpotflowButton } from "@spot-flow/react-spotflow-checkout";
+
+const PaymentComponent = () => {
+  return (
+    <div>
+      <SpotflowButton
+        amount={4000} // Not required for subscription payment
+        currency="NGN"
+        email="temi@mailinator.com" // Email of customer
+        reference="MC-123456" // Not required, a unique payment reference will be generated if not provided
+        name="John" // Name of customer: Not required
+        phoneNumber="09090909090" // Phone number of customer: Not required
+        encryptionKey="SKKXXXXXXXXXXXXXXXXX"
+        planId="9e0808304-344d-XXXXXXXXX-XXXXX834034" // Not required for a one time payment
+        merchantKey="sk_test_fXXXXedhXXXXXXXXXXXXXXXX"
+        text="Pay Money"
+      />
+    </div>
+  );
+};
+```
+
+<Info>
+    SpotflowButton has the ButtonProps which can allow you to customize to your design
+</Info>
+
+
+### Hooks
+
+ ```JavaScript
+ import React from "react";
+import { useSpotflowPayment } from "@spot-flow/react-spotflow-checkout";
+
+const PaymentComponent = () => {
+  const config = {
+    amount: 4000, // Not required for subscription payment
+    currency: "NGN",
+    email: "temi@mailinator.com", // Email of customer
+    name: "John", // Name of customer: Not required
+    phoneNumber: "09090909090", // Phone number of customer: Not required
+    reference: "MC-123456", // Not required, a unique payment reference will be generated if not provided
+    merchantKey: "sk_test_fXXXXedhXXXXXXXXXXXXXXXX",
+    planId: "9e0808304-344d-XXXXXXXXX-XXXXX834034", // Not required for a one time payment
+    encryptionKey:"SKKXXXXXXXXXXXXXXXXX"
+  }
+  const initialFn = useSpotflowPayment();
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => {
+          initialFn(config);
+        }}
+      >
+        Pay
+      </button>
+    </div>
+  );
+};
+```
+
+### Parameters
+
+<ParamField path="merchantKey" type="string" required>
+ Your API Secret
+</ParamField>
+<ParamField path="reference" type="string" optional>
+  Your transaction reference. This MUST be unique for every transaction
+</ParamField>
+<ParamField path="amount" type="string" optional>
+Amount to charge the customer. NB: For subscription payments, amount comes from the plan details. This is not required for subscription payments.
+</ParamField>
+<ParamField path="currency" type="string" required>
+Currency to charge in.
+</ParamField>
+<ParamField path="localCurrency" type="string" optional>
+This is only required when a payment is being made in USD
+</ParamField>
+<ParamField path="encryptionKey" type="string" required>
+This is the encryption key for the merchant. This is required for card payments.
+</ParamField>
+<ParamField path="planId" type="string" optional>
+This is the plan ID being paid for however, this is not required for one time payments.
+</ParamField>
+<ParamField path="name" type="string" optional>
+This is the Customer's Name
+</ParamField>
+<ParamField path="phoneNumber" type="string" optional>
+This is the Customer's Phone Number
+</ParamField>
+<ParamField path="email" type="string" required>
+This is the Customer's Email Address
+</ParamField>
+<ParamField path="metadata" type="string" required>
+This contains other information about the product such as the product name and other additional properties. Product Name should not be passed if planId is being passed
+</ParamField>
+<ParamField path="callBackUrl" type="string" optional>
+This is the URL the browser redirects to on success of a payment
+</ParamField>
+
+
+Need more information check out our [documentation](https://www.npmjs.com/package/@spot-flow/react-spotflow-checkout)

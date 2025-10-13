@@ -1,0 +1,101 @@
+---
+title: Introduction
+sidebarTitle: Flutter
+icon: "flutter"
+description: Our Flutter SDK provides a rich set of pre-built UI components and APIs to seamlessly integrate payment functionalities within your Flutter application. <br/> <br/>The `Spotflow Flutter SDK` pallows you to integrate smooth and secure payment flows into your Flutter apps. It supports both Android and iOS platforms, making it versatile for mobile app development.
+---
+
+
+<Note>
+ Android: Ensure INTERNET permission is declared in `AndroidManifest.xml`
+ 
+ </Note>
+
+<Note>
+ iOS: No special permissions required beyond basic networking
+ 
+ </Note>
+
+ 
+## Requirements
+
+Ensure your Flutter environment meets the following:
+
+- **context**:  Flutter 3.7.0 or later
+- **context**:  Dart 2.19 or later
+- **context**:  Compatible with Android (minSdkVersion 21) and iOS (iOS 11+)
+- **context**:  Internet permission for Android  `AndroidManifest.xml`
+
+<Info>The Flutter SDK is currently a beta release. If you encounter any issues, kindly reach out to our support team at support@spotflow.one.</Info>
+
+
+## Installation
+
+To use the `Spotflow Flutter SDK` package, add the following dependencies to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  spotflow_flutter: ^1.0.0 # or the latest version
+```
+Then run `flutter pub get` to fetch the package.
+
+
+### Parameters Required by the SDK
+
+| <p style={{fontWeight: '400'}}>planId<br></br><span>`String`</span></p> | <p style={{fontWeight: '400'}}>The plan ID (optional).</p> |
+|:---------|:---------|
+| <p style={{fontWeight: '400'}}>currency <br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>Currency for the payment (e.g., "NGN").</p> |
+| <p style={{fontWeight: '400'}}>amount <br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>Amount to be paid (nullable).</p> |
+| <p style={{fontWeight: '400'}}>key <br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The API key for authenticating the transaction.</p> |
+| <p style={{fontWeight: '400'}}>encryptionKey<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>This key is used to encrypt the card for secure transactions.</p> |
+| <p style={{fontWeight: '400'}}>customerEmail<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The email address of the customer.</p> |
+| <p style={{fontWeight: '400'}}>customerName<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The name of the customer (optional).</p> |
+|<p style={{fontWeight: '400'}}>customerPhoneNumber<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The phone number of the customer (optional).</p> |
+|<p style={{fontWeight: '400'}}>customerId<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The unique identifier for the customer (optional).</p> |
+|<p style={{fontWeight: '400'}}>paymentDescription<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>Description of the payment (optional).</p> |
+|<p style={{fontWeight: '400'}}>appLogo<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>App logo widget (optional).</p> |
+|<p style={{fontWeight: '400'}}>appName<br></br> <span>`String`</span></p> | <p style={{fontWeight: '400'}}>The name of the app (optional).</p> |
+|<p style={{fontWeight: '400'}}>debugMode<br></br> <span>`bool`</span></p> | <p style={{fontWeight: '400'}}>Enable or disable debug mode.</p> |
+
+Always ensure that your key and encryptionKey are stored securely. Avoid hardcoding them in production apps.
+
+## Usage Example
+
+Here is an example of how to make a payment using the `Spotflow` package:
+
+```kotlin lines
+import 'package:spotflow_flutter/spotflow_flutter.dart';
+
+SpotflowFlutter.startPayment(
+  context: context,
+  customerId: "cust_001",
+  customerEmail: "jane@example.com",
+  customerName: "Jane Doe",
+  customerPhoneNumber: "+123456789",
+  currency: "USD",
+  amount: 100.0,
+  key: "your_public_key",
+  encryptionKey: "your_encryption_key",
+  paymentDescription: "Payment for services",
+  planId: "plan_001",
+  appName: "MyApp",
+  appLogo: Image.asset('assets/logo.png'), // Or any Widget
+  debugMode: true,
+);
+```
+
+### Testing Your implementation
+
+Test cards can be found [here](https://app.spotflow.co/) 
+
+## Running the Example Project
+
+An example project has been provided on our [Github Repository](https://github.com/Spotflow-One/spotflow_flutter). Clone the repository and navigate to the example folder. Open it with a supported IDE or run `flutter run` from the terminal in that folder.
+
+
+
+
+
+
+
+

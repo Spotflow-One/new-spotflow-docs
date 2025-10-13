@@ -1,0 +1,108 @@
+---
+title: Introduction
+sidebarTitle: InlineJS
+icon: "node-js"
+description: InlineJS is Spotflow's JavaScript library designed to simplify the integration of payment functionalities into your web application. By embedding InlineJS into your checkout page, you can create a seamless payment experience without the need for redirects. It integrates smoothly into your application, providing a streamlined checkout experience.
+---
+
+## Browser Support
+
+Spotflow InlineJS is compatible with all recent versions of modern web browsers that support ECMAScript 5 or later. This includes:
+
+- Google Chrome and Safari on all platforms.
+- Mozilla Firefox and Microsoft Edge on desktop platforms.
+
+While we support popular browsers, older versions and those with JavaScript restrictions, like Internet Explorer 9 and Opera Mini in Super Saver mode, are not supported.
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```JavaScript 
+    npm install @spot-flow/checkout-inline-js 
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```JavaScript 
+    yarn add @spot-flow/checkout-inline-js 
+    ```
+  </Tab>
+  <Tab title="cdn">
+    ```JavaScript
+    <script src="https://dr4h9151gox1m.cloudfront.net/dist/checkout-inline.js"></script>
+    ```
+  </Tab>
+</Tabs>
+
+If you used `NPM` or `Yarn`, ensure you import the library as shown below:
+
+```JavaScript
+   // Add for NPM, Yarn
+import { CheckoutForm } from "@spot-flow/checkout-inline-js";
+```
+
+## Usage
+
+### One Time Payment
+
+```JavaScript lines
+import { CheckoutForm } from "@spot-flow/checkout-inline-js";
+
+const checkout = new CheckoutForm({});
+checkout.setup({
+  email: "temi@mailinator.com",
+  encryptionKey: "gF1SPEMA3ido2Dg4ByXxxxxxxxxxxxxxxxxx", // The encryption key for the merchant
+  merchantKey: "sk_test_8a586f9801254xxxxxxxxxxxx", // Your Merchant Secret Key generated on Spotflow
+  currency: "NGN", //can be in USD or in the local currency of your collection region e.g NGN, GHS
+  localCurrency: "NGN", //optional and only needed if currency is in USD
+  amount: 500
+});
+```
+
+### Subscription Payment
+
+```JavaScript lines
+  const checkout = new CheckoutForm({});
+  checkout.setup({
+    email: "temi@mailinator.com",
+    encryptionKey: "gF1SPEMA3ido2Dg4ByXxxxxxxxxxxxxxxxxx", // The encryption key for the merchant
+    merchantKey: "sk_test_8a586f9801254xxxxxxxxxxxx", // Your Merchant Secret Key generated on Spotflow
+    planId: "7447a235-9f53-4d44-xxxxxxxxxxxxxx", // Replace with your plan ID
+    currency: "NGN", //can be in USD or in the local currency of your collection region e.g NGN, GHS
+    localCurrency: "NGN", //optional and only needed if currency is in USD
+  });
+```
+
+### One-Time Payment via CDN
+
+Alternatively, to integrate InlineJS into your web application, you can include it directly in your HTML via a CDN. Include the following script tag in the `<head>` section of your HTML file:
+
+**HTML**
+
+```HTML
+  <script src="https://dr4h9151gox1m.cloudfront.net/dist/checkout-inline.js"></script>
+```
+
+```JavaScript lines
+ <button onclick="openCheckout()">
+  Make Payment
+</button>
+```
+
+```JavaScript lines
+ <script>
+      const openCheckout = () => {
+        const { CheckoutForm } = SpotflowCheckout
+      const checkout = new CheckoutForm({});
+      checkout.setup({
+          email: "temi@mailinator.com",
+         encryptionKey: "gF1SPEMA3xxxxxxxxxxxxx", // The encryption key for the merchant
+         merchantKey: "sk_test_xxxxxxxxxxxx6", // Your Merchant Secret Key generated on Spotflow
+         currency: "NGN",
+         localCurrency: "NGN", //optional and only needed if currency is in USD
+         amount: 500
+          }
+        });
+      };
+    </script>
+```
