@@ -46,3 +46,7 @@
   .dark .welcome-hero p {
     color: rgb(162 164 158 / 1);
   }
+
+  .color {
+    color: red !important;
+  }

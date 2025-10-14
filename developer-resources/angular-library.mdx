@@ -1,0 +1,122 @@
+---
+title: Angular Library
+sidebarTitle: Angular Library
+icon: "angular"
+description: The `Spotflow Angular SDK` enables users to make payments seamlessly. It integrates smoothly into your Angular application, providing a streamlined checkout experience.
+---
+
+### Features
+- Collections: Card, Bank Transfers.
+- Recurring payments: Recurring Payments: Tokenization and Subscriptions.
+
+## Requirements
+- Spoflow Encryption keys
+- Spotflow API keys
+- Node versions >= 16.x.x npm >=7.x.x
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```JavaScript 
+   npm install @spot-flow/ng-spotflow-checkout
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```JavaScript 
+   yarn add @spot-flow/ng-spotflow-checkout
+    ```
+  </Tab>
+  <Tab title="pnpm">
+    ```JavaScript
+  pnpm add @spot-flow/ng-spotflow-checkout
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+
+### As a component
+
+**app.component.ts**
+
+ ```JavaScript
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SpotflowAngularCheckoutModule } from '@spot-flow/ng-spotflow-checkout';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, SpotflowAngularCheckoutModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+})
+export class AppComponent {
+  title = '';
+  options = {
+ amount: 4000, // Not required for subscription payment
+ currency: "NGN",
+ email: "temi@mailinator.com", // Email of customer
+ name: "John", // Name of customer: Not required
+ phoneNumber: "09090909090", // Phone number of customer: Not required
+ reference: "MC-123456", // Not required, a unique payment reference will be generated if not provided
+ merchantKey: "sk_test_fXXXXedhXXXXXXXXXXXXXXXX",
+ planId: "9e0808304-344d-XXXXXXXXX-XXXXX834034", // Not required for a one time payment
+ encryptionKey:"SKKXXXXXXXXXXXXXXXXX"
+  };
+}
+```
+
+**app.component.html**
+
+ ```JavaScript
+<spotflow-make-payment 
+  text="Pay" 
+  [options]="options" 
+  [style]="{ 'background-color': 'black', color: 'white' }"> Make Payment 
+  </spotflow-make-payment>
+<router-outlet />
+```
+
+### Parameters
+
+<ParamField path="merchantKey" type="string" required>
+ Your API Secret
+</ParamField>
+<ParamField path="reference" type="string" optional>
+  Your transaction reference. This MUST be unique for every transaction
+</ParamField>
+<ParamField path="amount" type="string" optional>
+Amount to charge the customer. NB: For subscription payments, amount comes from the plan details. This is not required for subscription payments.
+</ParamField>
+<ParamField path="currency" type="string" required>
+Currency to charge in.
+</ParamField>
+<ParamField path="localCurrency" type="string" optional>
+This is only required when a payment is being made in USD
+</ParamField>
+<ParamField path="encryptionKey" type="string" required>
+This is the encryption key for the merchant. This is required for card payments.
+</ParamField>
+<ParamField path="planId" type="string" optional>
+This is the plan ID being paid for however, this is not required for one time payments.
+</ParamField>
+<ParamField path="name" type="string" optional>
+This is the Customer's Name
+</ParamField>
+<ParamField path="phoneNumber" type="string" optional>
+This is the Customer's Phone Number
+</ParamField>
+<ParamField path="email" type="string" required>
+This is the Customer's Email Address
+</ParamField>
+<ParamField path="metadata" type="string" required>
+This contains other information about the product such as the product name and other additional properties. Product Name should not be passed if planId is being passed
+</ParamField>
+<ParamField path="callBackUrl" type="string" optional>
+This is the URL the browser redirects to on success of a payment
+</ParamField>
+
+
+Need more information check out our [documentation](https://www.npmjs.com/package/@spot-flow/ng-spotflow-checkout)
