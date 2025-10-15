@@ -179,8 +179,6 @@
           {
             "group": "Subscription Plans",
             "pages": [
-              "api-reference/subscriptions/get-subscriptions-1",
-              "api-reference/subscriptions/post-subscriptions",
               "api-reference/subscriptions/get-subscriptions",
               "api-reference/subscriptions/change-plan",
               "api-reference/subscriptions/patch-subscriptions",
@@ -191,13 +189,12 @@
           {
             "group": "Subscriptions",
             "pages": [
-              "api-reference/subscriptions/get-subscriptions-1",
-              "api-reference/subscriptions/post-subscriptions",
-              "api-reference/subscriptions/get-subscriptions",
-              "api-reference/subscriptions/change-plan",
-              "api-reference/subscriptions/patch-subscriptions",
-              "api-reference/subscriptions/create-charge",
-              "api-reference/subscriptions/get-usage-history"
+              "api-reference/subscriptions/list-subscriptions", 
+              "api-reference/subscriptions/subscription-by-plan", 
+              "api-reference/subscriptions/subscription-details",
+              "api-reference/subscriptions/subscription-activate",
+              "api-reference/subscriptions/subscription-cancel"
+              
             ]
           },
           {
@@ -289,6 +286,11 @@
         ]
       }
     ]
+  },
+   "api": {
+    "playground": {
+    "display": "interactive"
+  }
   },
   "logo": {
     "light": "/logo/logo-light.png",
