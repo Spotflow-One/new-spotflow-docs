@@ -645,7 +645,7 @@
                 "properties": {
                   "file": {
                     "type": "string",
-                    "description": "The uploaded file content or file path.",
+                    "description": "The uploaded file content or file path and must be CSV.",
                     "format": "binary"
                   }
                 },
