@@ -459,7 +459,7 @@
         "description": "Create a subscription plan under your integration.",
         "operationId": "singleSubsciptionsPlan",
         "parameters": [],
-         "requestBody": {
+        "requestBody": {
           "required": true,
           "content": {
             "application/json": {
@@ -570,7 +570,7 @@
         }
       }
     },
-     "/plans/{plan-id}/cancel": {
+    "/plans/{plan-id}/cancel": {
       "post": {
         "description": "Cancel a subscription with the plan Id.",
         "operationId": "CancelSubscriptionPlan",
@@ -593,6 +593,77 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bulk-plans": {
+      "post": {
+        "description": "Create multiple subscription plans under your integration.",
+        "operationId": "CreateBulkSubscriptionPlans",
+        "parameters": [
+          {
+            "name": "skipErrors",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "boolean",
+              "enum": [true, false]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "The uploaded file content or file path.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
