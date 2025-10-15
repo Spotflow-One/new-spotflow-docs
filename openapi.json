@@ -60,7 +60,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error401"
+                  "$ref": "#/components/schemas/SubscriptionError401"
                 }
               }
             }
@@ -70,7 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSubscription400"
+                  "$ref": "#/components/schemas/SubscriptionError400"
                 }
               }
             }
@@ -145,7 +145,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error401"
+                  "$ref": "#/components/schemas/SubscriptionError401"
                 }
               }
             }
@@ -155,7 +155,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSubscription400"
+                  "$ref": "#/components/schemas/SubscriptionError400"
                 }
               }
             }
@@ -217,7 +217,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error401"
+                  "$ref": "#/components/schemas/SubscriptionError401"
                 }
               }
             }
@@ -227,7 +227,392 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSubscription400"
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscription-id}/activate": {
+      "post": {
+        "description": "Activate a subscription with the plan Id.",
+        "operationId": "ActivateSubscription",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscription-id}/cancel": {
+      "post": {
+        "description": "Cancel a subscription with the plan Id.",
+        "operationId": "CancelSubscription",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans": {
+      "get": {
+        "description": "Retrieve details of all subscription plans available on your integration.",
+        "operationId": "SubsciptionsPlan",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "internal-reference",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlansResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a subscription plan under your integration.",
+        "operationId": "singleSubsciptionsPlan",
+        "parameters": [],
+         "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Standard Monthly Plan",
+                    "description": "Name or title of the plan"
+                  },
+                  "frequency": {
+                    "type": "string",
+                    "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
+                    "description": "Billing frequency for the plan"
+                  },
+                  "internalReference": {
+                    "type": "string",
+                    "description": "Internal reference code for the plan",
+                    "example": "PLAN-STD-001"
+                  },
+                  "pricingOptions": {
+                    "type": "array",
+                    "description": "Pricing options for the plan",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "number",
+                          "description": "Amount to be charged per billing cycle"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "description": "Currency code for the plan (e.g. USD, NGN)",
+                          "example": "NGN"
+                        }
+                      },
+                      "required": ["amount", "currency"]
+                    }
+                  },
+                  "trial": {
+                    "type": "object",
+                    "properties": {
+                      "periodInDays": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "pricingList": {
+                        "type": "array",
+                        "description": "Pricing options for the trial period",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "number",
+                              "description": "Amount to be charged during the trial period"
+                            },
+                            "currency": {
+                              "type": "string",
+                              "description": "Currency code for the trial period (e.g. USD, NGN)",
+                              "example": "NGN"
+                            }
+                          },
+                          "required": ["amount", "currency"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+     "/plans/{plan-id}/cancel": {
+      "post": {
+        "description": "Cancel a subscription with the plan Id.",
+        "operationId": "CancelSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
                 }
               }
             }
@@ -238,7 +623,7 @@
     "/plans/{plan-id}/activate": {
       "post": {
         "description": "Activate a subscription with the plan Id.",
-        "operationId": "ActivateSubscription",
+        "operationId": "ActivateSubscriptionPlan",
         "parameters": [
           {
             "name": "plan-id",
@@ -257,7 +642,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionActivateResponse"
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
                 }
               }
             }
@@ -267,7 +652,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error401"
+                  "$ref": "#/components/schemas/SubscriptionError401"
                 }
               }
             }
@@ -277,7 +662,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSubscription400"
+                  "$ref": "#/components/schemas/SubscriptionError400"
                 }
               }
             }
@@ -285,16 +670,16 @@
         }
       }
     },
-    "/plans/{plan-id}/cancel": {
-      "post": {
-        "description": "Cancel a subscription with the plan Id.",
-        "operationId": "CancelSubscription",
+    "/plans/{plan-id}": {
+      "get": {
+        "description": "Retrieve details of a single subscription plan available on your integration.",
+        "operationId": "GetSubscriptionPlan",
         "parameters": [
           {
             "name": "plan-id",
             "in": "path",
             "required": true,
-            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "description": "The unique identifier of the plan whose details are to be retrieved.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -303,11 +688,11 @@
         ],
         "responses": {
           "200": {
-            "description": "A JSON array of subscription objects.",
+            "description": "Successfully retrieved subscription plan details.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionActivateResponse"
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
                 }
               }
             }
@@ -317,17 +702,111 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error401"
+                  "$ref": "#/components/schemas/SubscriptionError401"
                 }
               }
             }
           },
           "400": {
-            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "description": "Bad Request - Invalid plan ID provided.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSubscription400"
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create or update a subscription plan under your integration using the provided plan ID.",
+        "operationId": "CreateOrUpdateSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier for the plan to create or update.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Standard Monthly Plan",
+                    "description": "Name or title of the plan"
+                  },
+                  "frequency": {
+                    "type": "string",
+                    "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
+                    "description": "Billing frequency for the plan"
+                  },
+                  "internalReference": {
+                    "type": "string",
+                    "description": "Internal reference code for the plan",
+                    "example": "PLAN-STD-001"
+                  },
+                  "pricingOptions": {
+                    "type": "array",
+                    "description": "Pricing options for the plan",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "number",
+                          "description": "Amount to be charged per billing cycle"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "description": "Currency code for the plan (e.g. USD, NGN)",
+                          "example": "NGN"
+                        }
+                      },
+                      "required": ["amount", "currency"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscription plan successfully created or updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid request body or parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError400"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions to create or modify the plan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError403"
                 }
               }
             }
@@ -475,7 +954,7 @@
                 "status": {
                   "type": "string",
                   "enum": ["active", "inactive"],
-                  "description": "The current status of the subscription (e.g., active, canceled, past_due)."
+                  "description": "The current status of the subscription (e.g., active, canceled, inacitve)."
                 },
                 "startDate": {
                   "type": "string",
@@ -574,7 +1053,8 @@
           },
           "status": {
             "type": "string",
-            "description": "Current status of the subscription (e.g. active, cancelled, pending)"
+            "enum": ["active", "inactive"],
+            "description": "Current status of the subscription (e.g. active, inactive)"
           },
           "startDate": {
             "type": "string",
@@ -602,7 +1082,7 @@
               },
               "name": {
                 "type": "string",
-                "expample": "John Doe",
+                "example": "John Doe",
                 "description": "Full name of the customer"
               },
               "email": {
@@ -660,7 +1140,6 @@
           "amount"
         ]
       },
-
       "SubscriptionActivateResponse": {
         "type": "object",
         "properties": {
@@ -671,7 +1150,7 @@
           },
           "title": {
             "type": "string",
-             "example": "string",
+            "example": "string",
             "description": "Name or title of the plan"
           },
           "frequency": {
@@ -691,11 +1170,11 @@
           "currency": {
             "type": "string",
             "description": "Currency code for the plan (e.g. USD, NGN)",
-             "example": "NGN"
+            "example": "NGN"
           },
           "status": {
             "type": "string",
-             "enum": ["active", "inactive"],
+            "enum": ["active", "inactive"],
             "description": "Current status of the plan (e.g. active, inactive)"
           },
           "regions": {
@@ -703,7 +1182,7 @@
             "description": "List of region codes or names where this plan is available",
             "items": {
               "type": "string",
-               "example": "string"
+              "example": "string"
             }
           },
           "subscribers": {
@@ -755,7 +1234,7 @@
                     "currency": {
                       "type": "string",
                       "description": "Currency code (e.g. NGN, USD)",
-                       "example": "NGN"
+                      "example": "NGN"
                     }
                   },
                   "required": ["type", "amount", "currency"]
@@ -776,7 +1255,7 @@
                 },
                 "currency": {
                   "type": "string",
-                   "example": "NGN",
+                  "example": "NGN",
                   "description": "Currency code (e.g. NGN, USD)"
                 }
               },
@@ -794,7 +1273,298 @@
           "createdAt"
         ]
       },
-      "Error401": {
+
+      "PlansResponse": {
+        "type": "object",
+        "description": "Paginated list of plan details",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "List of plan items",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the plan"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Name or title of the plan"
+                },
+                "frequency": {
+                  "type": "string",
+                  "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
+                  "description": "Billing frequency for the plan"
+                },
+                "internalReference": {
+                  "type": "string",
+                  "description": "Internal reference code for the plan"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "Amount to be charged per billing cycle"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code for the plan (e.g. USD, NGN)"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the plan (e.g. active, inactive)"
+                },
+                "regions": {
+                  "type": "array",
+                  "description": "List of region codes or names where this plan is available",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subscribers": {
+                  "type": "integer",
+                  "description": "Number of users currently subscribed to this plan"
+                },
+                "subscriptions": {
+                  "type": "integer",
+                  "description": "Total number of subscriptions created for this plan"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp indicating when the plan was created"
+                },
+                "trial": {
+                  "type": "object",
+                  "description": "Trial configuration for this plan",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the trial"
+                    },
+                    "planId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Associated plan ID for this trial"
+                    },
+                    "periodInDays": {
+                      "type": "integer",
+                      "description": "Duration of the trial period in days"
+                    },
+                    "pricingList": {
+                      "type": "array",
+                      "description": "Pricing details during the trial period",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["FLAT", "TIERED"],
+                            "description": "Type of pricing applied"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Amount charged during the trial"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "description": "Currency code (e.g. NGN, USD)"
+                          }
+                        },
+                        "required": ["type", "amount", "currency"]
+                      }
+                    }
+                  },
+                  "required": ["id", "planId", "periodInDays"]
+                },
+                "pricingOptions": {
+                  "type": "array",
+                  "description": "List of available pricing options for the plan",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "description": "Amount for this pricing option"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency code (e.g. NGN, USD)"
+                      }
+                    },
+                    "required": ["amount", "currency"]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "frequency",
+                "amount",
+                "currency",
+                "status",
+                "createdAt"
+              ]
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Number of records per page"
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "Total number of plan records"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of available pages"
+          }
+        },
+        "required": [
+          "content",
+          "pageNumber",
+          "pageSize",
+          "totalElements",
+          "totalPages"
+        ]
+      },
+      "SubscriptionPlanDetailsResponse": {
+        "type": "object",
+        "description": "Represents detailed information about a subscription plan including pricing, trial, and region availability.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the subscription plan (UUID)."
+          },
+          "title": {
+            "type": "string",
+            "example": "string",
+            "description": "The title or name of the subscription plan."
+          },
+          "frequency": {
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
+            "description": "Billing frequency for the subscription plan."
+          },
+          "internalReference": {
+            "type": "string",
+            "example": "string",
+            "description": "Internal reference code or identifier for the plan."
+          },
+          "amount": {
+            "type": "number",
+            "description": "The cost amount for the subscription plan."
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN",
+            "description": "The currency of the subscription plan (e.g., NGN, USD)."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE", "ARCHIVED"],
+            "description": "The current status of the subscription plan."
+          },
+          "regions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of regions where this plan is available."
+          },
+          "subscribers": {
+            "type": "integer",
+            "description": "Total number of active subscribers under this plan."
+          },
+          "subscriptions": {
+            "type": "integer",
+            "description": "Total number of subscriptions created for this plan."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the plan was created."
+          },
+          "trial": {
+            "type": "object",
+            "description": "Details about the trial period associated with this plan.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the trial configuration."
+              },
+              "planId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The plan ID this trial configuration is associated with."
+              },
+              "periodInDays": {
+                "type": "integer",
+                "description": "Number of days for the trial period."
+              },
+              "pricingList": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["FLAT", "TIERED"],
+                      "description": "The pricing model for the trial period."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The cost amount during the trial period."
+                    },
+                    "currency": {
+                      "type": "string",
+                      "example": "NGN",
+                      "description": "Currency used for the trial pricing."
+                    }
+                  }
+                },
+                "description": "List of pricing configurations for the trial."
+              }
+            }
+          },
+          "pricingOptions": {
+            "type": "array",
+            "description": "Different pricing options available for the plan.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "description": "The cost amount for this pricing option."
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "NGN",
+                  "description": "The currency code for this pricing option (e.g., NGN, USD)."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "frequency",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+
+      "SubscriptionError401": {
         "type": "object",
         "properties": {
           "code": { "type": "string", "example": "AUTH_ERROR" },
@@ -811,7 +1581,7 @@
         },
         "required": ["status", "statusCode", "message"]
       },
-      "ListSubscription400": {
+      "SubscriptionError400": {
         "type": "object",
         "properties": {
           "code": { "type": "string", "example": "4141" },
