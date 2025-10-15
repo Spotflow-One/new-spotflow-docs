@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "Spotflow Documentation",
   "colors": {
     "primary": "#81B700",
@@ -139,13 +139,23 @@
           {
             "group": "SDKs",
             "pages": [
-              "developer-resources/spotflow-sdks",
-              "developer-resources/react-native-integration"
+              "developer-resources/iOS-sdk",
+              "developer-resources/android-sdk",
+              "developer-resources/flutter-sdk",
+              "developer-resources/inline-js"
+            ]
+          },
+          {
+            "group": "Libraries",
+            "pages": [
+
+              "developer-resources/react-library",
+              "developer-resources/angular-library",
+              "developer-resources/vue-library"
             ]
           }
         ]
       },
-      
       {
         "tab": "API Reference",
         "icon": "code-branch",
