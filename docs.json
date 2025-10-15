@@ -12,6 +12,7 @@
     "tabs": [
       {
         "tab": "Setup & Features",
+        "icon": "cube",
         "groups": [
           {
             "group": "Getting Started",
@@ -157,6 +158,7 @@
       },
       {
         "tab": "API Reference",
+        "icon": "code-branch",
         "groups": [
           {
             "group": "API Reference",
@@ -171,21 +173,22 @@
             "pages": [
               "api-reference/payments/create-collection",
               "api-reference/payments/initialize-collection",
-              "api-reference/payments/get-payments-1",
-              "api-reference/payments/get-invoice",
-              "api-reference/payments/retrieve-line-items"
+              "api-reference/payments/authorize-collection",
+              "api-reference/payments/fetch-collection",
+              "api-reference/payments/list-collection",
+              "api-reference/payments/verify-collection"
             ]
           },
           {
             "group": "Subscription Plans",
             "pages": [
-              "api-reference/subscriptions/get-subscriptions-1",
-              "api-reference/subscriptions/post-subscriptions",
-              "api-reference/subscriptions/get-subscriptions",
-              "api-reference/subscriptions/change-plan",
-              "api-reference/subscriptions/patch-subscriptions",
-              "api-reference/subscriptions/create-charge",
-              "api-reference/subscriptions/get-usage-history"
+              "api-reference/subscription-plans/activate-plan",
+              "api-reference/subscription-plans/cancel-plan",
+              "api-reference/subscription-plans/create-bulk-plan",
+              "api-reference/subscription-plans/create-single-plan",
+              "api-reference/subscription-plans/fetch-plan",
+              "api-reference/subscription-plans/list-single-plan",
+              "api-reference/subscription-plans/update-plan"
             ]
           },
           {
@@ -259,6 +262,7 @@
       },
       {
         "tab": "Changelog",
+        "icon": "tags",
         "groups": [
           {
             "group": "Changelog",
@@ -277,6 +281,7 @@
       },
       {
         "tab": "Community Projects",
+        "icon": "people-group",
         "groups": [
           {
             "group": "Community Projects",
