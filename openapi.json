@@ -473,7 +473,14 @@
                   },
                   "frequency": {
                     "type": "string",
-                    "enum": ["DAILY", "WEEKLY", "MONTHLY", "  QUARTERLY", "BIANNUAL", "ANNUAL"],
+                    "enum": [
+                      "DAILY",
+                      "WEEKLY",
+                      "MONTHLY",
+                      "  QUARTERLY",
+                      "BIANNUAL",
+                      "ANNUAL"
+                    ],
                     "description": "Billing frequency for the plan"
                   },
                   "internalReference": {
@@ -819,7 +826,14 @@
                   },
                   "frequency": {
                     "type": "string",
-                    "enum": ["DAILY", "WEEKLY", "MONTHLY", "  QUARTERLY", "BIANNUAL", "ANNUAL"],
+                    "enum": [
+                      "DAILY",
+                      "WEEKLY",
+                      "MONTHLY",
+                      "  QUARTERLY",
+                      "BIANNUAL",
+                      "ANNUAL"
+                    ],
                     "description": "Billing frequency for the plan"
                   },
                   "internalReference": {
@@ -878,6 +892,445 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubscriptionError403"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "description": "This retrieves and lists all the wallets you've created. This is both for your main account and wallets.",
+        "operationId": "ListWallets",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "accountTag",
+            "in": "query",
+            "required": false,
+            "description": "This can either be sub-account, or main-account.",
+            "schema": {
+              "type": "string",
+              "enum": ["sub-account", "main-account"]
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Choose the currency you want for your sub account. According, to our currently supported currencies, this is in NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "enum": ["NGN", "GHS"]
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "This can either be test or live mode.",
+            "schema": {
+              "type": "string",
+              "enum": ["test", "live"]
+            }
+          },
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": false,
+            "description": "This filters by the account number created for the sub accounts.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subaccounts objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubAccountDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Wallets are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, wallets do not require BVNs upon creation.",
+        "operationId": "WalletCreation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "According, to our currently supported currencies, this is in NGN and GHS."
+                  },
+                  "accountName": {
+                    "type": "string",
+                    "example": "Quantum Technologies",
+                    "description": "Your desired name for your sub account."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subaccounts objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWalletDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances": {
+      "get": {
+        "description": "Retrieves paginated balances for main accounts with optional currency, mode, and date filters.",
+        "operationId": "ListBalances",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Choose the currency you want for your sub account. According, to our currently supported currencies, this is in NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "enum": ["NGN", "GHS"]
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "This can either be test or live mode.",
+            "schema": {
+              "type": "string",
+              "enum": ["test", "live"]
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBalanceListResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances/accounts/{accountNumber}/sub-balances": {
+      "get": {
+        "description": "Retrieves account balance details for all direct sub-accounts of the specified main account in both NGN and GHS.",
+        "operationId": "ListSubAccountBalances",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBalanceListResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances/accounts/{accountNumber}/balance": {
+      "get": {
+        "description": "Get account balance details for a specific sub-account before and after top-up in both NGN and GHS currency.",
+        "operationId": "AccountBalance",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalanceListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "get": {
+        "description": "Get details of your created sub account by its ID. You can get this in either NGN or GHS.",
+        "operationId": "AccountID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of account details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubAccountnError400"
                 }
               }
             }
@@ -1226,7 +1679,14 @@
           },
           "frequency": {
             "type": "string",
-           "enum": ["DAILY", "WEEKLY", "MONTHLY", "  QUARTERLY", "BIANNUAL", "ANNUAL"],
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "  QUARTERLY",
+              "BIANNUAL",
+              "ANNUAL"
+            ],
             "description": "Billing frequency for the plan"
           },
           "internalReference": {
@@ -1344,7 +1804,6 @@
           "createdAt"
         ]
       },
-
       "PlansResponse": {
         "type": "object",
         "description": "Paginated list of plan details",
@@ -1366,7 +1825,14 @@
                 },
                 "frequency": {
                   "type": "string",
-                  "enum": ["DAILY", "WEEKLY", "MONTHLY", "  QUARTERLY", "BIANNUAL", "ANNUAL"],
+                  "enum": [
+                    "DAILY",
+                    "WEEKLY",
+                    "MONTHLY",
+                    "  QUARTERLY",
+                    "BIANNUAL",
+                    "ANNUAL"
+                  ],
                   "description": "Billing frequency for the plan"
                 },
                 "internalReference": {
@@ -1520,7 +1986,14 @@
           },
           "frequency": {
             "type": "string",
-            "enum": ["DAILY", "WEEKLY", "MONTHLY", "  QUARTERLY", "BIANNUAL", "ANNUAL"],
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "BIANNUAL",
+              "ANNUAL"
+            ],
             "description": "Billing frequency for the subscription plan."
           },
           "internalReference": {
@@ -1634,7 +2107,285 @@
           "createdAt"
         ]
       },
-
+      "AccountBalanceListResponse": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GHS"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "example": 3.0
+          },
+          "availableBalance": {
+            "type": "number",
+            "format": "float",
+            "example": 3.0
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "parentAccountNumber": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": ["accountNumber", "currency", "balance", "availableBalance"]
+      },
+      "SubAccountDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+                },
+                "balanceId": {
+                  "type": "string",
+                  "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+                },
+                "accountName": {
+                  "type": "string",
+                  "example": "Main GHS Account"
+                },
+                "accountNumber": {
+                  "type": "string",
+                  "example": "7706438396"
+                },
+                "parentAccountId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "GHS"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["live", "test"],
+                  "example": "live"
+                },
+                "accountTag": {
+                  "type": "string",
+                  "example": "main-account"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-07-22T11:25:28.792959Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-08-07T11:56:49.337647Z"
+                },
+                "accountDetails": {
+                  "type": "object",
+                  "properties": {
+                    "accountName": {
+                      "type": "string",
+                      "example": "SPOTFLOW/Quantum Technologies"
+                    },
+                    "accountNumber": {
+                      "type": "string",
+                      "example": "7806438396"
+                    },
+                    "bankName": {
+                      "type": "string",
+                      "example": "Testbank MFB"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "pageNumber": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalElements": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status",
+          "createdAt"
+        ]
+      },
+      "WalletDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "balanceId": {
+            "type": "string",
+            "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Main GHS Account"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "parentAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GHS"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-22T11:25:28.792959Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-08-07T11:56:49.337647Z"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CreateWalletDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "balanceId": {
+            "type": "string",
+            "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Quantum Technologies"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "parentAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status"
+        ]
+      },
       "SubscriptionError401": {
         "type": "object",
         "properties": {
@@ -1660,6 +2411,22 @@
           "statusCode": { "type": "integer", "format": "float", "example": 400 }
         },
         "required": ["status", "statusCode", "message"]
+      },
+      "SubAccountnError401": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Unauthorized" },
+          "message": { "type": "string", "example": "invalid_credentials" },
+          "status": { "type": "integer", "format": "float", "example": 401 }
+        }
+      },
+      "SubAccountnError400": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "not found" },
+          "message": { "type": "string", "example": "not_found" },
+          "status": { "type": "integer", "format": "float", "example": 400 }
+        }
       }
     }
   }
