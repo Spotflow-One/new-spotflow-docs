@@ -1022,7 +1022,7 @@
           }
         }
       },
-       "post": {
+      "post": {
         "description": "Wallets are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, wallets do not require BVNs upon creation.",
         "operationId": "WalletCreation",
         "parameters": [],
@@ -1054,7 +1054,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WalletDetailsResponse"
+                  "$ref": "#/components/schemas/CreateWalletDetailsResponse"
                 }
               }
             }
@@ -2195,6 +2195,23 @@
                   "type": "string",
                   "format": "date-time",
                   "example": "2025-08-07T11:56:49.337647Z"
+                },
+                "accountDetails": {
+                  "type": "object",
+                  "properties": {
+                    "accountName": {
+                      "type": "string",
+                      "example": "SPOTFLOW/Quantum Technologies"
+                    },
+                    "accountNumber": {
+                      "type": "string",
+                      "example": "7806438396"
+                    },
+                    "bankName": {
+                      "type": "string",
+                      "example": "Testbank MFB"
+                    }
+                  }
                 }
               }
             }
@@ -2267,6 +2284,23 @@
             "type": "string",
             "format": "date-time",
             "example": "2025-08-07T11:56:49.337647Z"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
           }
         },
         "required": [
@@ -2279,6 +2313,77 @@
           "mode",
           "status",
           "createdAt"
+        ]
+      },
+      "CreateWalletDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "balanceId": {
+            "type": "string",
+            "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Quantum Technologies"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "parentAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status"
         ]
       },
       "SubscriptionError401": {
