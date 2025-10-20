@@ -205,44 +205,41 @@
           {
             "group": "Spotflow Wallets",
             "pages": [
-              "api-reference/subaccounts/list-sub-accounts",
-              "api-reference/subaccounts/main-account-balance",
-              "api-reference/subaccounts/account-balance",
-              "api-reference/subaccounts/account-balance-sub-account",
-              "api-reference/subaccounts/sub-account-id",
-              "api-reference/subaccounts/create-account"
+              "api-reference/wallets/list-spotflow-wallets",
+              "api-reference/wallets/main-account-balance",
+              "api-reference/wallets/account-balance",
+              "api-reference/wallets/account-balance-spotflow-wallet",
+              "api-reference/wallets/spotflow-wallet-id",
+              "api-reference/wallets/create-account"
             ]
           },
           {
-            "group": "Virtual Accounts",
+            "group": "Dynamic Accounts",
             "pages": [
-              "api-reference/products/get-products",
-              "api-reference/products/post-products",
-              "api-reference/products/get-products-1",
-              "api-reference/products/patch-products",
-              "api-reference/products/put-products-images",
-              "api-reference/products/archive-product",
-              "api-reference/products/unarchive-product",
-              "api-reference/products/update-files"
+              "api-reference/dynamic-accounts/create-dynamic-account",
+              "api-reference/dynamic-accounts/dynamic-account-id",
+              "api-reference/dynamic-accounts/list-dynamic-account"
             ]
           },
           {
             "group": "Single Disbursements",
             "pages": [
-              "api-reference/addons/create-addon",
-              "api-reference/addons/list-addons",
-              "api-reference/addons/get-addon",
-              "api-reference/addons/update-addon",
-              "api-reference/addons/update-addon-images"
+              "api-reference/transfer-api/create-single-transfer",
+              "api-reference/transfer-api/list-banks",
+              "api-reference/transfer-api/transfer-resolve-account",
+              "api-reference/transfer-api/list-branches",
+              "api-reference/transfer-api/transfer-by-reference"
             ]
           },
           {
             "group": "Bulk Disbursements",
             "pages": [
-              "api-reference/refunds/get-refunds",
-              "api-reference/refunds/post-refunds",
-              "api-reference/refunds/get-refunds-1",
-              "api-reference/refunds/get-refund-receipt"
+              "api-reference/transfer-api/create-bulk-transfer",
+              "api-reference/transfer-api/bulk-transfer-id",
+              "api-reference/transfer-api/bulk-transfer-categories",
+              "api-reference/transfer-api/bulk-transfers",
+              "api-reference/transfer-api/bulk-transfers-by-id",
+              "api-reference/transfer-api/validate-bulk-transfer"
             ]
           },
           {

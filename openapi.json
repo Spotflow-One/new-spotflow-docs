@@ -70,7 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -155,7 +155,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -227,7 +227,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -277,7 +277,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -327,7 +327,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -448,7 +448,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -569,7 +569,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -619,7 +619,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -690,7 +690,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -740,7 +740,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -790,7 +790,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -881,7 +881,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubscriptionError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1005,7 +1005,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1015,7 +1015,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1064,7 +1064,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1074,7 +1074,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1169,7 +1169,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1179,7 +1179,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1189,8 +1189,8 @@
     },
     "/balances/accounts/{accountNumber}/sub-balances": {
       "get": {
-        "description": "Retrieves account balance details for all direct sub-accounts of the specified main account in both NGN and GHS.",
-        "operationId": "ListSubAccountBalances",
+        "description": "Retrieves account balance details for all direct spotflow wallets of the specified main account in both NGN and GHS.",
+        "operationId": "ListSpotflowWalletBalances",
         "parameters": [
           {
             "name": "accountNumber",
@@ -1221,7 +1221,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1231,7 +1231,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1241,7 +1241,7 @@
     },
     "/balances/accounts/{accountNumber}/balance": {
       "get": {
-        "description": "Get account balance details for a specific sub-account before and after top-up in both NGN and GHS currency.",
+        "description": "Get account balance details for a specific spotflow-wallets before and after top-up in both NGN and GHS currency.",
         "operationId": "AccountBalance",
         "parameters": [
           {
@@ -1270,7 +1270,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1280,7 +1280,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -1290,7 +1290,7 @@
     },
     "/accounts/{id}": {
       "get": {
-        "description": "Get details of your created sub account by its ID. You can get this in either NGN or GHS.",
+        "description": "Get details of your created spotflow wallet by its ID. You can get this in either NGN or GHS.",
         "operationId": "AccountID",
         "parameters": [
           {
@@ -1320,7 +1320,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError401"
+                  "$ref": "#/components/schemas/Error401"
                 }
               }
             }
@@ -1330,7 +1330,1786 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SubAccountnError400"
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts/temporary": {
+      "post": {
+        "description": "This endpoint is used to create a dynamic account to receive payments.",
+        "operationId": "DynamicAccountCreation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "According, to our currently supported currencies, this is in NGN and GHS."
+                  },
+                  "accountName": {
+                    "type": "string",
+                    "example": "Quantum Technologies",
+                    "description": "Your desired naming for your account."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Amount should be in the subunit of our supported currency i.e NGN and GHS for now."
+                  },
+                  "expiresIn": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "This is optional to add. By default, the time it takes for a virtual account to expire is 30 mins. However, you can customize the time to lesser as you desire."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic account objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts/{id}": {
+      "get": {
+        "description": "Get details of your created virtual account by its ID.",
+        "operationId": "DynamicAccountID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the unique ID generated upon creation of your dynamic account in either NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts": {
+      "get": {
+        "description": "This retrieves and lists all the active dynamic accounts you created.",
+        "operationId": "ListDynamicAccount",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": true,
+            "description": "This filters by the account number created for the virtual accounts.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DynamicDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk": {
+      "post": {
+        "description": "You can use this endpoint to perform bulk bank account transfer to multiple bank accounts.",
+        "operationId": "CreateBulkTransfer",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "description": "Specify a unique category of your choice for your company to track a transaction for later reconciliation.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": true,
+            "description": "Select the currency for the transfer. This is in our supported currency which is currently only NGN and GHS.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "narration",
+            "in": "query",
+            "required": true,
+            "description": "This is optional information for you to give details about the reason for the transfer",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Upload the file content and must in CSV format.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create bulk disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "listBulkTransfers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursements objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/TransferDetailsResponse"
+                        }
+                      },
+                      "pageNumber": { "type": "integer" },
+                      "pageSize": { "type": "integer" },
+                      "totalElements": { "type": "integer" },
+                      "totalPages": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/{id}": {
+      "get": {
+        "description": "Get details of an uploaded bulk disbursement by its id.",
+        "operationId": "BulkTransferID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the specific id used to get the individual transfer details in the uploaded bulk disbursement file.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursement details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/categories": {
+      "get": {
+        "description": "Get details of an uploaded bulk disbursement by the categories you created with.",
+        "operationId": "BulkTransferCategories",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursement details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/{id}/transfers": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "listBulkTransfersByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the specific id used to get the individual transfer details in the uploaded bulk disbursement file.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursements objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TransferDetailsResponse"
+                      }
+                    },
+                    "pageNumber": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "totalElements": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/validate": {
+      "post": {
+        "description": "Use this endpoint to confirm your bulk disbursement CSV file has all the necessary details needed and won't fail when uploaded for the bulk transfer transaction.",
+        "operationId": "ValidateBulkTransfer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Upload the file content and must in CSV format.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create bulk disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "failedRequests": {
+                      "type": "array",
+                      "default": []
+                    },
+                    "totalRequests": {
+                      "type": "number",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers": {
+      "post": {
+        "description": "You can use this endpoint to perform bank account transfer from your main account",
+        "operationId": "CreateSingleDisbursement",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "format": "float"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "accountNumber": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "destination": {
+                    "type": "object",
+                    "properties": {
+                      "accountNumber": {
+                        "type": "string"
+                      },
+                      "accountName": {
+                        "type": "string"
+                      },
+                      "bankCode": {
+                        "type": "string"
+                      },
+                      "branchCode": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "narrations": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "destination",
+                  "source",
+                  "amount",
+                  "currency",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create single disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/banks/{currency}": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "TransferBank",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "path",
+            "required": true,
+            "description": "Currently we support NGN or GHS",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bank list objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "bankCode": {
+                        "type": "string",
+                        "example": "PB-56234"
+                      },
+                      "bankName": {
+                        "type": "string",
+                        "example": "Nombank"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/resolve-account": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "ResolveAccount",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": true,
+            "description": "This is the account number you want to get/validate.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bankCode",
+            "in": "query",
+            "required": true,
+            "description": "This is the bank code of the account number on our system.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": true,
+            "description": "Select the currency for the payment charge. This is in our supported currency which is currently only NGN. Please note that only NGN accounts works with resolve bank accounts.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of resolve transfers objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accountName": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "accountNumber": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/reference/{reference}": {
+      "get": {
+        "description": "Get details of a particular transfer by its reference id.",
+        "operationId": "TransactionReference",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "required": true,
+            "description": "This is the reference id of the transfer that you made on your account using what's in the 'reference' and not 'spotflowReference.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/banks/{bank-code}/branches": {
+      "get": {
+        "description": "Retrieves a list of supported branches for a for transfers in the specified mode and selected currency",
+        "operationId": "BranchesBankCode",
+        "parameters": [
+          {
+            "name": "bankCode",
+            "in": "query",
+            "required": true,
+            "description": "This is the bank code of the account number on our system.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bank branches objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bankCode": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "bankName": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "description": "Get details of a specific payment by its ID",
+        "operationId": "GetPaymentById",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "description": "This can either be successful, failed or pending."
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "enum": ["card", "bank_transfer", "ussd"],
+              "description": "This can either be card, bank, transfer or USSD for local currency payments."
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "description" : "These are available payment providers on Spotflow such as Flutterwave, Paystack, Korapay etc."
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                  "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentResponse"
+                      }
+                    },
+                    "pageNumber": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "totalElements": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "You can use this endpoint to perform bank account transfer from your main account",
+        "operationId": "CreatePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 0,
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD",
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                  },
+                  "localCurrency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                  },
+                  "channel": {
+                    "type": "string",
+                    "enum": ["card", "bank_transfer", "ussd"],
+                    "description": "The channel is Card, Bank Transfer or USSD",
+                    "example": "card"
+                  },
+                  "encryptedCard": {
+                    "type": "string",
+                    "example": "encrypted_card_data_here",
+                    "description": "This contains the encrypted card data (token) and encryption key information gotten from your dashboard. This is based on the AES-256-GCM encryption algorithm."
+                  },
+                  "callBackUrl": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://yourapp.com/callback"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "productName": {
+                        "type": "string",
+                        "example": "Algo.ai"
+                      }
+                    },
+                    "required": ["productName"],
+                    "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
+                  },
+                  "customer": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                      }
+                    },
+                    "required": ["email"],
+                    "description": "The customer’s email address"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "amount",
+                  "encryptedCard",
+                  "currency",
+                  "localCurrency",
+                  "channel"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of create payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/initialize": {
+      "post": {
+        "description": "Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers",
+        "operationId": "IntializePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 0,
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                  },
+                  "planId": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "when paying for a subscription plan."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD",
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                  },
+                  "localCurrency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                  },
+                  "callBackUrl": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://yourapp.com/callback"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "productName": {
+                        "type": "string",
+                        "example": "Algo.ai"
+                      }
+                    },
+                    "required": ["productName"],
+                    "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
+                  },
+                  "customer": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                      }
+                    },
+                    "required": ["email"],
+                    "description": "The customer’s email address"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "amount",
+                  "encryptedCard",
+                  "currency",
+                  "localCurrency",
+                  "channel"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of intialize payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "checkoutUrl": {
+                      "type": "string",
+                      "format": "url",
+                      "example": "https://checkout.spotflow.io/pay/unique_payment_url"
+                    },
+                    "paymentCode": {
+                      "type": "string",
+                      "example": "PAY123456789"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    },
+                    "callBackUrl": {
+                      "type": "string",
+                      "format": "url",
+                      "example": "https://yourapp.com/callback"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "productName": {
+                          "type": "string",
+                          "example": "Algo.ai"
+                        }
+                      },
+                      "description": "This is information pertaining to additional details about your product or service."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/authorize": {
+      "post": {
+        "description": "This authorizes a payment by pre-approving the transaction before final validation. Authorization required could be PIN, OTP, 3DS, AVS, etc. ",
+        "operationId": "AuthorizePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "authorization": {
+                    "type": "object",
+                    "properties": {},
+                    "description": "A confidential or secret code required to authenticate and verify identity for card transactions."
+                  }
+                },
+                "required": ["reference", "authorization"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of authorize payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    },
+                    "reference": {
+                      "type": "string",
+                      "example": "REF123456789"
+                    },
+                    "spotflowReference": {
+                      "type": "string",
+                      "example": "SPF-REF-001"
+                    },
+                    "amount": { "type": "number", "example": 100.0 },
+                    "currency": { "type": "string", "example": "USD" },
+                    "localAmount": { "type": "number", "example": 156000.0 },
+                    "totalFees": { "type": "number", "example": 500.0 },
+                    "localCurrency": { "type": "string", "example": "NGN" },
+                    "channel": { "type": "string", "example": "card" },
+                    "status": { "type": "string", "example": "SUCCESS" },
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        }
+                      }
+                    },
+                    "providerMessage": {
+                      "type": "string",
+                      "example": "Please enter your OTP sent to your phone"
+                    },
+                    "rate": { "type": "number", "example": 1560.0 },
+                    "region": { "type": "string", "example": "West Africa" },
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "mode": { "type": "string", "example": "otp" }
+                      }
+                    },
+                    "card": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "string", "example": "VISA" },
+                        "firstSix": { "type": "string", "example": "412345" },
+                        "lastFour": { "type": "string", "example": "6789" }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-10-17T15:21:11.287Z"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string" },
+                      "example": {
+                        "orderId": "ORD-000123",
+                        "note": "First payment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/{payment-id}/attempts": {
+      "get": {
+        "description": "Get details of a specific payment by its ID",
+        "operationId": "GetPaymentById",
+        "parameters": [
+          {
+            "name": "payment-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the payment.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    },
+                    "reference": {
+                      "type": "string",
+                      "example": "REF123456789"
+                    },
+                    "spotflowReference": {
+                      "type": "string",
+                      "example": "SPF-REF-001"
+                    },
+                    "amount": { "type": "number", "example": 100.0 },
+                    "currency": { "type": "string", "example": "USD" },
+                    "localAmount": { "type": "number", "example": 156000.0 },
+                    "totalFees": { "type": "number", "example": 500.0 },
+                    "localCurrency": { "type": "string", "example": "NGN" },
+                    "channel": { "type": "string", "example": "card" },
+                    "status": { "type": "string", "example": "SUCCESS" },
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        }
+                      }
+                    },
+                    "providerMessage": {
+                      "type": "string",
+                      "example": "Please enter your OTP sent to your phone"
+                    },
+                    "rate": { "type": "number", "example": 1560.0 },
+                    "region": { "type": "string", "example": "West Africa" },
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "mode": { "type": "string", "example": "otp" }
+                      }
+                    },
+                    "card": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "string", "example": "VISA" },
+                        "firstSix": { "type": "string", "example": "412345" },
+                        "lastFour": { "type": "string", "example": "6789" }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-10-17T15:21:11.287Z"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string" },
+                      "example": {
+                        "orderId": "ORD-000123",
+                        "note": "First payment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/verify": {
+      "get": {
+        "description": "Confirm the status of a payment",
+        "operationId": "VerifyPayment",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "query",
+            "required": true,
+            "description": "The unique identifier of the payment.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
                 }
               }
             }
@@ -2386,6 +4165,204 @@
           "status"
         ]
       },
+      "DynamicDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Quantum Technologies"
+          },
+          "bankName": {
+            "type": "string",
+            "example": "Testbank MFB"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "lifeCycle": {
+            "type": "string",
+            "example": "temporary"
+          }
+        }
+      },
+      "TransferDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "spotflowreference": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "amount": {
+            "type": "number",
+            "format": "int32",
+            "example": 0
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN"
+          },
+          "transferMode": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "accountNumber": {
+                "type": "string",
+                "example": "7706438396"
+              },
+              "accountName": {
+                "type": "string",
+                "example": "Quantum Technologies"
+              },
+              "bankCode": {
+                "type": "string",
+                "example": "NGN100"
+              },
+              "branchCode": {
+                "type": "string",
+                "example": "NGN100"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          },
+          "narrations": {
+            "type": "string",
+            "example": "string"
+          },
+          "status": {
+            "type": "string",
+            "example": "string"
+          }
+        }
+      },
+      "PaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "reference": { "type": "string", "example": "REF123456789" },
+          "spotflowReference": { "type": "string", "example": "SPF-REF-001" },
+          "amount": { "type": "number", "example": 100.0 },
+          "currency": { "type": "string", "example": "USD" },
+          "localAmount": { "type": "number", "example": 156000.0 },
+          "totalFees": { "type": "number", "example": 500.0 },
+          "localCurrency": { "type": "string", "example": "NGN" },
+          "channel": { "type": "string", "example": "card" },
+          "status": { "type": "string", "example": "SUCCESS" },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "format": "uuid" },
+              "email": { "type": "string", "example": "john@example.com" }
+            }
+          },
+          "providerMessage": {
+            "type": "string",
+            "example": "Transaction successful"
+          },
+          "rate": { "type": "number", "example": 1560.0 },
+          "region": { "type": "string", "example": "West Africa" },
+          "authorization": {
+            "type": "object",
+            "properties": {
+              "mode": { "type": "string", "example": "Pin" }
+            }
+          },
+          "ussd": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "example": "*737#" },
+              "paymentCode": { "type": "string", "example": "123456" }
+            }
+          },
+          "bankDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": { "type": "string", "example": "John Doe" },
+              "accountNumber": { "type": "string", "example": "0123456789" },
+              "bankName": { "type": "string", "example": "Access Bank" }
+            }
+          },
+          "card": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "example": "VISA" },
+              "firstSix": { "type": "string", "example": "412345" },
+              "lastFour": { "type": "string", "example": "6789" }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-17T15:21:11.287Z"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "example": {
+              "orderId": "ORD-000123",
+              "note": "First payment"
+            }
+          },
+          "taxBreakdowns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taxName": { "type": "string", "example": "VAT" },
+                "taxType": { "type": "string", "example": "percentage" },
+                "taxRate": { "type": "number", "example": 7.5 },
+                "taxAmount": { "type": "number", "example": 50.0 },
+                "thresholdApplied": { "type": "boolean", "example": true },
+                "capApplied": { "type": "boolean", "example": false },
+                "taxApplicable": { "type": "boolean", "example": true }
+              }
+            }
+          },
+          "totalTaxAmount": { "type": "number", "example": 50.0 },
+          "totalLocalAmount": { "type": "number", "example": 156050.0 },
+          "planId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "mobileMoney": {
+            "type": "object",
+            "properties": {
+              "otp": { "type": "string", "example": "1234" },
+              "code": { "type": "string", "example": "MTN" },
+              "name": { "type": "string", "example": "MTN Mobile Money" },
+              "phoneNumber": { "type": "string", "example": "+233540000000" }
+            }
+          }
+        },
+        "required": ["id", "reference", "amount", "currency", "status"]
+      },
       "SubscriptionError401": {
         "type": "object",
         "properties": {
@@ -2403,16 +4380,7 @@
         },
         "required": ["status", "statusCode", "message"]
       },
-      "SubscriptionError400": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "string", "example": "4141" },
-          "message": { "type": "string", "example": "plan.not.found." },
-          "statusCode": { "type": "integer", "format": "float", "example": 400 }
-        },
-        "required": ["status", "statusCode", "message"]
-      },
-      "SubAccountnError401": {
+      "Error401": {
         "type": "object",
         "properties": {
           "error": { "type": "string", "example": "Unauthorized" },
@@ -2420,11 +4388,11 @@
           "status": { "type": "integer", "format": "float", "example": 401 }
         }
       },
-      "SubAccountnError400": {
+      "Error400": {
         "type": "object",
         "properties": {
-          "error": { "type": "string", "example": "not found" },
-          "message": { "type": "string", "example": "not_found" },
+          "error": { "type": "string", "example": "Missing Parameter" },
+          "message": { "type": "string", "example": "missing_parameter" },
           "status": { "type": "integer", "format": "float", "example": 400 }
         }
       }
