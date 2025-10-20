@@ -1189,8 +1189,8 @@
     },
     "/balances/accounts/{accountNumber}/sub-balances": {
       "get": {
-        "description": "Retrieves account balance details for all direct sub-accounts of the specified main account in both NGN and GHS.",
-        "operationId": "ListSubAccountBalances",
+        "description": "Retrieves account balance details for all direct spotflow wallets of the specified main account in both NGN and GHS.",
+        "operationId": "ListSpotflowWalletBalances",
         "parameters": [
           {
             "name": "accountNumber",
@@ -1241,7 +1241,7 @@
     },
     "/balances/accounts/{accountNumber}/balance": {
       "get": {
-        "description": "Get account balance details for a specific sub-account before and after top-up in both NGN and GHS currency.",
+        "description": "Get account balance details for a specific spotflow-wallets before and after top-up in both NGN and GHS currency.",
         "operationId": "AccountBalance",
         "parameters": [
           {
@@ -1290,7 +1290,7 @@
     },
     "/accounts/{id}": {
       "get": {
-        "description": "Get details of your created sub account by its ID. You can get this in either NGN or GHS.",
+        "description": "Get details of your created spotflow wallet by its ID. You can get this in either NGN or GHS.",
         "operationId": "AccountID",
         "parameters": [
           {
@@ -1340,7 +1340,7 @@
     },
     "/virtual-accounts/temporary": {
       "post": {
-        "description": "This endpoint is used to create a virtual account to receive payments.",
+        "description": "This endpoint is used to create a dynamic account to receive payments.",
         "operationId": "DynamicAccountCreation",
         "parameters": [],
         "requestBody": {
@@ -1418,7 +1418,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "This is the unique ID generated upon creation of your virtual account in either NGN or GHS.",
+            "description": "This is the unique ID generated upon creation of your dynamic account in either NGN or GHS.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1461,7 +1461,7 @@
     },
     "/virtual-accounts": {
       "get": {
-        "description": "This retrieves and lists all the active virtual accounts you created.",
+        "description": "This retrieves and lists all the active dynamic accounts you created.",
         "operationId": "ListDynamicAccount",
         "parameters": [
           {

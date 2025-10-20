@@ -205,12 +205,12 @@
           {
             "group": "Spotflow Wallets",
             "pages": [
-              "api-reference/subaccounts/list-sub-accounts",
-              "api-reference/subaccounts/main-account-balance",
-              "api-reference/subaccounts/account-balance",
-              "api-reference/subaccounts/account-balance-sub-account",
-              "api-reference/subaccounts/sub-account-id",
-              "api-reference/subaccounts/create-account"
+              "api-reference/wallets/list-spotflow-wallets",
+              "api-reference/wallets/main-account-balance",
+              "api-reference/wallets/account-balance",
+              "api-reference/wallets/account-balance-spotflow-wallet",
+              "api-reference/wallets/spotflow-wallet-id",
+              "api-reference/wallets/create-account"
             ]
           },
           {
