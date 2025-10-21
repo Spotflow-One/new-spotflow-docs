@@ -1,0 +1,9 @@
+---
+openapi: /openapi.json POST /transfers/bulk/validate
+title: Validate Bulk Disbursements File
+sidebarTitle: Validate Bulk Disbursements
+description: Use this endpoint to confirm your bulk disbursements CSV file has all the necessary details needed and won't fail when uploaded for the bulk transfer transaction.
+---
+
+## Request Body Parameters
+Add a form-data with a key of “file” in the request body. In the value tab, upload a CSV file of your bulk transfer. Ensure all the required fields such as the amount, currency, bank_code, branch_code, account_number, account_name, and narration are present in your CSV file before uploading it.
