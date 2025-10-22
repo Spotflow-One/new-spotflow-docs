@@ -1,0 +1,4401 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Spotflow",
+    "description": "",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "description": "Development server",
+      "url": "https://dev-api.spotflow.co/api/v1"
+    },
+    {
+      "description": "Production server",
+      "url": "https://api.spotflow.co/api/v1"
+    }
+  ],
+
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/plans/{plan-id}/subscriptions": {
+      "get": {
+        "description": "Retrieve details of all subscriptions associated with a customer's plan ID.",
+        "operationId": "SubscriptionsbyPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriptionsPlanResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions": {
+      "get": {
+        "description": "Retrieve details of all subscriptions associated with a customer's plan ID or customer's email.",
+        "operationId": "listSubscriptions",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the customer Id whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the email whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListSubscriptionsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscription-id}": {
+      "get": {
+        "description": "Retrieve details of all subscriptions associated with a subscription ID.",
+        "operationId": "SubscriptionDetails",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the subscription whose details are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscription-id}/activate": {
+      "post": {
+        "description": "Activate a subscription with the plan Id.",
+        "operationId": "ActivateSubscription",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscription-id}/cancel": {
+      "post": {
+        "description": "Cancel a subscription with the plan Id.",
+        "operationId": "CancelSubscription",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans": {
+      "get": {
+        "description": "Retrieve details of all subscription plans available on your integration.",
+        "operationId": "SubsciptionsPlan",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "internal-reference",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlansResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a subscription plan under your integration.",
+        "operationId": "singleSubsciptionsPlan",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Standard Monthly Plan",
+                    "description": "Name or title of the plan"
+                  },
+                  "frequency": {
+                    "type": "string",
+                    "enum": [
+                      "DAILY",
+                      "WEEKLY",
+                      "MONTHLY",
+                      "  QUARTERLY",
+                      "BIANNUAL",
+                      "ANNUAL"
+                    ],
+                    "description": "Billing frequency for the plan"
+                  },
+                  "internalReference": {
+                    "type": "string",
+                    "description": "Internal reference code for the plan",
+                    "example": "PLAN-STD-001"
+                  },
+                  "pricingOptions": {
+                    "type": "array",
+                    "description": "Pricing options for the plan",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "number",
+                          "description": "Amount to be charged per billing cycle"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "description": "Currency code for the plan (e.g. USD, NGN)",
+                          "example": "NGN"
+                        }
+                      },
+                      "required": ["amount", "currency"]
+                    }
+                  },
+                  "trial": {
+                    "type": "object",
+                    "properties": {
+                      "periodInDays": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "pricingList": {
+                        "type": "array",
+                        "description": "Pricing options for the trial period",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "number",
+                              "description": "Amount to be charged during the trial period"
+                            },
+                            "currency": {
+                              "type": "string",
+                              "description": "Currency code for the trial period (e.g. USD, NGN)",
+                              "example": "NGN"
+                            }
+                          },
+                          "required": ["amount", "currency"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{plan-id}/cancel": {
+      "post": {
+        "description": "Cancel a subscription with the plan Id.",
+        "operationId": "CancelSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bulk-plans": {
+      "post": {
+        "description": "Create multiple subscription plans under your integration.",
+        "operationId": "CreateBulkSubscriptionPlans",
+        "parameters": [
+          {
+            "name": "skipErrors",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "boolean",
+              "enum": [true, false]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Upload the file content and must in CSV format.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{plan-id}/activate": {
+      "post": {
+        "description": "Activate a subscription with the plan Id.",
+        "operationId": "ActivateSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subscription objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{plan-id}": {
+      "get": {
+        "description": "Retrieve details of a single subscription plan available on your integration.",
+        "operationId": "GetSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose details are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved subscription plan details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid plan ID provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create or update a subscription plan under your integration using the provided plan ID.",
+        "operationId": "CreateOrUpdateSubscriptionPlan",
+        "parameters": [
+          {
+            "name": "plan-id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier for the plan to create or update.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Standard Monthly Plan",
+                    "description": "Name or title of the plan"
+                  },
+                  "frequency": {
+                    "type": "string",
+                    "enum": [
+                      "DAILY",
+                      "WEEKLY",
+                      "MONTHLY",
+                      "  QUARTERLY",
+                      "BIANNUAL",
+                      "ANNUAL"
+                    ],
+                    "description": "Billing frequency for the plan"
+                  },
+                  "internalReference": {
+                    "type": "string",
+                    "description": "Internal reference code for the plan",
+                    "example": "PLAN-STD-001"
+                  },
+                  "pricingOptions": {
+                    "type": "array",
+                    "description": "Pricing options for the plan",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "number",
+                          "description": "Amount to be charged per billing cycle"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "description": "Currency code for the plan (e.g. USD, NGN)",
+                          "example": "NGN"
+                        }
+                      },
+                      "required": ["amount", "currency"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscription plan successfully created or updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionPlanDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid request body or parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions to create or modify the plan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError403"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "description": "This retrieves and lists all the wallets you've created. This is both for your main account and wallets.",
+        "operationId": "ListWallets",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "accountTag",
+            "in": "query",
+            "required": false,
+            "description": "This can either be sub-account, or main-account.",
+            "schema": {
+              "type": "string",
+              "enum": ["sub-account", "main-account"]
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Choose the currency you want for your sub account. According, to our currently supported currencies, this is in NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "enum": ["NGN", "GHS"]
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "This can either be test or live mode.",
+            "schema": {
+              "type": "string",
+              "enum": ["test", "live"]
+            }
+          },
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": false,
+            "description": "This filters by the account number created for the sub accounts.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of subaccounts objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubAccountDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Wallets are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, wallets do not require BVNs upon creation.",
+        "operationId": "WalletCreation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "According, to our currently supported currencies, this is in NGN and GHS."
+                  },
+                  "accountName": {
+                    "type": "string",
+                    "example": "Quantum Technologies",
+                    "description": "Your desired name for your sub account."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of subaccounts objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWalletDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances": {
+      "get": {
+        "description": "Retrieves paginated balances for main accounts with optional currency, mode, and date filters.",
+        "operationId": "ListBalances",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Choose the currency you want for your sub account. According, to our currently supported currencies, this is in NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "enum": ["NGN", "GHS"]
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "This can either be test or live mode.",
+            "schema": {
+              "type": "string",
+              "enum": ["test", "live"]
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBalanceListResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances/accounts/{accountNumber}/sub-balances": {
+      "get": {
+        "description": "Retrieves account balance details for all direct spotflow wallets of the specified main account in both NGN and GHS.",
+        "operationId": "ListSpotflowWalletBalances",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBalanceListResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances/accounts/{accountNumber}/balance": {
+      "get": {
+        "description": "Get account balance details for a specific spotflow-wallets before and after top-up in both NGN and GHS currency.",
+        "operationId": "AccountBalance",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of balances objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalanceListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "get": {
+        "description": "Get details of your created spotflow wallet by its ID. You can get this in either NGN or GHS.",
+        "operationId": "AccountID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of account details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts/temporary": {
+      "post": {
+        "description": "This endpoint is used to create a dynamic account to receive payments.",
+        "operationId": "DynamicAccountCreation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "According, to our currently supported currencies, this is in NGN and GHS."
+                  },
+                  "accountName": {
+                    "type": "string",
+                    "example": "Quantum Technologies",
+                    "description": "Your desired naming for your account."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Amount should be in the subunit of our supported currency i.e NGN and GHS for now."
+                  },
+                  "expiresIn": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "This is optional to add. By default, the time it takes for a virtual account to expire is 30 mins. However, you can customize the time to lesser as you desire."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic account objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts/{id}": {
+      "get": {
+        "description": "Get details of your created virtual account by its ID.",
+        "operationId": "DynamicAccountID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the unique ID generated upon creation of your dynamic account in either NGN or GHS.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/virtual-accounts": {
+      "get": {
+        "description": "This retrieves and lists all the active dynamic accounts you created.",
+        "operationId": "ListDynamicAccount",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": true,
+            "description": "This filters by the account number created for the virtual accounts.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of dynamic details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DynamicDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk": {
+      "post": {
+        "description": "You can use this endpoint to perform bulk bank account transfer to multiple bank accounts.",
+        "operationId": "CreateBulkTransfer",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "description": "Specify a unique category of your choice for your company to track a transaction for later reconciliation.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": true,
+            "description": "Select the currency for the transfer. This is in our supported currency which is currently only NGN and GHS.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "narration",
+            "in": "query",
+            "required": true,
+            "description": "This is optional information for you to give details about the reason for the transfer",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Upload the file content and must in CSV format.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create bulk disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "listBulkTransfers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursements objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/TransferDetailsResponse"
+                        }
+                      },
+                      "pageNumber": { "type": "integer" },
+                      "pageSize": { "type": "integer" },
+                      "totalElements": { "type": "integer" },
+                      "totalPages": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/{id}": {
+      "get": {
+        "description": "Get details of an uploaded bulk disbursement by its id.",
+        "operationId": "BulkTransferID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the specific id used to get the individual transfer details in the uploaded bulk disbursement file.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursement details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/categories": {
+      "get": {
+        "description": "Get details of an uploaded bulk disbursement by the categories you created with.",
+        "operationId": "BulkTransferCategories",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursement details objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/{id}/transfers": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "listBulkTransfersByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "This is the specific id used to get the individual transfer details in the uploaded bulk disbursement file.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bulk disbursements objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TransferDetailsResponse"
+                      }
+                    },
+                    "pageNumber": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "totalElements": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/bulk/validate": {
+      "post": {
+        "description": "Use this endpoint to confirm your bulk disbursement CSV file has all the necessary details needed and won't fail when uploaded for the bulk transfer transaction.",
+        "operationId": "ValidateBulkTransfer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Upload the file content and must in CSV format.",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              },
+              "example": {
+                "file": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create bulk disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "failedRequests": {
+                      "type": "array",
+                      "default": []
+                    },
+                    "totalRequests": {
+                      "type": "number",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers": {
+      "post": {
+        "description": "You can use this endpoint to perform bank account transfer from your main account",
+        "operationId": "CreateSingleDisbursement",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "format": "float"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "accountNumber": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "destination": {
+                    "type": "object",
+                    "properties": {
+                      "accountNumber": {
+                        "type": "string"
+                      },
+                      "accountName": {
+                        "type": "string"
+                      },
+                      "bankCode": {
+                        "type": "string"
+                      },
+                      "branchCode": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "narrations": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "destination",
+                  "source",
+                  "amount",
+                  "currency",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A JSON array of create single disbursement objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/banks/{currency}": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "TransferBank",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "path",
+            "required": true,
+            "description": "Currently we support NGN or GHS",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bank list objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "bankCode": {
+                        "type": "string",
+                        "example": "PB-56234"
+                      },
+                      "bankName": {
+                        "type": "string",
+                        "example": "Nombank"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/resolve-account": {
+      "get": {
+        "description": "Get details of all bulk transfer files you have uploaded.",
+        "operationId": "ResolveAccount",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "required": true,
+            "description": "This is the account number you want to get/validate.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bankCode",
+            "in": "query",
+            "required": true,
+            "description": "This is the bank code of the account number on our system.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": true,
+            "description": "Select the currency for the payment charge. This is in our supported currency which is currently only NGN. Please note that only NGN accounts works with resolve bank accounts.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of resolve transfers objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accountName": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "accountNumber": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/reference/{reference}": {
+      "get": {
+        "description": "Get details of a particular transfer by its reference id.",
+        "operationId": "TransactionReference",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "required": true,
+            "description": "This is the reference id of the transfer that you made on your account using what's in the 'reference' and not 'spotflowReference.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/banks/{bank-code}/branches": {
+      "get": {
+        "description": "Retrieves a list of supported branches for a for transfers in the specified mode and selected currency",
+        "operationId": "BranchesBankCode",
+        "parameters": [
+          {
+            "name": "bankCode",
+            "in": "query",
+            "required": true,
+            "description": "This is the bank code of the account number on our system.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of bank branches objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bankCode": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "bankName": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionError401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "description": "Get details of a specific payment by its ID",
+        "operationId": "GetPaymentById",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (default is 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page for pagination (default is 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "description": "This can either be successful, failed or pending."
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "enum": ["card", "bank_transfer", "ussd"],
+              "description": "This can either be card, bank, transfer or USSD for local currency payments."
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string",
+              "description" : "These are available payment providers on Spotflow such as Flutterwave, Paystack, Korapay etc."
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                  "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentResponse"
+                      }
+                    },
+                    "pageNumber": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "totalElements": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "You can use this endpoint to perform bank account transfer from your main account",
+        "operationId": "CreatePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 0,
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD",
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                  },
+                  "localCurrency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                  },
+                  "channel": {
+                    "type": "string",
+                    "enum": ["card", "bank_transfer", "ussd"],
+                    "description": "The channel is Card, Bank Transfer or USSD",
+                    "example": "card"
+                  },
+                  "encryptedCard": {
+                    "type": "string",
+                    "example": "encrypted_card_data_here",
+                    "description": "This contains the encrypted card data (token) and encryption key information gotten from your dashboard. This is based on the AES-256-GCM encryption algorithm."
+                  },
+                  "callBackUrl": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://yourapp.com/callback"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "productName": {
+                        "type": "string",
+                        "example": "Algo.ai"
+                      }
+                    },
+                    "required": ["productName"],
+                    "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
+                  },
+                  "customer": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                      }
+                    },
+                    "required": ["email"],
+                    "description": "The customer’s email address"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "amount",
+                  "encryptedCard",
+                  "currency",
+                  "localCurrency",
+                  "channel"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of create payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/initialize": {
+      "post": {
+        "description": "Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers",
+        "operationId": "IntializePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 0,
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                  },
+                  "planId": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "when paying for a subscription plan."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD",
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                  },
+                  "localCurrency": {
+                    "type": "string",
+                    "example": "NGN",
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                  },
+                  "callBackUrl": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://yourapp.com/callback"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "productName": {
+                        "type": "string",
+                        "example": "Algo.ai"
+                      }
+                    },
+                    "required": ["productName"],
+                    "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
+                  },
+                  "customer": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                      }
+                    },
+                    "required": ["email"],
+                    "description": "The customer’s email address"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "amount",
+                  "encryptedCard",
+                  "currency",
+                  "localCurrency",
+                  "channel"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of intialize payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "checkoutUrl": {
+                      "type": "string",
+                      "format": "url",
+                      "example": "https://checkout.spotflow.io/pay/unique_payment_url"
+                    },
+                    "paymentCode": {
+                      "type": "string",
+                      "example": "PAY123456789"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    },
+                    "callBackUrl": {
+                      "type": "string",
+                      "format": "url",
+                      "example": "https://yourapp.com/callback"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "productName": {
+                          "type": "string",
+                          "example": "Algo.ai"
+                        }
+                      },
+                      "description": "This is information pertaining to additional details about your product or service."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/authorize": {
+      "post": {
+        "description": "This authorizes a payment by pre-approving the transaction before final validation. Authorization required could be PIN, OTP, 3DS, AVS, etc. ",
+        "operationId": "AuthorizePayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "example": "string",
+                    "description": "Specify a unique reference ID generated by your company to identify each customer."
+                  },
+                  "authorization": {
+                    "type": "object",
+                    "properties": {},
+                    "description": "A confidential or secret code required to authenticate and verify identity for card transactions."
+                  }
+                },
+                "required": ["reference", "authorization"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of authorize payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    },
+                    "reference": {
+                      "type": "string",
+                      "example": "REF123456789"
+                    },
+                    "spotflowReference": {
+                      "type": "string",
+                      "example": "SPF-REF-001"
+                    },
+                    "amount": { "type": "number", "example": 100.0 },
+                    "currency": { "type": "string", "example": "USD" },
+                    "localAmount": { "type": "number", "example": 156000.0 },
+                    "totalFees": { "type": "number", "example": 500.0 },
+                    "localCurrency": { "type": "string", "example": "NGN" },
+                    "channel": { "type": "string", "example": "card" },
+                    "status": { "type": "string", "example": "SUCCESS" },
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        }
+                      }
+                    },
+                    "providerMessage": {
+                      "type": "string",
+                      "example": "Please enter your OTP sent to your phone"
+                    },
+                    "rate": { "type": "number", "example": 1560.0 },
+                    "region": { "type": "string", "example": "West Africa" },
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "mode": { "type": "string", "example": "otp" }
+                      }
+                    },
+                    "card": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "string", "example": "VISA" },
+                        "firstSix": { "type": "string", "example": "412345" },
+                        "lastFour": { "type": "string", "example": "6789" }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-10-17T15:21:11.287Z"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string" },
+                      "example": {
+                        "orderId": "ORD-000123",
+                        "note": "First payment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/{payment-id}/attempts": {
+      "get": {
+        "description": "Get details of a specific payment by its ID",
+        "operationId": "GetPaymentById",
+        "parameters": [
+          {
+            "name": "payment-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the payment.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    },
+                    "reference": {
+                      "type": "string",
+                      "example": "REF123456789"
+                    },
+                    "spotflowReference": {
+                      "type": "string",
+                      "example": "SPF-REF-001"
+                    },
+                    "amount": { "type": "number", "example": 100.0 },
+                    "currency": { "type": "string", "example": "USD" },
+                    "localAmount": { "type": "number", "example": 156000.0 },
+                    "totalFees": { "type": "number", "example": 500.0 },
+                    "localCurrency": { "type": "string", "example": "NGN" },
+                    "channel": { "type": "string", "example": "card" },
+                    "status": { "type": "string", "example": "SUCCESS" },
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        }
+                      }
+                    },
+                    "providerMessage": {
+                      "type": "string",
+                      "example": "Please enter your OTP sent to your phone"
+                    },
+                    "rate": { "type": "number", "example": 1560.0 },
+                    "region": { "type": "string", "example": "West Africa" },
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "mode": { "type": "string", "example": "otp" }
+                      }
+                    },
+                    "card": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "string", "example": "VISA" },
+                        "firstSix": { "type": "string", "example": "412345" },
+                        "lastFour": { "type": "string", "example": "6789" }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-10-17T15:21:11.287Z"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string" },
+                      "example": {
+                        "orderId": "ORD-000123",
+                        "note": "First payment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/verify": {
+      "get": {
+        "description": "Confirm the status of a payment",
+        "operationId": "VerifyPayment",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "query",
+            "required": true,
+            "description": "The unique identifier of the payment.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of payment objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "ListSubscriptionsResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the subscription."
+                },
+                "customerId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the customer associated with the subscription."
+                },
+                "planId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the plan associated with the subscription."
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "cancelled"],
+                  "description": "The current status of the subscription (e.g., active, canceled, past_due)."
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription started."
+                },
+                "nextPaymentDate": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription started."
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription was created."
+                },
+                "customer": {
+                  "type": "object",
+                  "description": "Details of the customer associated with the subscription.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The unique identifier for the customer."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "The email address of the customer."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe",
+                      "description": "The full name of the customer."
+                    }
+                  },
+                  "required": ["id", "email", "name"]
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "A set of key-value pairs that can be attached to the subscription for storing additional information.",
+                  "properties": {
+                    "additionalProp1": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "additionalProp2": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "additionalProp3": { "type": "string", "example": "string" }
+                  }
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "The currency in which the subscription is billed,",
+                  "example": "NGN"
+                },
+                "regionName": {
+                  "type": "string",
+                  "description": "The geographical region associated with the subscription.",
+                  "example": "Nigeria"
+                },
+                "amount": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "The amount to be charged for the subscription.",
+                  "example": 5000.0
+                }
+              }
+            }
+          },
+          "pageNumber": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalElements": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        }
+      },
+      "SubscriptionsPlanResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the subscription."
+                },
+                "customerId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the customer associated with the subscription."
+                },
+                "planId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The unique identifier for the plan associated with the subscription."
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "description": "The current status of the subscription (e.g., active, canceled, inacitve)."
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription started."
+                },
+                "nextPaymentDate": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription started."
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time when the subscription was created."
+                },
+                "customer": {
+                  "type": "object",
+                  "description": "Details of the customer associated with the subscription.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The unique identifier for the customer."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "The email address of the customer."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe",
+                      "description": "The full name of the customer."
+                    }
+                  },
+                  "required": ["id", "email", "name"]
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "A set of key-value pairs that can be attached to the subscription for storing additional information.",
+                  "properties": {
+                    "additionalProp1": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "additionalProp2": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "additionalProp3": { "type": "string", "example": "string" }
+                  }
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "The currency in which the subscription is billed,",
+                  "example": "NGN"
+                },
+                "regionName": {
+                  "type": "string",
+                  "description": "The geographical region associated with the subscription.",
+                  "example": "Nigeria"
+                },
+                "amount": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "The amount to be charged for the subscription.",
+                  "example": 5000.0
+                }
+              }
+            }
+          },
+          "pageNumber": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalElements": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        }
+      },
+      "SubscriptionDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the subscription"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the customer associated with this subscription"
+          },
+          "planId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the subscribed plan"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "description": "Current status of the subscription (e.g. active, inactive)"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date when the subscription started"
+          },
+          "nextPaymentDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Next scheduled payment date"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the subscription was created"
+          },
+          "customer": {
+            "type": "object",
+            "description": "Details about the customer",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier of the customer"
+              },
+              "name": {
+                "type": "string",
+                "example": "John Doe",
+                "description": "Full name of the customer"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Email address of the customer"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "+234 80 7855 4801",
+                "description": "Phone number of the customer"
+              }
+            },
+            "required": ["id", "name", "email"]
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional custom data associated with the subscription",
+            "properties": {
+              "additionalProp1": {
+                "type": "string",
+                "example": "string"
+              },
+              "additionalProp2": {
+                "type": "string",
+                "example": "string"
+              },
+              "additionalProp3": { "type": "string", "example": "string" }
+            }
+          },
+          "currency": {
+            "type": "string",
+            "description": "The currency in which the subscription is billed,",
+            "example": "NGN"
+          },
+          "regionName": {
+            "type": "string",
+            "description": "The geographical region associated with the subscription.",
+            "example": "Nigeria"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The amount to be charged for the subscription.",
+            "example": 5000.0
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "planId",
+          "status",
+          "startDate",
+          "currency",
+          "amount"
+        ]
+      },
+      "SubscriptionActivateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the plan"
+          },
+          "title": {
+            "type": "string",
+            "example": "string",
+            "description": "Name or title of the plan"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "  QUARTERLY",
+              "BIANNUAL",
+              "ANNUAL"
+            ],
+            "description": "Billing frequency for the plan"
+          },
+          "internalReference": {
+            "type": "string",
+            "description": "Internal reference code for the plan",
+            "example": "string"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to be charged per billing cycle"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for the plan (e.g. USD, NGN)",
+            "example": "NGN"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "description": "Current status of the plan (e.g. active, inactive)"
+          },
+          "regions": {
+            "type": "array",
+            "description": "List of region codes or names where this plan is available",
+            "items": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          "subscribers": {
+            "type": "integer",
+            "description": "Number of users currently subscribed to this plan"
+          },
+          "subscriptions": {
+            "type": "integer",
+            "description": "Total number of subscriptions created for this plan"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp indicating when the plan was created"
+          },
+          "trial": {
+            "type": "object",
+            "description": "Trial configuration for this plan",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the trial"
+              },
+              "planId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Associated plan ID for this trial"
+              },
+              "periodInDays": {
+                "type": "integer",
+                "description": "Duration of the trial period in days"
+              },
+              "pricingList": {
+                "type": "array",
+                "description": "Pricing details during the trial period",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["FLAT", "TIERED"],
+                      "description": "Type of pricing applied"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount charged during the trial"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code (e.g. NGN, USD)",
+                      "example": "NGN"
+                    }
+                  },
+                  "required": ["type", "amount", "currency"]
+                }
+              }
+            },
+            "required": ["id", "planId", "periodInDays"]
+          },
+          "pricingOptions": {
+            "type": "array",
+            "description": "List of available pricing options for the plan",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "description": "Amount for this pricing option"
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "NGN",
+                  "description": "Currency code (e.g. NGN, USD)"
+                }
+              },
+              "required": ["amount", "currency"]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "frequency",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "PlansResponse": {
+        "type": "object",
+        "description": "Paginated list of plan details",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "List of plan items",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the plan"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Name or title of the plan"
+                },
+                "frequency": {
+                  "type": "string",
+                  "enum": [
+                    "DAILY",
+                    "WEEKLY",
+                    "MONTHLY",
+                    "  QUARTERLY",
+                    "BIANNUAL",
+                    "ANNUAL"
+                  ],
+                  "description": "Billing frequency for the plan"
+                },
+                "internalReference": {
+                  "type": "string",
+                  "description": "Internal reference code for the plan"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "Amount to be charged per billing cycle"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code for the plan (e.g. USD, NGN)"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the plan (e.g. active, inactive)"
+                },
+                "regions": {
+                  "type": "array",
+                  "description": "List of region codes or names where this plan is available",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subscribers": {
+                  "type": "integer",
+                  "description": "Number of users currently subscribed to this plan"
+                },
+                "subscriptions": {
+                  "type": "integer",
+                  "description": "Total number of subscriptions created for this plan"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp indicating when the plan was created"
+                },
+                "trial": {
+                  "type": "object",
+                  "description": "Trial configuration for this plan",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the trial"
+                    },
+                    "planId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Associated plan ID for this trial"
+                    },
+                    "periodInDays": {
+                      "type": "integer",
+                      "description": "Duration of the trial period in days"
+                    },
+                    "pricingList": {
+                      "type": "array",
+                      "description": "Pricing details during the trial period",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["FLAT", "TIERED"],
+                            "description": "Type of pricing applied"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Amount charged during the trial"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "description": "Currency code (e.g. NGN, USD)"
+                          }
+                        },
+                        "required": ["type", "amount", "currency"]
+                      }
+                    }
+                  },
+                  "required": ["id", "planId", "periodInDays"]
+                },
+                "pricingOptions": {
+                  "type": "array",
+                  "description": "List of available pricing options for the plan",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "description": "Amount for this pricing option"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency code (e.g. NGN, USD)"
+                      }
+                    },
+                    "required": ["amount", "currency"]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "frequency",
+                "amount",
+                "currency",
+                "status",
+                "createdAt"
+              ]
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Number of records per page"
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "Total number of plan records"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of available pages"
+          }
+        },
+        "required": [
+          "content",
+          "pageNumber",
+          "pageSize",
+          "totalElements",
+          "totalPages"
+        ]
+      },
+      "SubscriptionPlanDetailsResponse": {
+        "type": "object",
+        "description": "Represents detailed information about a subscription plan including pricing, trial, and region availability.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the subscription plan (UUID)."
+          },
+          "title": {
+            "type": "string",
+            "example": "string",
+            "description": "The title or name of the subscription plan."
+          },
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "BIANNUAL",
+              "ANNUAL"
+            ],
+            "description": "Billing frequency for the subscription plan."
+          },
+          "internalReference": {
+            "type": "string",
+            "example": "string",
+            "description": "Internal reference code or identifier for the plan."
+          },
+          "amount": {
+            "type": "number",
+            "description": "The cost amount for the subscription plan."
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN",
+            "description": "The currency of the subscription plan (e.g., NGN, USD)."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE", "ARCHIVED"],
+            "description": "The current status of the subscription plan."
+          },
+          "regions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of regions where this plan is available."
+          },
+          "subscribers": {
+            "type": "integer",
+            "description": "Total number of active subscribers under this plan."
+          },
+          "subscriptions": {
+            "type": "integer",
+            "description": "Total number of subscriptions created for this plan."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the plan was created."
+          },
+          "trial": {
+            "type": "object",
+            "description": "Details about the trial period associated with this plan.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the trial configuration."
+              },
+              "planId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The plan ID this trial configuration is associated with."
+              },
+              "periodInDays": {
+                "type": "integer",
+                "description": "Number of days for the trial period."
+              },
+              "pricingList": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["FLAT", "TIERED"],
+                      "description": "The pricing model for the trial period."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The cost amount during the trial period."
+                    },
+                    "currency": {
+                      "type": "string",
+                      "example": "NGN",
+                      "description": "Currency used for the trial pricing."
+                    }
+                  }
+                },
+                "description": "List of pricing configurations for the trial."
+              }
+            }
+          },
+          "pricingOptions": {
+            "type": "array",
+            "description": "Different pricing options available for the plan.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "description": "The cost amount for this pricing option."
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "NGN",
+                  "description": "The currency code for this pricing option (e.g., NGN, USD)."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "frequency",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "AccountBalanceListResponse": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GHS"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "example": 3.0
+          },
+          "availableBalance": {
+            "type": "number",
+            "format": "float",
+            "example": 3.0
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "parentAccountNumber": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": ["accountNumber", "currency", "balance", "availableBalance"]
+      },
+      "SubAccountDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+                },
+                "balanceId": {
+                  "type": "string",
+                  "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+                },
+                "accountName": {
+                  "type": "string",
+                  "example": "Main GHS Account"
+                },
+                "accountNumber": {
+                  "type": "string",
+                  "example": "7706438396"
+                },
+                "parentAccountId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "GHS"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["live", "test"],
+                  "example": "live"
+                },
+                "accountTag": {
+                  "type": "string",
+                  "example": "main-account"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-07-22T11:25:28.792959Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-08-07T11:56:49.337647Z"
+                },
+                "accountDetails": {
+                  "type": "object",
+                  "properties": {
+                    "accountName": {
+                      "type": "string",
+                      "example": "SPOTFLOW/Quantum Technologies"
+                    },
+                    "accountNumber": {
+                      "type": "string",
+                      "example": "7806438396"
+                    },
+                    "bankName": {
+                      "type": "string",
+                      "example": "Testbank MFB"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "pageNumber": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalElements": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status",
+          "createdAt"
+        ]
+      },
+      "WalletDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "balanceId": {
+            "type": "string",
+            "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Main GHS Account"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "parentAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GHS"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-22T11:25:28.792959Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-08-07T11:56:49.337647Z"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CreateWalletDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "balanceId": {
+            "type": "string",
+            "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Quantum Technologies"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "parentAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "accountTag": {
+            "type": "string",
+            "example": "main-account"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": {
+                "type": "string",
+                "example": "SPOTFLOW/Quantum Technologies"
+              },
+              "accountNumber": {
+                "type": "string",
+                "example": "7806438396"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "balanceId",
+          "accountName",
+          "accountNumber",
+          "parentAccountId",
+          "currency",
+          "mode",
+          "status"
+        ]
+      },
+      "DynamicDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "accountNumber": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Quantum Technologies"
+          },
+          "bankName": {
+            "type": "string",
+            "example": "Testbank MFB"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "test"],
+            "example": "live"
+          },
+          "lifeCycle": {
+            "type": "string",
+            "example": "temporary"
+          }
+        }
+      },
+      "TransferDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "spotflowreference": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
+          },
+          "amount": {
+            "type": "number",
+            "format": "int32",
+            "example": 0
+          },
+          "currency": {
+            "type": "string",
+            "example": "NGN"
+          },
+          "transferMode": {
+            "type": "string",
+            "example": "7706438396"
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "accountNumber": {
+                "type": "string",
+                "example": "7706438396"
+              },
+              "accountName": {
+                "type": "string",
+                "example": "Quantum Technologies"
+              },
+              "bankCode": {
+                "type": "string",
+                "example": "NGN100"
+              },
+              "branchCode": {
+                "type": "string",
+                "example": "NGN100"
+              },
+              "bankName": {
+                "type": "string",
+                "example": "Testbank MFB"
+              }
+            }
+          },
+          "narrations": {
+            "type": "string",
+            "example": "string"
+          },
+          "status": {
+            "type": "string",
+            "example": "string"
+          }
+        }
+      },
+      "PaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "reference": { "type": "string", "example": "REF123456789" },
+          "spotflowReference": { "type": "string", "example": "SPF-REF-001" },
+          "amount": { "type": "number", "example": 100.0 },
+          "currency": { "type": "string", "example": "USD" },
+          "localAmount": { "type": "number", "example": 156000.0 },
+          "totalFees": { "type": "number", "example": 500.0 },
+          "localCurrency": { "type": "string", "example": "NGN" },
+          "channel": { "type": "string", "example": "card" },
+          "status": { "type": "string", "example": "SUCCESS" },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "format": "uuid" },
+              "email": { "type": "string", "example": "john@example.com" }
+            }
+          },
+          "providerMessage": {
+            "type": "string",
+            "example": "Transaction successful"
+          },
+          "rate": { "type": "number", "example": 1560.0 },
+          "region": { "type": "string", "example": "West Africa" },
+          "authorization": {
+            "type": "object",
+            "properties": {
+              "mode": { "type": "string", "example": "Pin" }
+            }
+          },
+          "ussd": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "example": "*737#" },
+              "paymentCode": { "type": "string", "example": "123456" }
+            }
+          },
+          "bankDetails": {
+            "type": "object",
+            "properties": {
+              "accountName": { "type": "string", "example": "John Doe" },
+              "accountNumber": { "type": "string", "example": "0123456789" },
+              "bankName": { "type": "string", "example": "Access Bank" }
+            }
+          },
+          "card": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "example": "VISA" },
+              "firstSix": { "type": "string", "example": "412345" },
+              "lastFour": { "type": "string", "example": "6789" }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-17T15:21:11.287Z"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "example": {
+              "orderId": "ORD-000123",
+              "note": "First payment"
+            }
+          },
+          "taxBreakdowns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taxName": { "type": "string", "example": "VAT" },
+                "taxType": { "type": "string", "example": "percentage" },
+                "taxRate": { "type": "number", "example": 7.5 },
+                "taxAmount": { "type": "number", "example": 50.0 },
+                "thresholdApplied": { "type": "boolean", "example": true },
+                "capApplied": { "type": "boolean", "example": false },
+                "taxApplicable": { "type": "boolean", "example": true }
+              }
+            }
+          },
+          "totalTaxAmount": { "type": "number", "example": 50.0 },
+          "totalLocalAmount": { "type": "number", "example": 156050.0 },
+          "planId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "mobileMoney": {
+            "type": "object",
+            "properties": {
+              "otp": { "type": "string", "example": "1234" },
+              "code": { "type": "string", "example": "MTN" },
+              "name": { "type": "string", "example": "MTN Mobile Money" },
+              "phoneNumber": { "type": "string", "example": "+233540000000" }
+            }
+          }
+        },
+        "required": ["id", "reference", "amount", "currency", "status"]
+      },
+      "SubscriptionError401": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "example": "AUTH_ERROR" },
+          "message": {
+            "type": "string",
+            "example": "Authorization token is required."
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "float",
+            "example": 401
+          },
+          "requestMarker": { "type": "string", "format": "uuid" }
+        },
+        "required": ["status", "statusCode", "message"]
+      },
+      "Error401": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Unauthorized" },
+          "message": { "type": "string", "example": "invalid_credentials" },
+          "status": { "type": "integer", "format": "float", "example": 401 }
+        }
+      },
+      "Error400": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Missing Parameter" },
+          "message": { "type": "string", "example": "missing_parameter" },
+          "status": { "type": "integer", "format": "float", "example": 400 }
+        }
+      }
+    }
+  }
+}
