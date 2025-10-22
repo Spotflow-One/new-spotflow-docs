@@ -241,16 +241,6 @@
               "api-reference/transfer-api/bulk-transfers-by-id",
               "api-reference/transfer-api/validate-bulk-transfer"
             ]
-          },
-          {
-            "group": "Webhooks",
-            "pages": [
-              "api-reference/webhooks/list-webhooks",
-              "api-reference/webhooks/create-webhook",
-              "api-reference/webhooks/get-details",
-              "api-reference/webhooks/update-webhook",
-              "api-reference/webhooks/delete-webhook"
-            ]
           }
         ]
       },
@@ -265,24 +255,10 @@
             ]
           },
           {
-            "group": "September 2025",
+            "group": "October 2025",
             "pages": [
               "changelog/v1.53.2",
               "changelog/v1.52.4"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Community Projects",
-        "icon": "people-group",
-        "groups": [
-          {
-            "group": "Community Projects",
-            "pages": [
-              "community/overview",
-              "community/projects",
-              "community/submit"
             ]
           }
         ]
@@ -308,14 +284,9 @@
   "navbar": {
     "links": [
       {
-        "label": "llms-full.txt",
-        "icon": "link",
-        "href": "https://docs.payments.com/llms-full.txt"
-      },
-      {
         "label": "Community",
         "icon": "slack",
-        "href": "https://slack.gg/bYqAp4a"
+        "href": "https://join.slack.com/t/spotflowdevel-cki6990/shared_invite/zt-3g5nposk7-0ZeocaWKq4YxxqhIdQ9Y_g"
       }
     ],
     "primary": {
@@ -326,13 +297,11 @@
   },
   "footer": {
     "socials": {
-       "x": "https://x.com/spotflow",
-      "linkedin": "https://linkedin.com/company/spotflow",
+       "x": "https://x.com/spotflow_one",
+      "linkedin": "https://www.linkedin.com/company/sptflw/",
       "website": "https://spotflow.one",
-      "slack": "https://slack.gg/bYqAp4ayYh",
-      "github": "https://github.com/spotflow",
-      "instagram": "https://www.instagram.com/spotflow/",
-      "facebook": "https://www.facebook.com/profile.php?id=spotflow"
+      "slack": "https://join.slack.com/t/spotflowdevel-cki6990/shared_invite/zt-3g5nposk7-0ZeocaWKq4YxxqhIdQ9Y_g",
+      "github": "https://github.com/Spotflow-One"
     }
   },
   "contextual": {
