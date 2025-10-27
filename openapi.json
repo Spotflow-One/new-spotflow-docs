@@ -10,10 +10,6 @@
   },
   "servers": [
     {
-      "description": "Development server",
-      "url": "https://dev-api.spotflow.co/api/v1"
-    },
-    {
       "description": "Production server",
       "url": "https://api.spotflow.co/api/v1"
     }
