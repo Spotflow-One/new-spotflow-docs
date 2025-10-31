@@ -1,0 +1,49 @@
+---
+title: Payment Collections
+description: This is the structure of the data payload sent to your webhook URL whenever a payment collection is successful within Spotflow.
+icon: "money-bill-wave"
+---
+
+## **Payment Collection Events**
+
+| **Event Name**           | **Event Type**           | **Description**                                                                 |
+|--------------------------|--------------------------|---------------------------------------------------------------------------------|
+| **Payment Successful**    | `payment_successful`      | Triggered when a payment is successfully processed.                             |
+
+## **Payload Example Structure**
+
+```yaml
+{
+  "event": "payment_successful",
+  "data": {
+    "id": "f78ada70-3290-48d3-b751-6fd1a0c42564",
+    "reference": "ref-2d2dc728-57be-48b0-a1e1-ae798017f44c",
+    "spotflowReference": "SPF-PSK-a564bb4d43674d9c83c35ee99758cc7c",
+    "amount": 100,
+    "currency": "NGN",
+    "channel": "card",
+    "status": "successful",
+    "customer": {
+      "id": "2f39de57-e110-4423-8a66-9e643103da0a",
+      "name": "Olly",
+      "email": "olly@gmail.com",
+      "phoneNumber": "09098788901"
+    },
+    "providerMessage": "successful",
+    "rate": 18.5,
+    "region": "Nigeria",
+    "card": {
+      "type": "Mastercard",
+      "firstSix": "555555",
+      "lastFour": "4444"
+    },
+    "createdAt": "2025-10-28T19:07:38Z",
+    "metadata": {
+      "Test-Webhook": "test"
+    },
+    "totalTaxAmount": 0,
+    "totalLocalAmount": 100,
+    "planId": "95mn9078d-b11a-44b2-8422-a1955ca0lo7d"
+  }
+}
+```
