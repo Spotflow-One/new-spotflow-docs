@@ -65,13 +65,13 @@
             ]
           },
           {
-            "group": "Miscellaneous",
+            "group": "Expert Desk",
             "pages": [
               {
                 "group": "Support Channels",
                 "icon": "headset",
                 "pages": [
-                  "miscellaneous/help-support"
+                  "expert-desk/help-support"
                 ]
               },
               "miscellaneous/faq"
@@ -93,41 +93,46 @@
         "groups": [
           {
             "group": "Developer Resources",
+            "icon": "tools",
             "pages": [
               "developer-resources/introduction"
             ]
           },
           {
             "group": "Integration Guides",
+            "icon": "map",
             "pages": [
               "developer-resources/integration-guide"
             ]
           },
           {
             "group": "Webhooks",
+            "icon": "bell",
             "pages": [
-              "developer-resources/webhooks/intents/introduction",
+              "developer-resources/webhooks/overview",
               
               {
                 "group": "Webhook Payloads",
-                "icon": "code",
+                "icon": "file-code",
                 "pages": [
-                  "developer-resources/webhooks/intents/payment-collections",
-                  "developer-resources/webhooks/intents/accounts"
+                  "developer-resources/webhooks/payment-collections",
+                  "developer-resources/webhooks/accounts"
                 ]
               }
             ]
           },
           {
             "group": "Testing & Demo Tools",
+            "icon": "vial",
             "pages": [
-              "miscellaneous/test-mode-vs-live-mode",
-              "miscellaneous/testing-payments",
+              "expert-desk/test-mode-vs-live-mode",
+              "expert-desk/testing-payments",
               "features/spotflow-demo-website"
             ]
           },
           {
             "group": "SDKs",
+            "icon": "cube",
             "pages": [
               "developer-resources/iOS-sdk",
               "developer-resources/android-sdk",
@@ -137,6 +142,7 @@
           },
           {
             "group": "Libraries",
+            "icon": "books",
             "pages": [
 
               "developer-resources/react-library",
@@ -152,6 +158,7 @@
         "groups": [
           {
             "group": "API Reference",
+            "icon": "history",
             "pages": [
               "api-reference/introduction",
               "api-reference/authentication",
@@ -160,6 +167,7 @@
           },
           {
             "group": "Payment Collections",
+            "icon": "money-bill",
             "pages": [
               "api-reference/payments/create-collection",
               "api-reference/payments/initialize-collection",
@@ -171,6 +179,7 @@
           },
           {
             "group": "Subscription Plans",
+            "icon": "receipt",
             "pages": [
               "api-reference/subscription-plans/activate-plan",
               "api-reference/subscription-plans/cancel-plan",
@@ -183,6 +192,7 @@
           },
           {
             "group": "Subscriptions",
+            "icon": "repeat",
             "pages": [
               "api-reference/subscriptions/list-subscriptions", 
               "api-reference/subscriptions/subscription-by-plan", 
@@ -194,6 +204,7 @@
           },
           {
             "group": "Spotflow Wallets",
+            "icon": "wallet",
             "pages": [
               "api-reference/wallets/list-spotflow-wallets",
               "api-reference/wallets/main-account-balance",
@@ -205,6 +216,7 @@
           },
           {
             "group": "Dynamic Accounts",
+            "icon": "vault",
             "pages": [
               "api-reference/dynamic-accounts/create-dynamic-account",
               "api-reference/dynamic-accounts/dynamic-account-id",
@@ -213,6 +225,7 @@
           },
           {
             "group": "Single Disbursements",
+            "icon": "paper-plane",
             "pages": [
               "api-reference/transfer-api/create-single-transfer",
               "api-reference/transfer-api/list-banks",
@@ -223,6 +236,7 @@
           },
           {
             "group": "Bulk Disbursements",
+            "icon": "money-check",
             "pages": [
               "api-reference/transfer-api/create-bulk-transfer",
               "api-reference/transfer-api/bulk-transfer-id",
@@ -240,12 +254,14 @@
         "groups": [
           {
             "group": "Changelog",
+            "icon": "list",
             "pages": [
               "changelog/introduction"
             ]
           },
           {
             "group": "October 2025",
+            "icon": "calendar",
             "pages": [
               "changelog/v1.52.5",
               "changelog/v1.52.4"

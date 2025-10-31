@@ -1,0 +1,114 @@
+---
+title: Accounts
+description: This is the structure of the data payload sent to your webhook URL to notify your system about debits, credits, status updates related to Spotflow Wallets and Dynamic Accounts.
+icon: "building-columns"
+---
+
+## **Payment Collection Events**
+
+| **Event Name**           | **Event Type**           | **Description**                                                                 |
+|--------------------------|--------------------------|---------------------------------------------------------------------------------|
+| **Account Credit Successful**    | `account_credit_successful`      | Occurs when a credit is made successfully to your main wallet, sub wallet or virtual account. |                            |
+| **Account Debit Successful**       | `account_debit_successful`         | Occurs when money is debited or disbursed successfully from your balances. |
+
+## **Payload Structure**
+
+## *Account Credit Successful for Main Wallets*
+
+```yaml
+{
+  "event": "account_credit_successful",
+  "data": {
+    "id": "294b7632-08c2-41de-8728-d52ac3bf51bf",
+    "account": {
+      "id": "04a6031a-ada4-4d25-9e49-1a9648f3fc17",
+      "account_number": "4576690890",
+      "account_name": "Main NGN Account"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa8978",
+    "reference": "API-VACT_TRA-30D70-8340643d-f26e-4650-92d0-1dc28ea01a35",
+    "spotflow_reference": "SPF-CRDT-02374ba82fdd4efd875982d9f36f00f6",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "credit",
+    "status": "successful",
+    "source": "virtual_account",
+    "description": "Transfer from AMY JAMES",
+    "sender": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:35:42Z"
+  }
+}
+```
+
+## *Account Credit Successful for Sub Wallets*
+
+```yaml
+{
+  "event": "account_credit_successful",
+  "data": {
+    "id": "9a4587ad-da36-4e09-ba8c-eed769da48db",
+    "account": {
+      "id": "e49a1ac2-4e32-4f5d-a41c-bc4d983e5e9a",
+      "account_number": "1370758907",
+      "account_name": "Kelly Jones"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa0410",
+    "reference": "API-VACT_TRA-30D70-bb882eaa-4850-4fb0-863b-c0f9775f65bb",
+    "spotflow_reference": "SPF-CRDT-af3c78785aa34cd9bff539576e76b75d",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "credit",
+    "status": "successful",
+    "source": "virtual_account",
+    "description": "Transfer from AMY JAMES",
+    "sender": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:43:42Z"
+  }
+}
+```
+
+## *Account Debit Successful from Main Wallet balances*
+
+```yaml
+{
+  "event": "account_debit_successful",
+  "data": {
+    "id": "6bca4872-546c-4755-b27f-8338baae5fe3",
+    "account": {
+      "id": "04a6031a-ada4-4d25-9e49-1a9648f3fc17",
+      "account_number": "4576690890",
+      "account_name": "Main NGN Account"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa8978",
+    "reference": "SPF-MHB1NQRN-84326FC1-AC66-4E36-9",
+    "spotflow_reference": "SPF-TRSF-f804244ea942479194b1d48ef578b5cb",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "debit",
+    "status": "successful",
+    "source": "transfer",
+    "description": "foodstuff",
+    "destination": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_code": "SPB-73260",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:53:56.060729Z"
+  }
+}
+```

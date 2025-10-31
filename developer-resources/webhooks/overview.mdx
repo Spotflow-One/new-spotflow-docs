@@ -1,0 +1,32 @@
+---
+title: Overview
+description: Webhooks are your essential tool for real-time notifications. They provide instant, server-to-server notifications when critical events occur within the Spotflow platform, ensuring your application is always up-to-date, enabling seamless integration.
+icon: "compass"
+---
+
+## Getting Started
+This guide will walk you through setting up and securely handling webhooks. Our implementation follows the [Standard Webhooks](https://standardwebhooks.com/) specification.
+Your webhook setup is simple: just define the URL where you want to receive event data.
+
+Follow these steps to set up your webhook:
+<Steps>
+  1. Access Webhook Settings: Navigate to the [Spotflow Dashboard](https://app.spotflow.co/) and go to Settings > API Keys.
+  2. Define your URL: Enter the URL where you want to receive webhook events. You can typically find a dedicated field here for your Webhook URL.
+  3. Save Changes: Ensure you enter your one time code from your Authenticator app and save the settings to activate the webhook URL.
+</Steps>
+
+<Check>
+**Idempotency (The "No Duplicates" Rule):** Each webhook event includes a unique webhook-id header. Use this identifier to implement idempotency. Your system must be designed to gracefully handle receiving the same event more than once (due to retries) without causing errors or duplicate actions.
+</Check>
+
+## Securing Webhooks: Trust, but Verify
+To protect your system from bad actors and ensure the data is authentically from Spotflow, always validate the payload and use HTTPS.
+To verify signatures, we follow the Standard Webhooks specification. Each webhook request includes a webhook-signature header, which is an HMAC SHA256 signature of the payload and timestamp.
+
+<Tip>
+**Ordering is Not Guaranteed:** Webhook events may be delivered out of order due to network retries. Always use the webhook-id or other data within the payload to ensure correct event processing, regardless of arrival sequence.
+</Tip>
+
+<Note>
+You will always receive the latest payload data at the time of delivery, regardless of when the webhook event was initially emitted.
+</Note>
