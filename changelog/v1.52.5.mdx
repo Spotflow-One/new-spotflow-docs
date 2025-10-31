@@ -1,0 +1,19 @@
+---
+title: v1.52.5 (29 Oct 2025)
+description: This release is all about security, control, and giving you more data to work with.
+icon: "arrows-turn-right"
+---
+
+## New Features
+
+- Public Key Security Model: This is a big one. We've rolled out a major security enhancement by separating key functions. Public Keys are now used for all server-to-server communications, while your Secret Key remains for client-side communications. This separation of duties is a massive leap forward for platform security.
+
+## Improvements & Updates 
+
+- Checkout Expiry Control: You can now set an expiry time for checkout URLs. If a customer doesn't complete the purchase in time, a session_expired ID is logged, giving you much better control over abandoned carts and time-sensitive offers.
+
+- Webhook Fix on Accounts/Wallets: You can now be 100% certain that you get a webhook from Spotflow when a credit and debit is done on your wallets and accounts created for your customers.
+
+- Payment Link UI tidy-up: We tidied up the Payment Link creation and management interface for both desktop and mobile. It's just cleaner, faster, and nicer to use.
+
+- The Usual Housekeeping: A healthy round of performance optimizations, security tweaks, and minor bug fixes to keep the entire platform running smoothly.
