@@ -2,7 +2,7 @@
 title: Vue Library
 sidebarTitle: Vue Library
 icon: "vuejs"
-description: This `Spotflow Vue.js library` wraps around the [inline library](https://github.com/Spotflow-One/spotflow-checkout-inline), which enables users to make payments seamlessly. It integrates smoothly into your Vue.js application, providing a streamlined checkout experience.
+description: This `Spotflow Vue.js library` wraps around the [inline library](https://github.com/Spotflow-One/spotflow-checkout-inline), which enables your users to make payments seamlessly. It integrates smoothly into your Vue.js application, providing a streamlined checkout experience.
 ---
 
 ### Features
@@ -50,7 +50,7 @@ description: This `Spotflow Vue.js library` wraps around the [inline library](ht
        name: "John", // Name of customer: Not required
        phoneNumber: "09090909090", // Phone number of customer: Not required
        reference: "MC-123456", // Not required, a unique payment reference will be generated if not provided
-       merchantKey: "sk_test_fXXXXedhXXXXXXXXXXXXXXXX",
+       merchantKey: "pk_test_fXXXXedhXXXXXXXXXXXXXXXX",
        planId: "9e0808304-344d-XXXXXXXXX-XXXXX834034", // Not required for a one time payment
        encryptionKey:"SKKXXXXXXXXXXXXXXXXX"
      }
@@ -82,7 +82,7 @@ const config = {
  name: "John", // Name of customer: Not required
  phoneNumber: "09090909090", // Phone number of customer: Not required
  reference: "MC-123456", // Not required, a unique payment reference will be generated if not provided
- merchantKey: "sk_test_fXXXXedhXXXXXXXXXXXXXXXX",
+ merchantKey: "pk_test_fXXXXedhXXXXXXXXXXXXXXXX",
  planId: "9e0808304-344d-XXXXXXXXX-XXXXX834034", // Not required for a one time payment
  encryptionKey:"SKKXXXXXXXXXXXXXXXXX"
 };
@@ -103,7 +103,7 @@ const config = {
 ### Parameters
 
 <ParamField path="merchantKey" type="string" required>
- Your API Secret
+ Your API Public Key
 </ParamField>
 <ParamField path="reference" type="string" optional>
   Your transaction reference. This MUST be unique for every transaction
