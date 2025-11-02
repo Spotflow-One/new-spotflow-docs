@@ -1,0 +1,55 @@
+---
+title: Test Mode Vs Live Mode
+description: 'Learn the critical differences between Test and Live mode and how to switch between them.'
+icon: "microscope"
+---
+
+Test Mode is your sandbox: a safe, isolated environment for you to code, simulate, and debug your entire Spotflow integration without touching real money. Live Mode is the production environment where your business accepts and processes actual payments.
+Find the detailed breakdown of the features available in test mode vs live mode.
+
+## Feature Comparison
+
+| **Feature**                                 | **Test Mode** | **Live Mode** |   **Is Environment Dependent?** |
+| ------------------------------------------- | ------------- | ------------- | ------------------------------- |
+| **Create Subscription plans**               | ✓             | ✓             |               YES               |
+| **Generate Payment Links**                  | ✓             | ✓             |               YES               |
+| **Simulate Payments (Card, Transfers, etc.)**| ✓            | x             |               YES               |
+| **Process Real Payments**                   | x             | ✓             |               YES               |
+| **Issue Refunds on Collections**            | ✓(Simulated)  | ✓ (Real)      |               YES               |
+| **Access Transaction History**              | ✓(Simulated)  | ✓ (Real)      |               YES               |
+| **Payouts to Bank Account**                 | x             | ✓             |               YES               |
+| **API Keys generation**                     | ✓             | ✓             |               YES               |
+| **Real-time Fraud Detection**               | x             | ✓             |               YES               |
+| **Webhook Creation**                        | ✓             | ✓             |               YES               |
+| **My Profile section**                      | ✓             | ✓             |               NO                |
+| **Transaction Emails**                      | ✓(Simulated)  | ✓             |               YES               |
+
+### Environment Dependency
+
+**Environment Dependent(YES):** Data created here lives here. API Keys, transaction history are completely isolated and changes made in one environment will not affect the other. Eg. API Keys generated in Test Mode will be independent of API keys generated in Live Mode and vice versa. So changes in Test Mode will never affect your Live deployment, and vice versa.
+
+**Environment Independent(NO):** Features like your My Profile section maintain the same data across both modes. Changes made in one will affect the other. Eg. My Profile section will have the same data in test mode and live mode.
+Live Mode will be available only post successful completion of Identity verification and Business Verification. You can accept real payments only in \`live mode\`.
+
+<Note>
+Live Mode is accessible only after successful completion of KYB verification. You cannot accept real payments until this step is complete.
+</Note>
+
+
+
+API Hostnames for Test Mode and Live Mode are below:
+The API Hostnames for both environments is [`app.spotflow.co`](https://api.spotflow.co)
+
+## Key Highlights
+
+1. Isolation is Key: All products, API keys, and webhooks created are strictly limited to their respective environments.
+
+2. KYB Submission: Documents submitted for KYB verification are shared between both environments.
+​
+## Test Cards
+
+For detailed information on the test cards, test cards, please refer to our comprehensive [Testing Payments](/expert-desk/testing-payments) guide.
+
+<Tip>
+Test payment methods are only valid in test mode. Never use them for real payments.
+</Tip>

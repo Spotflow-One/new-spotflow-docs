@@ -1,0 +1,46 @@
+---
+title: Testing Payments
+description: You can use the following details to test your implementation for card and mobile money payments before going live. Note that this works only with your test keys.
+icon: "credit-card"
+---
+
+## Cards
+
+#### ***NGN Successful Payments***
+
+| **Auth**                                    | **Number**                    | **Expiry**          |   **CVV**                       |  **PIN**                        |  **OTP**                                                                             |
+| ------------------------------------------- | --------------------------    | -------------       | ------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------ |
+| **No Auth**                                 | 4111112000062555              | 12/2030             |               321               |               -                 |            -                                                                         |
+| **PIN**                                     | 5555558684543932              | 12/2030             |               321               |             4321                |              -                                                                       |
+| **PIN + OTP**                               | 5555567973581842	          | 12/2030             |               321               |             4321                |              654321                                                                  |
+| **3DS**                                     | 5555577124976817              | 12/2030             |               321               |              -                  |               -                                                                      |
+| **AVS**                                     | 4111124373708482	          | 12/2030             |               321               |             -                   | Address: 1, Spotflow Street, City: Lekki, State: Lagos, Country: Nigeria, ZIP: 10123 |
+
+## Mobile Money
+
+
+#### ***GHS Successful Payments***
+
+| **Phone Number**                            | **OTP**                       |
+| ------------------------------------------- | --------------------------    |
+| **0987654321**                              | 654321                        |
+
+#### ***ZAR Successful Payments***
+
+| **Phone Number**                            | **OTP**                       |
+| ------------------------------------------- | --------------------------    |
+| **0710000000**                              | 654321                        |
+
+#### ***KES Successful Payments***
+
+| **Phone Number**                            | **OTP**                       |
+| ------------------------------------------- | --------------------------    |
+| **0710000000**                              | 654321                        |
+
+#### ***TZS Successful Payments***
+
+| **Phone Number**                            | **OTP**                       |
+| ------------------------------------------- | --------------------------    |
+| **0710000000**                              | 654321                        |
+
+To test other payment methods like bank transfer, follow the usual testing procedures.

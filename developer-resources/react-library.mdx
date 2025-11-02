@@ -2,7 +2,7 @@
 title: React Library
 sidebarTitle: React Library
 icon: "react"
-description: The `Spotflow React SDK` helps you or rather enables users to make payments seamlessly. It integrates smoothly into your application, providing a streamlined checkout experience.
+description: The `Spotflow React SDK` helps you or rather enables your users to make payments seamlessly. It integrates smoothly into your application, providing a streamlined checkout experience.
 ---
 
 ### Features
@@ -55,7 +55,7 @@ const PaymentComponent = () => {
         phoneNumber="09090909090" // Phone number of customer: Not required
         encryptionKey="SKKXXXXXXXXXXXXXXXXX"
         planId="9e0808304-344d-XXXXXXXXX-XXXXX834034" // Not required for a one time payment
-        merchantKey="sk_test_fXXXXedhXXXXXXXXXXXXXXXX"
+        merchantKey="pk_test_fXXXXedhXXXXXXXXXXXXXXXX"
         text="Pay Money"
       />
     </div>
@@ -82,7 +82,7 @@ const PaymentComponent = () => {
     name: "John", // Name of customer: Not required
     phoneNumber: "09090909090", // Phone number of customer: Not required
     reference: "MC-123456", // Not required, a unique payment reference will be generated if not provided
-    merchantKey: "sk_test_fXXXXedhXXXXXXXXXXXXXXXX",
+    merchantKey: "pk_test_fXXXXedhXXXXXXXXXXXXXXXX",
     planId: "9e0808304-344d-XXXXXXXXX-XXXXX834034", // Not required for a one time payment
     encryptionKey:"SKKXXXXXXXXXXXXXXXXX"
   }
@@ -106,7 +106,7 @@ const PaymentComponent = () => {
 ### Parameters
 
 <ParamField path="merchantKey" type="string" required>
- Your API Secret
+ Your API Public Key
 </ParamField>
 <ParamField path="reference" type="string" optional>
   Your transaction reference. This MUST be unique for every transaction

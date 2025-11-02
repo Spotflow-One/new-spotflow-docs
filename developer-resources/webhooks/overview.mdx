@@ -21,7 +21,7 @@ Follow these steps to set up your webhook:
 
 ## Securing Webhooks: Trust, but Verify
 To protect your system from bad actors and ensure the data is authentically from Spotflow, always validate the payload and use HTTPS.
-To verify signatures, we follow the Standard Webhooks specification. Each webhook request includes a webhook-signature header, which is an HMAC SHA256 signature of the payload and timestamp.
+To verify signatures, we follow the Standard Webhooks specification. Each webhook request includes a webhook-signature header from us which is `x-spotflow-signature`, an HMAC SHA256 signature of the payload and timestamp.
 
 <Tip>
 **Ordering is Not Guaranteed:** Webhook events may be delivered out of order due to network retries. Always use the webhook-id or other data within the payload to ensure correct event processing, regardless of arrival sequence.
