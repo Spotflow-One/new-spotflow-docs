@@ -1,0 +1,149 @@
+---
+title: FAQs
+description: Comprehensive answers to common questions about Spotflow, covering everything from onboarding, payments, subscriptions, compliance to technical integration, designed to help you navigate and make the most of our platform.
+icon: lightbulb
+---
+
+## Getting Started & Account Setup
+
+<Accordion title="Q1: How do I access the Spotflow Dashboard?">
+  A: Visit our dashboard and use your login email, password and OTP from your Authenticator app. If you face any issues, please reach out to our support team.
+</Accordion>
+
+<Accordion title="Q2: What documents are required to complete the verification process?">
+  A: Verification requires your business registration documents (for KYB). For full details, check the [verification process page](/expert-desk/verification-process).
+</Accordion>
+
+<Accordion title="Q3: How long does the verification process typically take?">
+  A: The process usually takes 24–72 working hours. 
+
+  <Note>
+  Note that this time may extend if additional documents are requested for compliance review.
+ </Note>
+  </Accordion>
+
+<Accordion title="Q4: What happens if my verification is rejected?">
+  A: You will receive an email with the reason and a message from our support team with more details about the issue. You’ll be able to resolve the issue, correct your documentation, and resubmit with the support team.
+</Accordion>
+
+<Accordion title="Q5:  Should I wait for verification before starting integration?">
+  A: No, absolutely not. Start integrating immediately using Test Mode. Once your KYB verification is successful, you can switch to Live Mode instantly. 
+  Learn more about the difference: [Test Mode vs. Live Mode](/expert-desk/test-mode-vs-live-mode).  
+  </Accordion>
+
+<Accordion title="Q6: How do I get Live Mode access?">
+  A: Ensure you have submitted all KYB verification documents in the KYB onboarding page. If you are stuck past 24 hours, check that same page for any reasons why and contact the support team.
+  </Accordion>
+
+
+  ## Payment Collections & Transactions
+  
+<Accordion title="Q7: What types of payments can I accept with Spotflow?">
+  A: Spotflow supports a variety of payment methods, including debit cards, bank transfers, EFT, mobile money, and virtual wallets. We handle both one-time and recurring subscription payments for digital products.
+  </Accordion>
+
+<Accordion title="Q8:  How can I track payment statuses?">
+  A: You can track the status of all payments from the Collections Page of your dashboard. 
+  Transactions are listed with clear indicators: In Progress, Abandoned, Failed, or Successful.
+</Accordion>
+
+<Accordion title="Q9: When does a subscription get charged?">
+  A:  Spotflow charges the customer immediately upon subscription creation unless the product has been configured with a trial period.
+  </Accordion>
+
+<Accordion title="Q10: Why was my real card blocked during testing?">
+  A: You likely attempted to test a real card using your Live Keys. 
+  Always test using your Test Keys and the [test card numbers](/expert-desk/testing-payments) provided in our documentation.
+</Accordion>
+
+
+## Payouts & Funds Flow
+<Accordion title="Q11: How do payouts work with Spotflow?">
+  A: Payouts are the transfer of your collected revenue to your preferred bank account. 
+  Payouts are processed at most T+1 days, barring bank holidays or emergencies.
+  </Accordion>
+
+<Accordion title="Q12: What are payout fees?">
+  A: Payout fees are the transaction costs for transferring funds from Spotflow to your bank account. We constantly work with local partners to reduce these costs. 
+  Please reach out to our support team for detailed information.
+  </Accordion>
+
+  ## Webhooks & Technical Integration
+
+<Accordion title="Q13: Can I embed the Spotflow Checkout in an iframe?">
+  A: No. For security and compliance, the hosted checkout flow does not support embedding in an iframe. 
+  You must redirect users to the Spotflow checkout URL.
+</Accordion>
+
+<Accordion title="Q14: What's the difference between a Webhook URL and a Callback/Redirect URL?">
+  A: - Webhook URL: Configured in your Dashboard. Receives secure POST payloads about events.
+  - Callback/Redirect URL: Configured in your dashboard or sent in your payment API request. 
+  It sends the user's browser back to your app with basic query parameters (?status=successful).
+ 
+ <Info>
+  Use Webhooks to automate things like DB updates, and callbacks/redirects to show thank you screens.
+  </Info>
+ </Accordion>
+
+<Accordion title="Q15: Is it safe to rely on status=success in the Redirect URL query parameters?">
+  A: No. Redirect parameters are user-facing and can be tampered with. 
+  Always use and wait for payment.successful webhooks or make a final API call to the verify payment endpoint to confirm payment status.
+
+  <Info>
+  Treat redirects as confirmations for the user, not proof of payment.
+  </Info>
+</Accordion>
+
+<Accordion title="Q16: My customer completed payment but I didn't receive a webhook.">
+  A: Check this list: 
+  1. Is your webhook URL configured correctly in the Dashboard?
+  2. Are you confusing the webhook URL with the callback/redirect URL? 
+  3. Does your URL accept POST requests and reply with a 2xx status? If the issue persists, escalate on your dedicated support group chat.
+
+  <Tip>
+  You can have both a webhook and a callback/redirect URL - they serve different purposes.
+  </Tip>
+</Accordion>
+
+<Accordion title="Q17: How do I verify a webhook is actually from Spotflow?">
+  A: Check the Signature. Every webhook includes a x-spotflow-signature header. 
+  You must use your Webhook Secret Key to recompute the HMAC-SHA256 signature and compare it to the received signature from Spotflow. 
+  
+  If they match, the webhook is authentic. We recommend using libraries provided by [Standard Webhooks](https://www.standardwebhooks.com/).
+</Accordion>
+
+## Testing & Local Development
+
+<Accordion title="Q18: Can I test subscriptions in Test Mode?">
+  A:Yes — subscriptions can be fully simulated and tested in Test Mode. Ensure you don’t use real test cards.
+</Accordion>
+
+<Accordion title="Q19: Can I use real customer data in Test Mode?">
+  A:Yes. Using real customer names/emails helps debug your full workflow, simulate webhooks but no real money will be transferred. 
+  Card details must be test cards.
+  </Accordion>
+
+<Accordion title="Q20:  How do I switch between Test and Live Mode?">
+  A: 
+  - On your Spotflow dashboard, look for a Test Mode toggle.
+  - Switch to use test mode and simulate payments.
+  - You’ll see “Test Mode” label on all screens. Make sure to use the corresponding API key or environment when switching.
+  </Accordion>
+
+  ## Support & Security
+
+  <Accordion title="Q21: How do I contact Support?">
+  A:You can contact our support team by sending an email to [support@spotflow.one](mailto:support@spotflow.one). We are here to assist you with any issues or questions you may have.
+  </Accordion>
+
+<Accordion title="Q22: My support messages are getting no response. What should I do?">
+  A: If you've messaged your dedicated personalized group chat and there is no response, escalate immediately by emailing support@spotflow.one with the subject line URGENT: No Response – [Your Email].
+  </Accordion>
+
+<Accordion title="Q23:  How does Spotflow protect my business from fraud?">
+  A: We use real-time fraud detection to monitor suspicious transactions and maintain PCI-DSS compliance to ensure all payment information is encrypted and secure.  
+  </Accordion>
+
+  <Accordion title="Q24: Is my customer data secure with Spotflow?">
+  A: Yes. We rely on data encryption and tokenization. We never store raw customer payment data directly on our servers, ensuring maximum security during transactions.
+</Accordion>
