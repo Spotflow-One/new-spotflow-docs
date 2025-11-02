@@ -14,26 +14,27 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Setup & Features",
-        "icon": "cube",
+        "tab": "Documentation",
+        "icon": "scroll",
         "groups": [
           {
             "group": "Getting Started",
+            "icon": "play",
             "pages": [
               "introduction",
               {
                 "group": "KYB Verification",
                 "icon": "id-card",
                 "pages": [
-                  "miscellaneous/verification-process"
+                  "expert-desk/verification-process"
                 ]
               }
             ]
           },
           {
-            "group": "Important Links",
+            "group": "How We Operate",
+            "icon": "building",
             "pages": [
-              "miscellaneous/pricing-and-fee-structure",
               "features/payment-methods",
               "/features/payouts/payout-structure",
               "features/mor-vs-pg",
@@ -42,6 +43,7 @@
           },
           {
             "group": "Features",
+            "icon": "star",
             "pages": [
               "features/one-time-payment-collections",
               "features/subscription-payment-collections",
@@ -66,6 +68,7 @@
           },
           {
             "group": "Expert Desk",
+            "icon": "user-tie",
             "pages": [
               {
                 "group": "Support Channels",
@@ -74,11 +77,12 @@
                   "expert-desk/help-support"
                 ]
               },
-              "miscellaneous/faq"
+              "expert-desk/faq"
             ]
           },
           {
             "group": "Security & Compliance",
+            "icon": "shield-check",
             "pages": [
               "miscellaneous/merchant-acceptance",
               "miscellaneous/review-monitoring-policy",
