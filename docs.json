@@ -38,7 +38,6 @@
               "features/payment-methods",
               "/features/payout-structure",
               "features/mor-vs-pg",
-              "miscellaneous/list-of-countries-we-accept-payments-from",
               "features/security-policy"
             ]
           },
