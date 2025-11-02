@@ -36,9 +36,10 @@
             "icon": "building",
             "pages": [
               "features/payment-methods",
-              "/features/payouts/payout-structure",
+              "/features/payout-structure",
               "features/mor-vs-pg",
-              "miscellaneous/list-of-countries-we-accept-payments-from"
+              "miscellaneous/list-of-countries-we-accept-payments-from",
+              "features/security-policy"
             ]
           },
           {
@@ -78,15 +79,6 @@
                 ]
               },
               "expert-desk/faq"
-            ]
-          },
-          {
-            "group": "Security & Compliance",
-            "icon": "shield-check",
-            "pages": [
-              "miscellaneous/merchant-acceptance",
-              "miscellaneous/review-monitoring-policy",
-              "miscellaneous/security-policy"
             ]
           }
         ]
