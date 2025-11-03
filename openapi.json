@@ -2697,6 +2697,11 @@
                     "example": 0,
                     "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
                   },
+                  "expiresIn": {
+                    "type": "number",
+                    "example": 10,
+                    "description": "The default maximum expiry time is 30 mins. However, you can set yours to the time you desire. The least time you can set is 5 mins."
+                  },
                   "planId": {
                     "type": "string",
                     "example": "string",
@@ -2777,6 +2782,10 @@
                     "status": {
                       "type": "string",
                       "example": "pending"
+                    },
+                    "expiryTime": {
+                      "type": "string",
+                      "example": "2025-11-03T10:16:26.948278058"
                     },
                     "callBackUrl": {
                       "type": "string",

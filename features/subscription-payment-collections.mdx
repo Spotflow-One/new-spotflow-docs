@@ -1,5 +1,101 @@
 ---
 title: Subscription Payment Collections
-description: The Payout process is how your earned revenue moves from your Spotflow Balance to your preferred Bank Account via Bank Transfer. We offer flexible cycles to match your cash flow needs.
+description: Offer recurring billing for memberships, SaaS, or services with flexible cycles, tiered pricing, and automated renewals. This is your engine for predictable revenue.
 icon: rotate
 ---
+
+## What Subscriptions Are (And Who Needs Them)
+Subscriptions are recurring products purchased on a set schedule. They are perfect for:
+
+- SaaS Licenses: Apps, APIs, or platform access.
+- Memberships: Communities, programs, or clubs.
+Digital Content: Courses, media, or premium access.
+
+## Key Benefits of Spotflow Subscriptions:
+- Predictable Revenue: Automated renewals handle the heavy lifting.
+- Flexible Cycles: Monthly, daily, weekly, annual, custom intervals, and trials are all supported.
+- Plan Agility: Manage upgrades, and optional add-ons.
+- Developer-First: Clear APIs for creation, changes, and usage tracking.
+
+## Core Requirement: Card Tokenization
+Spotflow's recurring billing relies on secure Card Tokenization.
+
+***How it Works***: 
+After a customer's initial successful card payment, Spotflow replaces the sensitive card information with a unique, secure token.
+Subsequent payments are processed using this token. Therefore, recurring payments are currently limited to card payments only. 
+You can choose automated payment plans, Set the cycle and amount; Spotflow handles the rest.
+
+## Creating Subscription Plans
+Create recurring products either directly in your Spotflow Dashboard or programmatically via API.
+To set up a [recurring billing plan](/api-reference/subscription-plans/create-single-plan), define these key elements:
+
+| Field                                | Description                                                                                |
+|----------------------------------    |--------------------------------------------                                                |
+| **Title & Frequency**                | A descriptive label and how often to charge (Daily, Weekly, Monthly, Annually, etc.).      |
+| **Currency**                         | You can set pricing in USD or in a Local Currency (e.g., NGN, GHS, ZAF).                   |
+| **Pricing Options**                  | Allows you to set different local prices for the same product across different regions.    |
+
+## Example: Creating a Local Currency Plan (NGN, GHS)
+
+```java Create.plan lines icon="repeat"
+{
+  "title": "My Pro Plan",
+  "frequency": "MONTHLY",
+  "pricingOptions": [
+    { 
+       "amount": 10000, "currency": "NGN" 
+    },
+    {  "amount": 10, "currency": "GHS" 
+    }
+  ]
+}
+```
+## API Management & Enrollment
+Once a plan is created, enrolling a customer is simple: reference the planId during the customer's initial charge.
+
+| **Action**                     | **API Endpoint**                                                               | **Description**                                           |
+| ---                            | ---                                                                            | ---                                                       |
+| **Create Subscription**        | [POST /subscriptions](/api-reference/subscription-plans/create-single-plan)    | Create a new subscription programmatically.               |
+| **Update Subscription**        | [PATCH /subscriptions/{id}](/api-reference/wallets/spotflow-wallet-id)         | Modify quantities, change plans, or set cancellation.     |         
+| **List/Retrieve Subscription** | [GET /subscriptions](/api-reference/wallets/main-account-balance)              | View all or retrieve details for a single subscription.   |
+ 
+ You can also create a ***bulk subscription plan*** using a CSV file. Learn more [here](/api-reference/subscription-plans/create-bulk-plan).
+
+## Enrollment Sample (Using [Spotflow Initialize/Redirect API](/api-reference/payments/initialize-collection)):
+When initiating the charge, include the planId and customer details. Spotflow tokenizes the card for future charges based on the plan frequency.
+
+```java Create.plan lines icon="repeat"
+{
+  "planId": "961ca3d6-0505-4bc5-8dd3-fc160ac4afc9",
+  "currency": "USD",
+  "localCurrency": "NGN", // Used for FX calculation in the local region
+  "customer": 
+  { "email": "customer@email.com" 
+  }, // ... other charge details (encrypted card, metadata)
+}
+```
+
+## Webhooks: Real-Time Event Tracking
+Spotflow sends automated webhooks to your server for all critical subscription events.
+
+To set up a [recurring billing plan](/api-reference/subscription-plans/create-single-plan), define these key elements:
+
+| **Event**                                                 | **Purpose**                                                | **Sample Payload Key**                    |   
+| -------------------------------------------               | -------------                                              | -------------                             | 
+| **payment_successful**                                    | Notifies you of the first successful payment charge        | {"event": "payment_successful", ...}      |      
+| **subscription_successful**                               | Notifies you of a successful renewal charge                | {"event": "subscription_successful", ...} | 
+| **payment_failed**                                        | Alerts you when an attempted charge is declined.           | {"event": "payment_failed", ...}          |             
+| **subscription_cancelled**                                | Notifies you when a customer or you cancel the service.	 | {"event": "subscription_cancelled", ...}  |
+
+
+## Canceling and Activating
+- Cancel Subscription: Cancel an individual customer subscription via the [Cancel Subscription Endpoint](/api-reference/subscriptions/subscription-cancel).
+- Cancel Plan: Canceling [the entire plan](/api-reference/subscription-plans/cancel-plan) cancels all associated customer subscriptions.
+- Reactivating: Canceled [subscriptions](/api-reference/subscriptions/subscription-activate) and [plans](/api-reference/subscription-plans/activate-plan) can be reactivated using the corresponding Activate endpoints.
+
+## Best Practices
+- ***Start with Clear Tiers***: Keep base plans simple and define 2–3 plans with obvious value differences.
+- ***Communicate Pricing***: Always show the total price, proration costs (if applicable), and the date of the next renewal.
+- ***Test Changes***: Validate all plan changes and proration logic meticulously in Test Mode before deploying live.
+
+To learn more about what you can do with plans on Spotflow, check out our [API Reference](/api-reference/subscription-plans/create-single-plan). If you've got any questions, don’t hesitate to reach out to our team at support@spotflow.one.
