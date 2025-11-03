@@ -45,25 +45,21 @@
             "group": "Features",
             "icon": "star",
             "pages": [
-              "features/one-time-payment-collections",
+              "features/payment-collections",
               "features/subscription-payment-collections",
               "features/single-and-bulk-disbursements",
-              "features/sub-accounts",
-              "features/virtual-accounts",
-              "features/currency-exchange",
+              "features/wallets",
+              "features/dynamic-accounts",
               "features/settlement",
               {
                 "group": "Transactions",
                 "icon": "credit-card",
                 "pages": [
-                  "features/transactions/payments-collection",
-                  "features/transactions/refunds",
-                  "features/transactions/disputes"
+                  "features/transactions/collections"
                 ]
               },
-              "features/balances",
-              "features/team",
-              "miscellaneous/accounts"
+              "features/your-team-members",
+              "features/account-management"
             ]
           },
           {

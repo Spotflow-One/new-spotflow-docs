@@ -1,0 +1,24 @@
+---
+title: Single and Bulk Disbursements
+description: With our APIs, initiating funds disbursements is straightforward and seamless. We maintain strict security and compliance standards to ensure every transaction is processed safely and responsibly. This process covers payouts to vendors, contractors, or moving funds between accounts.
+icon: paper-plane
+---
+
+## Linking & Prerequisites for Initiating Disbursements
+
+To execute disbursements successfully, follow these steps:
+1. **Perform a Bank Account Lookup**: Before sending funds, it’s highly recommended to confirm the recipient's details. Use the [Resolve Bank Account Endpoint](/api-reference/transfer-api/transfer-resolve-account) which requires the recipient’s accountNumber and bankCode(the unique bank identifier) as input. This prevents accidentally sending money to the wrong bank entirely.
+2. Ensure Linked Account: Disbursements are initiated from the primary operational account Spotflow creates for you internally. Ensure this is properly funded and linked to your operations.
+
+## Executing Disbursements
+
+You can move funds from your internal Spotflow account to an external bank account using one of two methods:
+
+| **Disbursement Type**        | **API Endpoint**                                                                   | **Description**                                                                                                                                                              |
+| ---                          | ---                                                                                | ---                                                                                                                                                                          |
+| **Single Disbursement**      | [Create Disbursement Endpoint](/api-reference/transfer-api/create-single-transfer) | Initiate a single payout. Requires key details like the disbursement amount, your chosen unique reference for reconciliation, and the recipient’s accountNumber and bankCode.|
+| **Bulk Disbursement**        | [Bulk Disbursement Endpoint](/api-reference/transfer-api/create-bulk-transfer)     | Initiate multiple payouts with a single API call. Ideal for mass payments (e.g., payroll or vendor payments).                                                                |
+
+<Tip>
+**Remember**: A solid reconciliation reference is your best friend when dealing with finance. Use that reference wisely!
+</Tip>

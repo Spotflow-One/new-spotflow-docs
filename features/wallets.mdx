@@ -1,0 +1,38 @@
+---
+title: Spotflow Wallets
+description: Spotflow Wallets (formerly called sub-accounts) are powerful, virtual, API-only financial containers designed to store and manage funds independently within your account ecosystem. Unlike Dynamic Accounts, which simply route payments, Wallets maintain their own balances and act as genuine repositories for money.
+icon: folder-tree
+---
+
+### Key Features
+| **Wallet Feature**               | **Details**                                                                           | 
+| ---                              |  ---                                                                                  |
+| **Fund Storage**                 | Wallets hold and maintain balances completely separate from your main account.        | 
+| **Unlimited Creation**           | You can create an unlimited number of Wallets via API.                                | 
+| **Non-Expiring**                 | Wallets do not expire, unlike Dynamic Accounts. They're permanent storage pockets.    | 
+| **Supported Currencies**         | Currently available only for NGN and GHS.                                             | 
+| **Independent Management**       | Each Wallet operates with its own unique ID, balance, and transaction history.        | 
+| **Simplified Setup**             | No Bank Verification Number (BVN) submission is required for creation.                 | 
+
+
+### Prerequisites for Wallet Creation
+Before you can create your first Wallet, your account needs to be fully configured for merchant operations.
+
+1. KYB Completion: Successfully complete your account signup and Know Your Business (KYB) onboarding.
+2. Configuration Activation: Merchant configuration is NOT enabled by default. You must contact support at support@spotflow.one to explicitly request activation.
+3. API Credentials: Ensure you have your SECRET_KEY from the merchant dashboard for authorization purposes.
+
+### API Operations
+| **Action**               | **Endpoint**                                                                                | **Key Detail**                                                                                                           |
+| ---                      | ---                                                                                         | ---                                                                                                                      |
+| **Create Wallet**        | [Wallet Creation API Endpoint](/api-reference/wallets/create-account)                       | Specify parameters (name, currency). Returns a unique Wallet identifier.                                                 |
+| **Fetch Wallet Data**    | [Fetch Wallet by ID Endpoint](/api-reference/wallets/spotflow-wallet-id)                    | Retrieve individual Wallet information and details.                                                                      |         
+| **View Balances**        | [Fetch Balances Endpoint](/api-reference/wallets/main-account-balance)                      | Access the Wallet's real-time balance and transaction history (also available on your Spotflow dashboard).               |
+| **List All**             | [List Wallets Endpoint](/api-reference/wallets/list-spotflow-wallets)                       | Retrieve all Wallets associated with your main account. You can also use this to fetch details for your main account.    |
+ 
+### Webhook Notifications
+You will receive webhook and email notifications when a wallet is credited.
+
+<Tip>
+**Action Item**: Ensure you configure your system to receive these payment status updates. Set or update your Webhook URL on the merchant dashboard under Settings → API & Webhooks → URLs.
+</Tip>
