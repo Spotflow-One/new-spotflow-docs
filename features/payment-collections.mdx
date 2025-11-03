@@ -1,5 +1,109 @@
 ---
 title: Accepting Payment Collections
-description: The Payout process is how your earned revenue moves from your Spotflow Balance to your preferred Bank Account via Bank Transfer. We offer flexible cycles to match your cash flow needs.
+description: Payments are processed by creating a transaction using our APIs, libraries, or SDKs. 
 icon: receipt
 ---
+
+We offer flexible solutions to match your integration preference:
+### I. Integration Options: Choose Your Flow
+| **Solution**                                                            | **Best For**                                                                    | **Technical Flow**                                                                                                                |
+| ---                                                                     | ---                                                                             | ---                                                                                                                               |
+| **[Spotflow Redirect](/api-reference/payments/initialize-collection)**  | Fast, secure payments without extensive UI integration.                         | Initiate via API from your server → [Redirect](https://www.spotflow.one/demo) customer to a secure Spotflow-hosted payment page.  |
+| **[Spotflow Embed (Client-Side)](/developer-resources/inline-js)**      | Seamless, intuitive in-app/on-site checkout experience.	                        | Embed our JavaScript library directly. We handle the entire UI/UX without redirecting users off your site.                        |         
+| **[Spotflow Classic (API)](/api-reference/payments/create-collection)** | Businesses needing a highly custom payment experience and with PCI-DSS license	| You build the entire UI; Spotflow processes the encrypted transaction from your server.                                           |         
+
+
+### II. Core API Management
+- Create Payments: Use POST [/payments/initialize](api-reference/payments/initialize-collection) or POST [/payments](api-reference/payments/create-collection) for one-time and recurring payment collections.
+- List & Retrieve: Use GET /payments to [list all](/api-reference/payments/list-collection), and GET /payments/{payment_id}(/api-reference/payments/fetch-collection) to retrieve details.
+- Payment Webhooks: React to events like [payment.successful](/developer-resources/webhooks/payment-collections) in your backend.
+
+<Warning>
+SECURITY NOTE: Your SECRET_KEY must never be exposed on the client-side. All API interactions must originate from and be managed by your secure backend server.
+</Warning>
+
+### III. Spotflow Classic: Direct API Integration (Advanced)
+The Spotflow Classic API grants total control but imposes strict security and compliance requirements such as having PCI-DSS License.
+- Payment Webhooks: React to events like [payment.successful](/developer-resources/webhooks/payment-collections) in your backend.
+
+#### A. Prerequisites for Card Payments
+To process card payments directly through the Payment API, you must meet these non-negotiable requirements:
+
+1. Account Status: Ensure your Spotflow account is fully activated and verified.
+2. Merchant Configuration: Request activation for your collection regions and service providers by contacting support@spotflow.one. (This is disabled by default for new accounts).
+3. PCI-DSS Compliance: You must be PCI-DSS certified. Spotflow may require a specific level (e.g., Level 1) due to handling raw card data. Consult with support for full details.
+4. API Keys: Obtain your SECRET_KEY and Encryption Key from the Dashboard.
+5. URLs: Configure your Webhook URL (for server-to-server status updates) and Callback URL (for customer redirects).
+
+#### B. The Card Payment Flow
+The Classic API flow is a two-step process designed for security and compliance:
+
+#### Step 1: Encrypt and Create Payment
+Before making the POST request to https://api.spotflow.co/api/v1/payments, you must:
+<Steps>
+  1. Collect Card Data: Gather the customer's raw card details (PAN, CVV, expiry).
+  2. Encrypt Data: Crucially, encrypt the raw card data using your unique Encryption Key and AES-256 encryption from your server. This ensures sensitive data is never transmitted in the clear.
+  3. Send Request: Send the request with the required parameters, including the encrypted card data.
+  </Steps>
+
+| **Parameter**                          | **Type**                     | **Description**                                              |
+| ---                                    | ---                          | ---                                                          |
+| **reference**                          | String                       | Your unique transaction ID.                                  |
+| **amount**                             | Integer                      | Charge amount (in the smallest subunit).                     |         
+| **currency**                           | String                       | USD or your local currency (NGN, GHS, etc.).                 |
+| **localCurrency**                      | String                       | Required when currency is USD. Sets the local FX reference.  |         
+| **encryptedCard**                      | String                       | The AES-256 encrypted raw card string.                       |         
+
+
+#### Step 2: Authorization (3D Secure, OTP, PIN, AVS)
+Upon receiving the initial status: pending response, the card may require secondary authorization.
+The system indicates the required mode in the response's authorization object:
+
+| **Mode**                    | **Action Required**                                                          | **Endpoint Used**                                                                                     |
+| ---                         | ---                                                                          | ---                                                                                                   |
+| **PIN**                     | Collect the customer's PIN.                                                  | [POST /authorize-payment](/api-reference/payments/authorize-collection) with {`"pin":"..."`}          |
+| **OTP**                     | Collect the One-Time Password sent to the customer.                          | [POST /authorize-payment](/api-reference/payments/authorize-collection) with {`"otp": "..."`}         |         
+| **3DS**                     | Redirect the customer to the provided redirectUrl.                           | No API call needed; customer handles auth.                                                            |
+| **AVS**                     | Collect the customer's Address Verification details.                         | [POST /authorize-payment](/api-reference/payments/authorize-collection) with {`"avs": {...}`}         |         
+| **ENROLL**                  | Collect the phone number for card enrollment (e.g., for some Verve cards).   | [POST /authorize-payment](/api-reference/payments/authorize-collection) with {`"phoneNumber": "..."`} |         
+
+#### C. Bank Transfer Payments (Non-Card)
+
+For Bank Transfers ("channel": "bank_transfer"), the flow is simpler as no encryption is needed.
+- The initial POST /payments request returns a status: pending with the required bankDetails (Account Number, Bank Name) in the response.
+- The customer must then make the transfer to these details.
+- Final Status: Spotflow monitors the transfer. You must Verify the Payment to confirm the final successful status.
+
+#### D. Final Step: Verify Payment
+
+For every transaction—especially after an authorization step or a bank transfer—you must call the [Verify Payment endpoint](/api-reference/payments/verify-collection) using your transaction reference to confirm the final and definitive status.
+
+<Warning>
+**Important**: This is the most critical step. You must always verify the status of the payment before you give value to the customer. Do not trust the redirect URL parameters or the response from the final authorization step alone!
+</Warning>
+
+#### How to Verify:
+1. **Retrieve Reference**: Get the unique transaction reference ID from your system or from the query parameters sent back to your Callback URL.
+2. **Call Verify Endpoint**: Send a request to our Verify Payment Collection Endpoint (GET /payments/{reference}).
+3. **Confirm Status**: The verification response provides the definitive, server-to-server confirmed status (successful, failed, etc.).
+
+
+#### Receive Payment Confirmation Via Webhook
+As a concurrent and reliable method, when a payment is successful, Spotflow sends a payment_successful webhook event to your specified Webhook URL.
+
+<Danger>
+**Best Practice**: Treat the webhook as an alert and the verification API call as the confirmation. Only fulfill the order after the verification API call confirms the status is successful.
+</Danger>
+
+***Important Information: Payment Data Requirements***: 
+To avoid frustrating errors, ensure your request body adheres to these critical formatting and data rules:
+- **Amount Format**: The amount should always be in the subunit of the supported currency (e.g., kobo for NGN, cents for USD).
+- **Unique Reference**: You must use a unique reference ID generated by your company for the reference field to identify each customer and transaction.
+- **Currency Selection**:
+1. Select the currency for the payment collection (e.g., USD or NGN).
+2. If currency is set to USD, you must also include the localCurrency field set to the local currency of your collection region (e.g., NGN, GHS, KSH). 
+This is required for accurate FX calculation and compliance.
+
+
+To learn more about what you can do with payment collections on Spotflow, check out our [API Reference](/api-reference/payments/initialize-collection). 
+If you've got any questions, don’t hesitate to check our [FAQs](/expert-desk/faq) or reach out to our team at support@spotflow.one.
