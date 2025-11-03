@@ -1,0 +1,43 @@
+---
+title: Collections
+description: The Collections page provides a detailed, real-time overview of all customer transactions processed through Spotflow. Here, you as a merchant can track collection statuses, initiate refunds, resend webhooks, and access comprehensive payment details for every transaction.
+icon: list
+---
+
+## Collections Listing Overview
+The Collections listing serves as a single record of every transaction, featuring vital information such as the amount, currency, status, and the payment method used.
+
+| **Status**               | **Meaning**                                                                                                          | 
+| ---                      | ---                                                                                                                  |
+| **In Progress**          | The collection is currently being processed by the financial institution.                                            | 
+| **Abandoned**            | The user initiated the checkout process but did not complete the collection (they left the cart at the payment step).| 
+| **Failed**               | The collection attempt was unsuccessful.                                                                             | 
+| **Successful**           | The collection was completed successfully, and funds are secured.                                                    | 
+
+
+<Note>
+The final payment method and timestamp are updated only once the collection reaches a final state (Successful, Failed, or Abandoned).
+</Note>
+
+## Collection Details Page
+Clicking any entry in the listing directs you to the Collection Details Page, which offers a comprehensive breakdown of that specific transaction.
+
+| **Detail Category**                | **Information Provided**                                           | 
+| ---                                | ---                                                                |
+| **Transaction Details**            | Amount, currency, payment method, fees, and processing timestamp.  | 
+| **Customer Information**           | Name, email, and any available billing details.                    | 
+| **Actions**                        | Options to initiate a Refund or Resend Webhook.                    | 
+| **Status**                         | The final status of the transaction.                               | 
+
+### How to Navigate and Use the Collections Page
+1. Access Collections: Open the Transactions page and click on the Collections tab to view all transaction records.
+2. Filter and Search: Use available filters to narrow down your view:
+ - Status Filter: View transactions by a specific status (e.g., filter for "Abandoned" to analyze drop-off).
+ - Date Range: Select custom dates to view collections from a specific period.
+ - Search: Locate payments by reference, customer name, or email.
+
+### Important Information on Payment Methods
+1. Automatic Activation: All supported collection methods become available automatically once your Spotflow account is verified and Live Mode is enabled.
+2. Zero Configuration: Merchants do not need to configure these payment options; they are pre-defined and fully managed by Spotflow (we handle the complexity, you handle the selling).
+3. Expanding Roster: We are constantly adding new payment methods. If you require a specific payment method that's not listed, 
+please write to us at support@spotflow.one, and we'll add to our roadmap if not present.
