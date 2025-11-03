@@ -9,7 +9,7 @@ Subscriptions are recurring products purchased on a set schedule. They are perfe
 
 - SaaS Licenses: Apps, APIs, or platform access.
 - Memberships: Communities, programs, or clubs.
-Digital Content: Courses, media, or premium access.
+- Digital Content: Courses, media, or premium access.
 
 ## Key Benefits of Spotflow Subscriptions:
 - Predictable Revenue: Automated renewals handle the heavy lifting.
@@ -26,7 +26,7 @@ Subsequent payments are processed using this token. Therefore, recurring payment
 You can choose automated payment plans, Set the cycle and amount; Spotflow handles the rest.
 
 ## Creating Subscription Plans
-Create recurring products either directly in your Spotflow Dashboard or programmatically via API.
+Create recurring pLANS either directly in your Spotflow Dashboard or programmatically via API.
 To set up a [recurring billing plan](/api-reference/subscription-plans/create-single-plan), define these key elements:
 
 | Field                                | Description                                                                                |
@@ -53,11 +53,11 @@ To set up a [recurring billing plan](/api-reference/subscription-plans/create-si
 ## API Management & Enrollment
 Once a plan is created, enrolling a customer is simple: reference the planId during the customer's initial charge.
 
-| **Action**                     | **API Endpoint**                                                               | **Description**                                           |
-| ---                            | ---                                                                            | ---                                                       |
-| **Create Subscription**        | [POST /subscriptions](/api-reference/subscription-plans/create-single-plan)    | Create a new subscription programmatically.               |
-| **Update Subscription**        | [PATCH /subscriptions/{id}](/api-reference/wallets/spotflow-wallet-id)         | Modify quantities, change plans, or set cancellation.     |         
-| **List/Retrieve Subscription** | [GET /subscriptions](/api-reference/wallets/main-account-balance)              | View all or retrieve details for a single subscription.   |
+| **Action**                          | **API Endpoint**                                                                    | **Description**                                           |
+| ---                                 | ---                                                                                 | ---                                                       |
+| **Create Subscription Plan**        | [POST /subscription plans](/api-reference/subscription-plans/create-single-plan)    | Create a new subscription programmatically.               |
+| **Update Subscription Plan**        | [PUT /subscription plans/{id}](/api-reference/subscription-plans/update-plan)       | Modify quantities, change plans, or set cancellation.     |         
+| **List/Retrieve Subscription Plan** | [GET /subscriptions](/api-reference/subscription-plans/fetch-plan)                  | View all or retrieve details for a single subscription.   |
  
  You can also create a ***bulk subscription plan*** using a CSV file. Learn more [here](/api-reference/subscription-plans/create-bulk-plan).
 
@@ -80,12 +80,12 @@ Spotflow sends automated webhooks to your server for all critical subscription e
 
 To set up a [recurring billing plan](/api-reference/subscription-plans/create-single-plan), define these key elements:
 
-| **Event**                                                 | **Purpose**                                                | **Sample Payload Key**                    |   
-| -------------------------------------------               | -------------                                              | -------------                             | 
-| **payment_successful**                                    | Notifies you of the first successful payment charge        | {"event": "payment_successful", ...}      |      
-| **subscription_successful**                               | Notifies you of a successful renewal charge                | {"event": "subscription_successful", ...} | 
-| **payment_failed**                                        | Alerts you when an attempted charge is declined.           | {"event": "payment_failed", ...}          |             
-| **subscription_cancelled**                                | Notifies you when a customer or you cancel the service.	 | {"event": "subscription_cancelled", ...}  |
+| **Event**                     | **Purpose**                                               | **Sample Payload Key**                      |
+| ---                           | ---                                                       | ---                                         |
+| **payment_successful**        | Notifies you of the first successful payment charge       | {`"event": "payment_successful",...`}       |
+| **subscription_successful**   | Notifies you of a successful renewal charge               | {`"event": "subscription_successful",...`}  |       
+| **payment_failed**            | Alerts you when an attempted charge fails                 | {`"event": "payment_failed",...`}           |
+| **subscription_cancelled**    | Notifies you when a customer or you cancel the service.   | {`"event": "subscription_cancelled",...`}   |       
 
 
 ## Canceling and Activating
@@ -94,8 +94,9 @@ To set up a [recurring billing plan](/api-reference/subscription-plans/create-si
 - Reactivating: Canceled [subscriptions](/api-reference/subscriptions/subscription-activate) and [plans](/api-reference/subscription-plans/activate-plan) can be reactivated using the corresponding Activate endpoints.
 
 ## Best Practices
-- ***Start with Clear Tiers***: Keep base plans simple and define 2–3 plans with obvious value differences.
-- ***Communicate Pricing***: Always show the total price, proration costs (if applicable), and the date of the next renewal.
-- ***Test Changes***: Validate all plan changes and proration logic meticulously in Test Mode before deploying live.
+- Start with clear tiers: Keep base plans simple and define 2–3 plans with obvious value differences.
+- Communicate pricing: Always show the total price, proration costs (if applicable), and the date of the next renewal.
+- Test changes: Validate all plan changes and proration logic meticulously in Test Mode before deploying live.
 
-To learn more about what you can do with plans on Spotflow, check out our [API Reference](/api-reference/subscription-plans/create-single-plan). If you've got any questions, don’t hesitate to reach out to our team at support@spotflow.one.
+To learn more about what you can do with plans on Spotflow, check out our [API Reference](/api-reference/subscription-plans/activate-plan). 
+If you've got any questions, don’t hesitate to reach out to our team at support@spotflow.one.
