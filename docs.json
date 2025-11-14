@@ -259,6 +259,21 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Contributions",
+        "icon": "people-group",
+        "groups": [
+          {
+            "group": "Contributions",
+            "icon": "code-fork",
+            "pages": [
+              "contributions/overview",
+              "contributions/projects",
+              "contributions/submit"
+            ]
+          }
+        ]
       }
     ]
   },
