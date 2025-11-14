@@ -1,0 +1,41 @@
+---
+title: "Share Your Contributions"
+description: "How to add your open-source project to Spotflow's contributions directory"
+icon: "upload"
+---
+
+<Steps>
+<Step title="Check eligibility">
+- The project is open-source with a permissive license.
+- It’s relevant to Spotflow (SDK, libraries, integration guides).
+- Has a README with install, usage, and maintenance status.
+</Step>
+
+<Step title="Add entry via PR">
+Edit `contributions/projects.mdx` and add a new `<Card>` under the most relevant tab.
+
+```mdx
+<Card title="PROJECT_NAME (LANG)" href="REPO_URL" icon="code">
+  One-sentence description of your project.
+  <br/>By <a href="GITHUB_PROFILE_URL">@github_username</a>
+  <br/><br/>`LANGUAGE` `FRAMEWORK` `CATEGORY`
+</Card>
+```
+</Step>
+
+<Step title="Open submission issue (optional)">
+If you prefer, open an issue using the "Contributions Submission" template with:
+- Repo URL, description, category (SDK/Libraries/Plugin/Boilerplate)
+- Primary language/framework
+- Install/usage snippet link
+- Maintenance status and last update
+</Step>
+
+<Step title="Review & publish">
+We review for correctness, relevance, clarity, and safety. Approved entries are merged and published after review.
+</Step>
+</Steps>
+
+<Warning>
+We may remove entries that are incorrect, unmaintained, insecure, misleading, or violate our policies.
+</Warning>
