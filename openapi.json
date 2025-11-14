@@ -2406,7 +2406,7 @@
     },
     "/payments": {
       "get": {
-        "description": "Get details of a specific payment by its ID",
+        "description": "Get details of all payments collection done via your keys.",
         "operationId": "GetPaymentById",
         "parameters": [
           {
@@ -2443,6 +2443,17 @@
             }
           },
           {
+            "name": "reference",
+            "in": "query",
+            "required": false,
+            "description": "The unique identifier of the payment.",
+            "schema": {
+              "type": "number",
+              "format": "int32"
+            }
+          },
+          
+          {
             "name": "query",
             "in": "query",
             "required": false,
@@ -2468,8 +2479,8 @@
             "description": "",
             "schema": {
               "type": "string",
-              "enum": ["card", "bank_transfer", "ussd"],
-              "description": "This can either be card, bank, transfer or USSD for local currency payments."
+              "enum": ["card", "bank_transfer", "mobile_money", "eft"],
+              "description": "This can either be card, bank transfer, mobile_money, or eft for local currency payments."
             }
           },
           {
@@ -2479,7 +2490,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description" : "These are available payment providers on Spotflow such as Flutterwave, Paystack, Korapay etc."
+              "description" : "These are available payment providers on Spotflow."
             }
           },
           {
@@ -2559,7 +2570,7 @@
         }
       },
       "post": {
-        "description": "You can use this endpoint to perform bank account transfer from your main account",
+        "description": "If you have PCI-DSS certification, use this endpoint to collect payments using different payment methods. Note that for card payments, you'll use the authorize endpoint to input either the OTP or PIN.",
         "operationId": "CreatePayment",
         "parameters": [],
         "requestBody": {
@@ -2576,34 +2587,54 @@
                   },
                   "amount": {
                     "type": "number",
-                    "example": 0,
-                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                    "example": 100,
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD. This is not needed if you use a planId in your request."
                   },
                   "currency": {
                     "type": "string",
                     "example": "USD",
-                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region. If you put in USD, you have to put in the local currency of the region in the local currency request field."
+                  },
+                  "planId": {
+                    "type": "string",
+                    "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
+                    "description": "Used when paying for a subscription plan."
                   },
                   "localCurrency": {
                     "type": "string",
                     "example": "NGN",
-                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc."
                   },
                   "channel": {
                     "type": "string",
-                    "enum": ["card", "bank_transfer", "ussd"],
-                    "description": "The channel is Card, Bank Transfer or USSD",
+                    "enum": ["card", "bank_transfer", "mobile_money", "eft"],
+                    "description": "Channel can be Card, Bank Transfer, Mobile Money or EFT depending on the region",
                     "example": "card"
                   },
                   "encryptedCard": {
                     "type": "string",
-                    "example": "encrypted_card_data_here",
-                    "description": "This contains the encrypted card data (token) and encryption key information gotten from your dashboard. This is based on the AES-256-GCM encryption algorithm."
+                    "example": "8NqWW9RdFa+iNM6+Y4k92V0n3xxxxxxxxxxxx",
+                    "description": "This contains the encrypted card data (token) and encryption key information gotten from your dashboard. This is based on the AES-256-GCM encryption algorithm. According to compliance rules, you can do this if you have PCI-DSS certification."
+                  },
+                  "mobileMoney": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "example": "atl"
+                      },
+                      "phoneNumber": {
+                        "type": "string",
+                        "example": "+2547100xxxx"
+                      }
+                    },
+                    "description": "This is the phone number of the region you want to put in. E.g mobile_money number for Ghana, Kenya, Tanzania etc."
                   },
                   "callBackUrl": {
                     "type": "string",
                     "format": "url",
-                    "example": "https://yourapp.com/callback"
+                    "example": "https://yourapp.com/callback",
+                    "description": "This is the URL you want your users to be redirected to after making payments. You can also set this permanently on your Spotflow dashboard."
                   },
                   "metadata": {
                     "type": "object",
@@ -2613,7 +2644,6 @@
                         "example": "Algo.ai"
                       }
                     },
-                    "required": ["productName"],
                     "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
                   },
                   "customer": {
@@ -2631,11 +2661,9 @@
                 },
                 "required": [
                   "reference",
-                  "amount",
-                  "encryptedCard",
                   "currency",
-                  "localCurrency",
-                  "channel"
+                  "channel",
+                  "customer"
                 ]
               }
             }
@@ -2677,7 +2705,7 @@
     },
     "/payments/initialize": {
       "post": {
-        "description": "Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers",
+        "description": "This is Spotflow's Redirect Checkout. Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers",
         "operationId": "IntializePayment",
         "parameters": [],
         "requestBody": {
@@ -2695,33 +2723,56 @@
                   "amount": {
                     "type": "number",
                     "example": 0,
-                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD."
+                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD. This is not needed if you use a planId in your request."
                   },
                   "expiresIn": {
                     "type": "number",
                     "example": 10,
                     "description": "The default maximum expiry time is 30 mins. However, you can set yours to the time you desire. The least time you can set is 5 mins."
                   },
+                  "channel": {
+                    "type": "string",
+                    "enum": ["card", "bank_transfer", "mobile_money", "eft"],
+                    "description": "This is optional to add. Channel can be Card, Bank Transfer, Mobile Money or EFT depending on the region",
+                    "example": "card"
+                  },
                   "planId": {
                     "type": "string",
-                    "example": "string",
-                    "description": "when paying for a subscription plan."
+                    "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
+                    "description": "Used when paying for a subscription plan."
                   },
                   "currency": {
                     "type": "string",
+                    "enum": ["USD", "NGN", "GHS", "KES", "ZAR", "TZS"],
                     "example": "USD",
-                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region."
+                    "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region. If you put in USD, you have to put in the local currency of the region in the local currency request field."
                   },
                   "localCurrency": {
                     "type": "string",
+                    "enum": ["NGN", "GHS", "KES", "ZAR", "TZS"],
                     "example": "NGN",
-                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS or KSH."
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc."
                   },
                   "callBackUrl": {
                     "type": "string",
                     "format": "url",
-                    "example": "https://yourapp.com/callback"
+                    "example": "https://yourapp.com/callback",
+                    "description": "This is the URL you want your users to be redirected to after making payments. You can also set this permanently on your Spotflow dashboard."
                   },
+                  "mobileMoney": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "example": "atl"
+                      },
+                      "phoneNumber": {
+                        "type": "string",
+                        "example": "+2547100xxxx"
+                      }
+                    },
+                    "description": "This is the phone number of the region you want to put in. E.g mobile_money number for Ghana, Kenya, Tanzania etc."
+                    },
                   "metadata": {
                     "type": "object",
                     "properties": {
@@ -2730,7 +2781,6 @@
                         "example": "Algo.ai"
                       }
                     },
-                    "required": ["productName"],
                     "description": "This is information pertaining to additional details about your product or service. Under metadata, you have productName” as a field — This is necessary for you to add as it indicates the name of your product and helps to specify to your user what your product is called. You can add any other additional field as you deem fit."
                   },
                   "customer": {
@@ -2748,11 +2798,8 @@
                 },
                 "required": [
                   "reference",
-                  "amount",
-                  "encryptedCard",
                   "currency",
-                  "localCurrency",
-                  "channel"
+                  "customer"
                 ]
               }
             }
@@ -2773,7 +2820,7 @@
                     "checkoutUrl": {
                       "type": "string",
                       "format": "url",
-                      "example": "https://checkout.spotflow.io/pay/unique_payment_url"
+                      "example": "https://checkout.spotflow.co/paymentCode"
                     },
                     "paymentCode": {
                       "type": "string",
@@ -2782,6 +2829,10 @@
                     "status": {
                       "type": "string",
                       "example": "pending"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "example": "TEST"
                     },
                     "expiryTime": {
                       "type": "string",
@@ -2849,7 +2900,16 @@
                   },
                   "authorization": {
                     "type": "object",
-                    "properties": {},
+                    "properties": {
+                      "otp": {
+                        "type": "string",
+                        "example": "0xxx"
+                      },
+                      "pin": {
+                        "type": "string",
+                        "example": "01xx"
+                      }
+                    },
                     "description": "A confidential or secret code required to authenticate and verify identity for card transactions."
                   }
                 },
@@ -2901,7 +2961,7 @@
                       "example": "Please enter your OTP sent to your phone"
                     },
                     "rate": { "type": "number", "example": 1560.0 },
-                    "region": { "type": "string", "example": "West Africa" },
+                    "region": { "type": "string", "example": "Nigeria" },
                     "authorization": {
                       "type": "object",
                       "properties": {
@@ -2957,7 +3017,7 @@
         }
       }
     },
-    "/payments/{payment-id}/attempts": {
+    "/payments/{payment-id}": {
       "get": {
         "description": "Get details of a specific payment by its ID",
         "operationId": "GetPaymentById",
@@ -3016,7 +3076,7 @@
                       "example": "Please enter your OTP sent to your phone"
                     },
                     "rate": { "type": "number", "example": 1560.0 },
-                    "region": { "type": "string", "example": "West Africa" },
+                    "region": { "type": "string", "example": "Nigeria" },
                     "authorization": {
                       "type": "object",
                       "properties": {
@@ -4279,6 +4339,7 @@
           "localCurrency": { "type": "string", "example": "NGN" },
           "channel": { "type": "string", "example": "card" },
           "status": { "type": "string", "example": "SUCCESS" },
+          "mode": {"type": "string", "example": "TEST"},
           "customer": {
             "type": "object",
             "properties": {
@@ -4291,7 +4352,7 @@
             "example": "Transaction successful"
           },
           "rate": { "type": "number", "example": 1560.0 },
-          "region": { "type": "string", "example": "West Africa" },
+          "region": { "type": "string", "example": "Nigeria" },
           "authorization": {
             "type": "object",
             "properties": {
@@ -4332,21 +4393,6 @@
             "example": {
               "orderId": "ORD-000123",
               "note": "First payment"
-            }
-          },
-          "taxBreakdowns": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "taxName": { "type": "string", "example": "VAT" },
-                "taxType": { "type": "string", "example": "percentage" },
-                "taxRate": { "type": "number", "example": 7.5 },
-                "taxAmount": { "type": "number", "example": 50.0 },
-                "thresholdApplied": { "type": "boolean", "example": true },
-                "capApplied": { "type": "boolean", "example": false },
-                "taxApplicable": { "type": "boolean", "example": true }
-              }
             }
           },
           "totalTaxAmount": { "type": "number", "example": 50.0 },
