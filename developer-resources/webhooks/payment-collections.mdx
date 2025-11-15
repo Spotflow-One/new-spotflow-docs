@@ -6,11 +6,14 @@ icon: "money-bill-wave"
 
 ## **Payment Collection Events**
 
-| **Event Name**           | **Event Type**           | **Description**                                                                 |
-|--------------------------|--------------------------|---------------------------------------------------------------------------------|
-| **Payment Successful**    | `payment_successful`      | Triggered when a payment is successfully processed.                             |
+| **Event Name**           | **Event Type**           | **Description**                                                                                |
+|--------------------------|--------------------------|---------------------------------------------------------------------------------               |
+| **Payment Successful**   | `payment_successful`    | Triggered when a payment is successfully processed.                                             |
+| **Payment Failed**       | `payment_failed`        | Occurs when a payment attempt fails due to customer errors, declined cards, or other issues.    |
 
 ## **Payload Example Structure**
+
+#### ***Payment Collection Successful***
 
 ```yaml
 {
@@ -45,5 +48,43 @@ icon: "money-bill-wave"
     "totalLocalAmount": 100,
     "planId": "95mn9078d-b11a-44b2-8422-a1955ca0lo7d"
   }
+}
+```
+
+#### ***Payment Collection Failed***
+
+```yaml
+{
+    "event": "payment_failed",
+    "data": {
+        "id": "8da0788a-ef1d-43ac-915d-f2daf39f2940",
+        "reference": "ref-08ab300d-3f3a-443d-b928-312c400b3828",
+        "spotflowReference": "SPF-ISW-e68a4286577447d2a0baf3a6bcb3c110",
+        "amount": 2000.00,
+        "currency": "NGN",
+        "channel": "card",
+        "status": "failed",
+        "customer": {
+            "id": "2f39de57-e110-4423-8a66-9e643103da0a",
+            "name": "Olly",
+            "email": "olly@gmail.com",
+            "phoneNumber": "07001228900"
+        },
+        "providerMessage": "Error processing payment",
+        "rate": 1699.5,
+        "region": "Nigeria",
+        "card": {
+            "type": "Visa",
+            "firstSix": "408408",
+            "lastFour": "4081"
+        },
+        "createdAt": "2025-11-12T13:58:08Z",
+        "metadata": {
+            "SubscriptionPlan": "Test Trial",
+            "productName": "Free Trial"
+        },
+        "totalTaxAmount": 0.0000,
+        "totalLocalAmount": 2000.0000
+    }
 }
 ```
