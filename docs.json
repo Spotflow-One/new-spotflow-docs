@@ -97,6 +97,14 @@
             ]
           },
           {
+            "group": "Cookbooks",
+            "tag": "New",
+            "icon": "utensils",
+            "pages": [
+              "developer-resources/redirectapi-in-your-app"
+            ]
+          },
+          {
             "group": "Webhooks",
             "icon": "bell",
             "pages": [
