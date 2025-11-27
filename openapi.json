@@ -627,35 +627,31 @@
       "post": {
         "description": "Create multiple subscription plans under your integration.",
         "operationId": "CreateBulkSubscriptionPlans",
-        "parameters": [
-          {
-            "name": "skipErrors",
-            "in": "query",
-            "required": false,
-            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
-            "schema": {
-              "type": "boolean",
-              "enum": [true, false]
-            }
-          }
-        ],
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "file": {
                     "type": "string",
-                    "description": "Upload the file content and must in CSV format.",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "CSV file containing bulk subscription data. Must be a .csv file."
+                  },
+                  "skipErrors": {
+                    "type": "boolean",
+                    "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+                    "enum": [true, false]
                   }
                 },
                 "required": ["file"]
               },
-              "example": {
-                "file": "string"
+              "encoding": {
+                "file": {
+                  "contentType": "text/csv"
+                }
               }
             }
           }
@@ -1511,59 +1507,46 @@
       "post": {
         "description": "You can use this endpoint to perform bulk bank account transfer to multiple bank accounts.",
         "operationId": "CreateBulkTransfer",
-        "parameters": [
-          {
-            "name": "category",
-            "in": "query",
-            "required": true,
-            "description": "Specify a unique category of your choice for your company to track a transaction for later reconciliation.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "currency",
-            "in": "query",
-            "required": true,
-            "description": "Select the currency for the transfer. This is in our supported currency which is currently only NGN and GHS.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "narration",
-            "in": "query",
-            "required": true,
-            "description": "This is optional information for you to give details about the reason for the transfer",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "file": {
                     "type": "string",
-                    "description": "Upload the file content and must in CSV format.",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "CSV file containing bulk transfer data. Must be a .csv file."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Specify a unique category of your choice for your company to track a transaction for later reconciliation."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "Select the currency for the transfer. This is in our supported currency which is currently only NGN and GHS.",
+                    "enum": ["NGN", "GHS"]
+                  },
+                  "narration": {
+                    "type": "string",
+                    "description": "This is optional information for you to give details about the reason for the transfer"
                   }
                 },
-                "required": ["file"]
+                "required": ["file", "category", "currency", "narration"]
               },
-              "example": {
-                "file": "string"
+              "encoding": {
+                "file": {
+                  "contentType": "text/csv"
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "A JSON array of create bulk disbursement objects.",
+            "description": "Bulk transfer created successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1583,7 +1566,7 @@
             }
           },
           "400": {
-            "description": "Not Found - No subscriptions found for the given plan ID.",
+            "description": "Bad Request - Invalid CSV or missing fields.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2452,7 +2435,7 @@
               "format": "int32"
             }
           },
-          
+
           {
             "name": "query",
             "in": "query",
@@ -2490,7 +2473,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description" : "These are available payment providers on Spotflow."
+              "description": "These are available payment providers on Spotflow."
             }
           },
           {
@@ -2517,7 +2500,7 @@
             "description": "A JSON array of payment objects.",
             "content": {
               "application/json": {
-                  "schema": {
+                "schema": {
                   "type": "object",
                   "properties": {
                     "content": {
@@ -2659,12 +2642,7 @@
                     "description": "The customer’s email address"
                   }
                 },
-                "required": [
-                  "reference",
-                  "currency",
-                  "channel",
-                  "customer"
-                ]
+                "required": ["reference", "currency", "channel", "customer"]
               }
             }
           }
@@ -2772,7 +2750,7 @@
                       }
                     },
                     "description": "This is the phone number of the region you want to put in. E.g mobile_money number for Ghana, Kenya, Tanzania etc."
-                    },
+                  },
                   "metadata": {
                     "type": "object",
                     "properties": {
@@ -2796,11 +2774,7 @@
                     "description": "The customer’s email address"
                   }
                 },
-                "required": [
-                  "reference",
-                  "currency",
-                  "customer"
-                ]
+                "required": ["reference", "currency", "customer"]
               }
             }
           }
@@ -4339,7 +4313,7 @@
           "localCurrency": { "type": "string", "example": "NGN" },
           "channel": { "type": "string", "example": "card" },
           "status": { "type": "string", "example": "SUCCESS" },
-          "mode": {"type": "string", "example": "TEST"},
+          "mode": { "type": "string", "example": "TEST" },
           "customer": {
             "type": "object",
             "properties": {
