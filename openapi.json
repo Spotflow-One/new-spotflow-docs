@@ -2708,12 +2708,6 @@
                     "example": 10,
                     "description": "The default maximum expiry time is 30 mins. However, you can set yours to the time you desire. The least time you can set is 5 mins."
                   },
-                  "channel": {
-                    "type": "string",
-                    "enum": ["card", "bank_transfer", "mobile_money", "eft"],
-                    "description": "This is optional to add. Channel can be Card, Bank Transfer, Mobile Money or EFT depending on the region",
-                    "example": "card"
-                  },
                   "planId": {
                     "type": "string",
                     "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
