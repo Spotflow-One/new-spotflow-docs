@@ -1457,10 +1457,10 @@
         "operationId": "ListDynamicAccount",
         "parameters": [
           {
-            "name": "accountNumber",
+            "name": "accountId",
             "in": "query",
             "required": true,
-            "description": "This filters by the account number created for the virtual accounts.",
+            "description": "This filters by the account ID created for the virtual accounts.",
             "schema": {
               "type": "string"
             }
