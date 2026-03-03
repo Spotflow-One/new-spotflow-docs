@@ -50,6 +50,7 @@
               "features/single-and-bulk-disbursements",
               "features/wallets",
               "features/dynamic-accounts",
+               "features/available-regions",
               "features/settlement",
               {
                 "group": "Transactions",
