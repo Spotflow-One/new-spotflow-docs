@@ -2578,6 +2578,11 @@
                     "example": "USD",
                     "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region. If you put in USD, you have to put in the local currency of the region in the local currency request field."
                   },
+                  "countryCode": {
+                    "type": "string",
+                    "example": "CI",
+                    "description": "Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM. Note that, this is only needed to be passed or used for XOF and XAF currency payments"
+                  },
                   "planId": {
                     "type": "string",
                     "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
@@ -2715,9 +2720,14 @@
                   },
                   "currency": {
                     "type": "string",
-                    "enum": ["USD", "NGN", "GHS", "KES", "ZAR", "TZS"],
+                    "enum": ["USD", "NGN", "GHS", "KES", "ZAR", "TZS", "XOF", "XAF"],
                     "example": "USD",
                     "description": "Select the currency for the payment charge. Can either be in USD or in the local currency of your collection region. If you put in USD, you have to put in the local currency of the region in the local currency request field."
+                  },
+                  "countryCode": {
+                    "type": "string",
+                    "example": "CI",
+                    "description": "Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM. Note that, this is only needed to be passed or used for XOF and XAF currency payments"
                   },
                   "localCurrency": {
                     "type": "string",
