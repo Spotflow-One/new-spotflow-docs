@@ -203,7 +203,7 @@
             ]
           },
           {
-            "group": "Spotflow Wallets",
+            "group": "Spotflow Accounts",
             "icon": "wallet",
             "pages": [
               "api-reference/wallets/list-spotflow-wallets",
@@ -215,7 +215,7 @@
             ]
           },
           {
-            "group": "Dynamic Accounts",
+            "group": "Virtual Accounts",
             "icon": "vault",
             "pages": [
               "api-reference/dynamic-accounts/create-dynamic-account",
