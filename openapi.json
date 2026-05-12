@@ -2581,7 +2581,7 @@
                   "countryCode": {
                     "type": "string",
                     "example": "CI",
-                    "description": "Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM. Note that, this is only needed to be passed or used for XOF and XAF currency payments"
+                    "description": "***Note that, this is only needed to be passed or used for XOF and XAF currency payments***. Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM."
                   },
                   "planId": {
                     "type": "string",
