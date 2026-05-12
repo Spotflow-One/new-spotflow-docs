@@ -964,7 +964,8 @@
             "description": "",
             "schema": {
               "type": "string",
-              "format": "date-time"
+              "format": "date-time",
+              "example": "2025-02-28"
             }
           },
           {
@@ -974,7 +975,8 @@
             "description": "",
             "schema": {
               "type": "string",
-              "format": "date-time"
+              "format": "date-time",
+              "example": "2025-03-03"
             }
           }
         ],
@@ -2440,9 +2442,10 @@
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "",
+            "description": "Use this to get payments by any internal reference you set when creating/initializing payments",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "ref-db15ac7a-78c4-480d-afc4-2be8b2325399"
             }
           },
           {
@@ -2924,16 +2927,6 @@
                     "localCurrency": { "type": "string", "example": "NGN" },
                     "channel": { "type": "string", "example": "card" },
                     "status": { "type": "string", "example": "SUCCESS" },
-                    "customer": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string", "format": "uuid" },
-                        "email": {
-                          "type": "string",
-                          "example": "john@example.com"
-                        }
-                      }
-                    },
                     "providerMessage": {
                       "type": "string",
                       "example": "Please enter your OTP sent to your phone"
@@ -3039,20 +3032,6 @@
                     "localCurrency": { "type": "string", "example": "NGN" },
                     "channel": { "type": "string", "example": "card" },
                     "status": { "type": "string", "example": "SUCCESS" },
-                    "customer": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string", "format": "uuid" },
-                        "email": {
-                          "type": "string",
-                          "example": "john@example.com"
-                        }
-                      }
-                    },
-                    "providerMessage": {
-                      "type": "string",
-                      "example": "Please enter your OTP sent to your phone"
-                    },
                     "rate": { "type": "number", "example": 1560.0 },
                     "region": { "type": "string", "example": "Nigeria" },
                     "authorization": {
@@ -3974,10 +3953,6 @@
                   "format": "uuid",
                   "example": "c1fba25a-a36b-479c-b17d-64dbaf3ba32c"
                 },
-                "balanceId": {
-                  "type": "string",
-                  "example": "bln_52448a75-248e-4277-932f-5af5c325d372"
-                },
                 "accountName": {
                   "type": "string",
                   "example": "Main GHS Account"
@@ -4318,17 +4293,6 @@
           "channel": { "type": "string", "example": "card" },
           "status": { "type": "string", "example": "SUCCESS" },
           "mode": { "type": "string", "example": "TEST" },
-          "customer": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string", "format": "uuid" },
-              "email": { "type": "string", "example": "john@example.com" }
-            }
-          },
-          "providerMessage": {
-            "type": "string",
-            "example": "Transaction successful"
-          },
           "rate": { "type": "number", "example": 1560.0 },
           "region": { "type": "string", "example": "Nigeria" },
           "authorization": {
