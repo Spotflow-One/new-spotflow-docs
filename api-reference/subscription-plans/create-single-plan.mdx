@@ -6,26 +6,8 @@ title: Create Single Plan
 
 ## Mobile Money
 
-To enrol a customer on a mobile money subscription, include the following additional fields in your request:
-
-<ParamField body="paymentChannel" type="string">
-  Set to `mobile_money` to initiate a mobile money mandate request instead of a card charge.
-</ParamField>
-
-<ParamField body="provider" type="string">
-  The customer's mobile money provider. Required when `paymentChannel` is `mobile_money`.
-
-  Accepted values: `MTN`, `VODAFONE`, `AIRTELTIGO`, `MPESA`
-</ParamField>
-
-<ParamField body="customer.phoneNumber" type="string">
-  The customer's mobile money phone number. Required when `paymentChannel` is `mobile_money`.
-
-  Example: `"0241234567"`
-</ParamField>
-
 <Info>
-  When `paymentChannel` is set to `mobile_money` and a `planId` is included, Spotflow will automatically send a mandate approval request to the customer's phone. The subscription will only activate once the mandate is approved.
+  When `channel` is set to `mobile_money` and a `planId` is included, Spotflow will automatically send a mandate approval request to the customer's phone. The subscription will only activate once the mandate is approved.
 
   See the full guide on [Mobile Money Subscriptions](/features/mobile-money-subscriptions).
 </Info>
