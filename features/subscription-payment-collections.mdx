@@ -26,7 +26,7 @@ Subsequent payments are processed using this token. Therefore, recurring payment
 You can choose automated payment plans, Set the cycle and amount; Spotflow handles the rest.
 
 ## Creating Subscription Plans
-Create recurring pLANS either directly in your Spotflow Dashboard or programmatically via API.
+Create recurring plans either directly in your Spotflow Dashboard or programmatically via API.
 To set up a [recurring billing plan](/api-reference/subscription-plans/create-single-plan), define these key elements:
 
 | Field                                | Description                                                                                |
@@ -50,6 +50,14 @@ To set up a [recurring billing plan](/api-reference/subscription-plans/create-si
   ]
 }
 ```
+
+## Mobile Money Subscriptions
+
+If your customers pay via mobile money, the recurring billing flow works differently from card subscriptions. Instead of card tokenisation, Spotflow uses a mandate system where the customer approves recurring charges upfront.
+
+[Learn how to set up mobile money subscriptions →](/features/mobile-money-subscriptions) 
+
+
 ## API Management & Enrollment
 Once a plan is created, enrolling a customer is simple: reference the planId during the customer's initial charge.
 

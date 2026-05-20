@@ -1,0 +1,151 @@
+---
+title: "Mobile Money Subscriptions"
+description: "Set up and manage recurring billing for customers who pay via mobile money."
+icon: rotate
+---
+
+# Mobile Money Subscriptions
+
+Spotflow supports recurring billing through mobile money, allowing you to charge customers on a set schedule without requiring them to re-authorise each payment manually.
+
+This page covers how mobile money subscriptions work, how they differ from card subscriptions, and how to set them up.
+
+---
+
+## How It Works
+
+When a customer pays via mobile money for the first time on a subscription plan, Spotflow initiates a mandate request. A mandate is the customer's standing permission to debit their mobile money wallet on a recurring basis.
+
+The customer receives a prompt on their phone to approve the mandate. Once they approve it, Spotflow can charge their wallet automatically on each billing cycle without requiring them to take any action again.
+
+If the mandate is declined or expires, the subscription will not renew until a new one is authorised.
+
+---
+
+## How This Differs from Card Subscriptions
+
+Card subscriptions on Spotflow use card tokenisation—after the first successful payment, a secure token replaces the card details for future charges.
+
+Mobile money subscriptions work differently:
+
+| | Card Subscriptions | Mobile Money Subscriptions |
+|---|---|---|
+| **How recurring charges work** | Card token stored after first payment | Mandate approved by customer |
+| **Customer action required** | First payment only | Mandate approval on sign-up |
+| **Renewal trigger** | Automatic via stored token | Automatic via active mandate |
+| **Failure scenario** | Card decline or expiry | Mandate declined, expired, or insufficient balance |
+| **Supported currencies** | USD, NGN, GHS, and others | Dependent on mobile money provider and region |
+
+---
+
+## Supported Regions and Providers
+
+Mobile money subscriptions are available in the following regions:
+
+| Country | Provider |
+|---------|----------|
+| Ghana | MTN Mobile Money, Vodafone Cash, AirtelTigo Money |
+| Kenya | M-Pesa |
+
+<Info>
+  Support for additional providers and regions is being rolled out. Contact [support@spotflow.one](mailto:support@spotflow.one) to check availability for your region.
+</Info>
+
+---
+
+## Setting Up a Mobile Money Subscription
+
+### Step 1: Create a Subscription Plan
+
+Create a plan the same way you would for card subscriptions. There is no difference at the plan level.
+
+```json
+{
+  "title": "Basic Plan",
+  "frequency": "MONTHLY",
+  "pricingOptions": [
+    { "amount": 5000, "currency": "GHS" }
+  ]
+}
+```
+
+See [Create Subscription Plan](/api-reference/subscription-plans/create-single-plan) for the full API reference.
+
+---
+
+### Step 2: Enrol the Customer
+
+When initiating the first charge, include the `planId` and set the payment channel to mobile money. Spotflow will trigger the mandate request automatically.
+
+```json
+{
+  "planId": "961ca3d6-0505-4bc5-8dd3-fc160ac4afc9",
+  "currency": "GHS",
+  "customer": {
+    "email": "customer@email.com",
+    "phoneNumber": "0241234567"
+  },
+  "paymentChannel": "mobile_money",
+  "provider": "MTN"
+}
+```
+
+The customer will receive a prompt on their mobile device to approve the mandate. Their subscription will only activate once they confirm.
+
+---
+
+### Step 3: Handle the Mandate Response
+
+Spotflow sends a webhook to notify you of the mandate outcome. Listen for the following events:
+
+| Event | What it means |
+|-------|---------------|
+| `mandate_approved` | The customer accepted. The subscription is now active and renewals will be charged automatically. |
+| `mandate_declined` | The customer rejected or ignored the request. No charges will be made. |
+| `mandate_expired` | The mandate approval window passed without a response. |
+| `subscription_successful` | A renewal charge was processed successfully. |
+| `payment_failed` | A renewal charge failed, usually due to insufficient balance. |
+| `subscription_cancelled` | The subscription was cancelled by the customer or by you. |
+
+Set up your [webhook endpoint](/documentation/webhooks/overview) to listen for these events and update your records accordingly.
+
+---
+
+## Mandate Expiry and Renewal Failures
+
+If a customer's mandate expires or a charge fails, Spotflow will not automatically retry. You have two options:
+
+**Re-initiate the mandate**
+Send the customer back through the payment flow with the same `planId`. This will trigger a new mandate request.
+
+**Cancel the subscription**
+If the customer no longer wishes to continue, cancel their subscription via the [Cancel Subscription endpoint](/api-reference/subscriptions/subscription-cancel).
+
+<Warning>
+  Do not attempt to charge a mobile money wallet without an active mandate. Doing so will result in a failed transaction and may affect your account standing.
+</Warning>
+
+---
+
+## Cancelling a Mobile Money Subscription
+
+Cancellation works the same way as card subscriptions.
+
+- **Cancel a single customer's subscription:** [Cancel Subscription](/api-reference/subscriptions/subscription-cancel)
+- **Cancel the entire plan:** [Cancel Plan](/api-reference/subscription-plans/cancel-plan) — this cancels all active mandates and subscriptions under the plan
+- **Reactivate a cancelled subscription:** [Activate Subscription](/api-reference/subscriptions/subscription-activate)
+
+---
+
+## Best Practices
+
+- **Always collect the customer's phone number** at enrolment. Spotflow needs it to route the mandate request to the correct wallet.
+- **Communicate the mandate clearly.** Tell customers they will receive a prompt to approve recurring charges before they start the payment flow. Unexpected prompts lead to declines.
+- **Handle mandate failures gracefully.** Build a re-enrolment flow for customers whose mandates expire or are declined, so they can re-authorise without losing their subscription.
+- **Test in test mode first.** Use Spotflow's test environment to simulate mandate approvals, declines, and renewal failures before going live.
+
+---
+
+## Need Help?
+
+If you have questions about mobile money subscriptions or need help with a specific provider or region, reach out to the team at [support@spotflow.one](mailto:support@spotflow.one).

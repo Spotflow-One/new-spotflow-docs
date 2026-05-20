@@ -1,0 +1,81 @@
+---
+title: "Adding Fake Funds for Testing"
+sidebarTitle: "Funding Simulator"
+description: "Learn how to use our funding simulator to add fake money to your virtual accounts and currency balances. This is currently for NGN and GHS only."
+icon: "credit-card"
+---
+
+# Adding Fake Funds for Testing
+
+When you connect Spotflow to your app, you will need to test how your system handles incoming money—like what happens when a customer pays into a virtual account and how your system updates your balance. 
+
+Since you cannot use real money during development, Spotflow provides a **Funding Simulator Web App** so you can safely send fake money to your test accounts.
+
+---
+
+## 🏗️ Supported Ways to Add Test Funds
+
+Spotflow lets you send fake funds to two types of accounts. The simulator automatically routes the money to your currency balances:
+
+| Account Type | What it is | How to test it |
+| :--- | :--- | :--- |
+| **Virtual Accounts** | Unique bank account numbers created for your customers. | Type in the customer's test `accountNumber` to pretend they made a bank transfer. |
+| **Balances** | Separate currency pockets that shows the main account for those currencies. | Enter the account balance to add money directly to a specific currency balance. |
+| **Payment links and Bank Transfers on Checkout** | Separate currency pockets that shows the main account for those currencies. | Enter the account balance to add money directly to a specific currency balance. |
+---
+
+## 🛠️ Adding Test Funds Using the Web App
+
+If you want to test incoming payments quickly without writing any code, you can use our live web funding simulator app:
+
+👉 **[Launch Spotflow Funding Simulator](https://spotflow-funding-simulator.vercel.app/)**
+
+### Steps to follow:
+1. **Get your details:** Go to your Spotflow Dashboard (make sure you are in **Test Mode**) and copy a virtual account number that you created, or main account number in your separate currency balances.
+2. **Open the web app:** Launch the [Funding Simulator](https://spotflow-funding-simulator.vercel.app/).
+3. **Fill out the form:**
+   * **Account Number:** Paste the number you copied in Step 1.
+   * **Currency:** Pick your test currency ( `NGN`, `GHS` only).
+   * **Amount:** Type in any number you want to send.
+   * **Narration (*Optional*):** Add a short note (like "test transfer") to help you find it in your logs later.
+4. **Click Send:** Hit **Fund Account**. The form will instantly clear out, and a message will pop up confirming it worked!
+
+:::tip 🔍 HOW TO CHECK IF IT WORKED
+Once the simulator says "Success!", open your **Spotflow Test Dashboard** or check your app backend. The balance will update instantly, you'll receive an email and your system will receive a webhook notification.
+:::
+
+---
+
+### Testing Webhooks
+Whenever you use the Funding Simulator to send a successful test payment, Spotflow will automatically send a notification payload to your webhook link set up on your dashboard.
+
+Look out for the account_credit_successful event name:
+
+{
+  "event": "account_credit_successful",
+  "data": {
+    "account": {
+      "accountName": "Main NGN Account",
+      "accountNumber": "04a6031a-ada4-4d25-9e49-1a9648f3fc17",
+      "id": "04a6031a-ada4-4d25-9e49-1a9648f3fc17"
+    },
+    "amount": 105,
+    "currency": "NGN",
+    "description": "NIP/John Doe to SPOTFLOWMAIN NGN ACCOUNTSent 105 to Jollof Bank M/2264619087",
+    "fee": 0,
+    "id": "0676224b-59da-46ce-a1f9-f18b4337a2f9",
+    "merchantId": "98wgbffb-a498-497c-9cfa-fd0412aa0410",
+    "mode": "live",
+    "reference": "API-VACT_TRA-30D70-8011ffbe-10af-4961-813f-cf9c4f5b6d70",
+    "sender": {
+      "accountName": "John Doe",
+      "accountNumber": "1013339087",
+      "bankName": "Jollof Bank"
+    },
+    "source": "virtual_account",
+    "spotflowReference": "SPF-CRDT-98ij44a277c04225a31e5d397a34987y",
+    "status": "successful",
+    "transactionDate": "2026-05-20T10:31:39Z",
+    "type": "credit"
+  }
+}

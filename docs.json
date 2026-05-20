@@ -47,6 +47,7 @@
             "pages": [
               "features/payment-collections",
               "features/subscription-payment-collections",
+              "features/mobile-money-subscriptions",
               "features/single-and-bulk-disbursements",
               "features/wallets",
               "features/dynamic-accounts",
@@ -127,6 +128,7 @@
             "pages": [
               "expert-desk/test-mode-vs-live-mode",
               "expert-desk/testing-payments",
+              "expert-desk/simulating-funds",
               "features/spotflow-demo-checkout"
             ]
           },

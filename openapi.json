@@ -492,11 +492,11 @@
                       "properties": {
                         "amount": {
                           "type": "number",
-                          "description": "Amount to be charged per billing cycle"
+                          "description": "Amount to be charged per billing cycle. ***If you plan to use this subscription plan for mobile money payments, make sure the currency matches a supported mobile money region. See [Mobile Money Subscriptions](/features/mobile-money-subscriptions) for supported currencies and providers.***"
                         },
                         "currency": {
                           "type": "string",
-                          "description": "Currency code for the plan (e.g. USD, NGN)",
+                          "description": "Currency code for the plan (e.g. USD, NGN). ***If you plan to use this subscription plan for mobile money payments, make sure the currency matches a supported mobile money region. See [Mobile Money Subscriptions](/features/mobile-money-subscriptions) for supported currencies and providers.***",
                           "example": "NGN"
                         }
                       },
