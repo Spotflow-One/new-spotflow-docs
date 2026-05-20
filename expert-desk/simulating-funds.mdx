@@ -21,6 +21,7 @@ Spotflow lets you send fake funds to two types of accounts. The simulator automa
 | **Virtual Accounts** | Unique bank account numbers created for your customers. | Type in the customer's test `accountNumber` to pretend they made a bank transfer. |
 | **Balances** | Separate currency pockets that shows the main account for those currencies. | Enter the account balance to add money directly to a specific currency balance. |
 | **Payment links and Bank Transfers on Checkout** | Separate currency pockets that shows the main account for those currencies. | Enter the account balance to add money directly to a specific currency balance. |
+
 ---
 
 ## Adding Test Funds Using the Web App
@@ -34,22 +35,26 @@ If you want to test incoming payments quickly without writing any code, you can 
 2. **Open the web app:** Launch the [Funding Simulator](https://spotflow-funding-simulator.vercel.app/).
 3. **Fill out the form:**
    * **Account Number:** Paste the number you copied in Step 1.
-   * **Currency:** Pick your test currency ( `NGN`, `GHS` only).
+   * **Currency:** Pick your test currency (`NGN`, `GHS` only).
    * **Amount:** Type in any number you want to send.
    * **Narration (*Optional*):** Add a short note (like "test transfer") to help you find it in your logs later.
 4. **Click Send:** Hit **Fund Account**. The form will instantly clear out, and a message will pop up confirming it worked!
 
-:::tip  HOW TO CHECK IF IT WORKED
+<Tip>
+**HOW TO CHECK IF IT WORKED**
+ 
 Once the simulator says "Success!", open your **Spotflow Test Dashboard** or check your app backend. The balance will update instantly, you'll receive an email and your system will receive a webhook notification.
-:::
+</Tip>
 
 ---
 
-### Testing Webhooks
+## Testing Webhooks
+
 Whenever you use the Funding Simulator to send a successful test payment, Spotflow will automatically send a notification payload to your webhook link set up on your dashboard.
 
-Look out for the account_credit_successful event name:
+Look out for the `account_credit_successful` event name:
 
+```json
 {
   "event": "account_credit_successful",
   "data": {
