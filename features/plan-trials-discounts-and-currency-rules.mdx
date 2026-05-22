@@ -1,7 +1,7 @@
 ---
 title: "Plan Trials, Discounts & Currency Rules"
 description: "Learn how to set up free trials and discounts on subscription plans, and understand how currency rules work across plans."
-icon: gear
+icon: "gear"
 ---
 
 # Plan Trials, Discounts & Currency Rules
@@ -81,9 +81,8 @@ You can group any combination of local currencies — NGN, GHS, TZS, KES, ZAR, X
 
 You can offer a trial period measured in calendar days. When a customer subscribes to a plan with a free trial, their payment profile is activated immediately, but their first automated billing prompt will not trigger until the trial days lapse.
 
-* **For Card Subscriptions:** The card is tokenized, and a background authorization charge occurs without pulling funds.
-* **For Mobile Money Subscriptions:** The customer approves the initial mandate signup prompt on their phone screen. Their wallet is marked as authorized, but zero funds are deducted until the trial period ends. 
-
+- **For Card Subscriptions:** The card is tokenized, and a background authorization charge occurs without pulling funds.
+- **For Mobile Money Subscriptions:** The customer approves the initial mandate signup prompt on their phone screen. Their wallet is marked as authorized, but zero funds are deducted until the trial period ends.
 
 ### How It Works
 
@@ -131,7 +130,7 @@ Spotflow sends the following events during a trial period:
 
 ## Discounts
 
-Discounts let you reduce the price of a plan for a customer, either for a fixed number of billing cycles or permanently. Instead of making a trial completely free, you can specify an introductory price list (`pricingList`) that applies only during the trial window. 
+Discounts let you reduce the price of a plan for a customer, either for a fixed number of billing cycles or permanently. Instead of making a trial completely free, you can specify an introductory price list (`pricingList`) that applies only during the trial window.
 
 For example, you can configure a plan that normally costs `5,000 NGN/month` to charge just `1,000 NGN` for the first 14 days before rolling over to the full amount. You can apply them as a flat amount or a percentage.
 
@@ -242,13 +241,17 @@ To attach a trial or discount to a plan, include the `trial` object in your `POS
   Configuration object for the promotional introductory state.
   <Expandable title="properties">
     <ParamField body="periodInDays" type="integer" required>
-      The duration length of the trial window measured in calendar days (e.g., `7` or `14`).
+      The duration of the trial window in calendar days (e.g. `7` or `14`).
     </ParamField>
     <ParamField body="pricingList" type="array">
-      An array containing the price to charge *during* the trial period. To make the trial **100% free**, set the amount to `0`. If omitted, the trial defaults to free.
+      The price to charge during the trial period. To make the trial 100% free, set the amount to `0`. If omitted, the trial defaults to free.
       <Expandable title="properties">
-        <ParamField body="amount" type="number" required>The promotional cost during the trial window.</ParamField>
-        <ParamField body="currency" type="string" required>The 3-letter target ISO currency string code.</ParamField>
+        <ParamField body="amount" type="number" required>
+          The promotional price during the trial window.
+        </ParamField>
+        <ParamField body="currency" type="string" required>
+          The 3-letter ISO currency code.
+        </ParamField>
       </Expandable>
     </ParamField>
   </Expandable>
@@ -256,15 +259,13 @@ To attach a trial or discount to a plan, include the `trial` object in your `POS
 
 ---
 
-### Code Examples
-
-Here is how to create a multi-currency African regional plan featuring a 7-day free trial window:
+### Code Example
 
 <CodeGroup>
 
-```bash African Regional Plan (NGN + GHS Combo)
+```bash African Regional Plan with Free Trial
 curl --request POST \
-  --url [https://api.spotflow.one/api/v1/plans](https://api.spotflow.one/api/v1/plans) \
+  --url https://api.spotflow.one/api/v1/plans \
   --header 'Authorization: Bearer sk_test_xxxxxxxxxx' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -283,6 +284,11 @@ curl --request POST \
       ]
     }
   }'
+```
+
+</CodeGroup>
+
+---
 
 ## Best Practices
 
@@ -290,12 +296,15 @@ curl --request POST \
 - **Set a trial only when you intend to convert.** Trials without a retention strategy lead to high churn at the end of the free period.
 - **Use `repeating` discounts for introductory pricing.** It is more predictable than `forever` and easier to communicate to customers.
 - **Always communicate discount end dates.** Customers who are surprised by a price increase after a discount ends are more likely to cancel.
-- **Test trial and discount flows in test mode** before going live, including the webhook events, to make sure your system handles the transitions correctly.
-- **For Mobile Money Trials**, Because Mobile Money subscribers must approve transactions via an explicit phone prompt, manage expectations at signup: When a user signs up for a free trial using a MoMo wallet, they will still receive an immediate prompt on their phone screen to authorize the payment mandate. Explicitly inform your users on your checkout page that they will not be charged today, but authorizing the prompt is required to start the trial.
-- **The "First Charge" Notification**, For a standard plan, the user pays immediately. For a trial plan, Spotflow will deploy an automatic STK Push prompt to their phone exactly on the morning their trial days expire. Send an in-app banner or an email notification 24 hours prior so your customer expects the prompt and keeps their wallet funded.
+- **Test trial and discount flows in test mode** before going live to make sure your system handles the transitions correctly.
+- **For Mobile Money Trials:** Customers will still receive a phone prompt to authorise the mandate even on a free trial. Tell them clearly on your checkout page that they will not be charged today, but approving the prompt is required to start the trial.
+- **Notify before the first charge:** Spotflow will trigger the charge automatically when the trial ends. Send an in-app or email notification 24 hours before so your customer expects the prompt and has their wallet funded.
 
 ---
 
 ## Need Help?
 
 Reach out to the Spotflow team at [support@spotflow.one](mailto:support@spotflow.one)
+````
+
+---
