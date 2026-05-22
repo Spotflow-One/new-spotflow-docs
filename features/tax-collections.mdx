@@ -1,0 +1,48 @@
+---
+title: "Tax Collections"
+description: "Learn how to collect and manage transaction taxes or extra service fees from your customers."
+icon: "calculator"
+---
+
+Spotflow lets you add and collect taxes or extra compliance fees from your customers during checkout. This works across all supported currencies and countries.
+
+Whether you need to charge a percentage tax (like VAT) or a fixed fee (like stamp duty), you can set everything up automatically using either your **Spotflow Dashboard** or the **Tax APIs**.
+
+---
+
+## How to Set Up Tax Collection
+
+To keep your checkout flow running smoothly, turning on tax collection follows a simple, step-by-step setup process:
+
+<Steps>
+  <Step title="1. Spotflow Activates Your Regions">
+    By default, tax features are turned off. First, reach out to our support team and tell us which countries you want to collect taxes in. We will turn those regions on for your account behind the scenes.
+  </Step>
+  <Step title="2. Accept Taxes on Your End">
+    Once we open up those countries for you, you need to turn them on from your side. You can do this with a single click on your **Spotflow Dashboard** - Settings > Payment > Tax or by calling our API. This extra step ensures you never charge taxes to your customers by accident.
+  </Step>
+  <Step title="3. Create Your Tax Rules">
+    Once a country is active on your account, you can create your specific tax rules. You can choose between two types of charges: a **Flat Fee** (charging a fixed amount) or a **Percentage** (charging a percentage of the customer's total order).
+  </Step>
+  <Step title="4. Activate the Tax (Start Charging)">
+    When you create a new tax, it starts out as `inactive`. This lets you double-check your settings safely. When you are ready to start charging live customers during checkout, change its status to `active`.
+  </Step>
+</Steps>
+
+---
+
+## Understanding Tax Settings
+
+When you build or update your tax rules on the dashboard or via the API, you will use these three main settings:
+
+* **Tax Type (`taxType`):** * `flat`: Charges a fixed, unchanging amount on every transaction (for example, a flat 50 NGN Stamp Duty fee).
+  * `percentage`: Calculates a fee based on the customer's total checkout amount (for example, a 7.5% sales tax).
+* **Cap Amount (`capAmount`):** The maximum amount of tax a customer can ever be charged for a single transaction. For example, if a 5% tax on a large order comes out to 4,500 NGN, but your cap is set to `2000`, Spotflow will stop at `2000` to protect your customer from overpaying.
+* **Threshold Amount (`thresholdAmount`):** The minimum order amount required before this tax applies. If you set this to `1000`, any order under 1,000 stays tax-free; the tax will only kick in for orders of 1,000 and above.
+
+---
+
+## Best Practices
+
+* **Keep new taxes Inactive first:** Always create your new tax rules as `inactive` first. Take your time to review the names and rates with your finance team, and then flip the switch to `active` when you are completely ready.
+* **Match your Test and Live settings:** Make sure you set up the exact same tax configurations in your test dashboard (sandbox) and your live dashboard. This guarantees your calculations will work exactly the same way in production as they did during testing.

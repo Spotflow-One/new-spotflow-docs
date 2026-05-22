@@ -49,6 +49,7 @@
               "features/subscription-payment-collections",
               "features/mobile-money-subscriptions",
               "features/plan-trials-discounts-and-currency-rules",
+              "features/tax-collections",
               "features/single-and-bulk-disbursements",
               "features/wallets",
               "features/dynamic-accounts",
@@ -178,6 +179,17 @@
               "api-reference/payments/fetch-collection",
               "api-reference/payments/list-collection",
               "api-reference/payments/verify-collection"
+            ]
+          },
+          {
+            "group": "Tax Collections Configuration",
+            "icon": "wrench",
+            "pages": [
+              "api-reference/tax-collections-configuration/get-tax-status",
+              "api-reference/tax-collections-configuration/get-tax-region",
+              "api-reference/tax-collections-configuration/create-tax",
+              "api-reference/tax-collections-configuration/update-tax",
+              "api-reference/tax-collections-configuration/toggle-tax-status"
             ]
           },
           {

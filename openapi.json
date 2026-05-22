@@ -3089,6 +3089,166 @@
         }
       }
     },
+    "/merchant/tax-status": {
+      "get": {
+        "summary": "Check Tax Activation Status",
+        "description": "According to your request made, checks if your merchant account has been authorized by Spotflow to collect regional checkout taxes.",
+        "responses": {
+          "200": {
+            "description": "Returns true if tax features are enabled for your account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tax-configurations": {
+      "get": {
+        "summary": "Get Tax Settings by Country/Region",
+        "description": "Returns a list of all custom tax rules and rates configured for a specific country.",
+        "parameters": [
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": true,
+            "description": "The unique ID number for the country (e.g., `1` for Nigeria).",
+            "schema": { "type": "integer", "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of configured tax settings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TaxConfiguration" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a New Tax Setting",
+        "description": "Adds a new tax rule to an approved country. You can set this up as a fixed flat fee or a percentage-based charge.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["taxName", "taxType", "rate", "currency", "regionId"],
+                "properties": {
+                  "taxName": { "type": "string", "example": "Stamp duty" },
+                  "taxType": { "type": "string", "enum": ["flat", "percentage"], "example": "flat" },
+                  "rate": { "type": "number", "example": 100.00 },
+                  "currency": { "type": "string", "example": "NGN" },
+                  "regionId": { "type": "integer", "example": 1 },
+                  "capAmount": { "type": "number", "example": 2000 },
+                  "thresholdAmount": { "type": "number", "example": 0 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tax setting created successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaxConfiguration" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tax-configurations/{id}": {
+      "put": {
+        "summary": "Edit Tax Details",
+        "description": "Updates the display name, amount, or maximum cap limit for an existing tax rule.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique ID of the specific tax rule you want to update.",
+            "schema": { "type": "integer", "example": 12 }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taxName": { "type": "string", "example": "Updated Service Charge Name" },
+                  "rate": { "type": "number", "example": 50.00 },
+                  "capAmount": { "type": "number", "example": 2000 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tax details updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaxConfiguration" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tax-configurations/{id}/status": {
+      "put": {
+        "summary": "Start or Stop Charging a Tax",
+        "description": "Changes the status of a tax rule. Set to `active` to start charging your customers during checkout, or `inactive` to pause it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique ID of the tax rule you want to activate or pause.",
+            "schema": { "type": "integer", "example": 12 }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["active", "inactive"], "example": "inactive" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tax status updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaxConfiguration" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/payments/verify": {
       "get": {
         "description": "Confirm the status of a payment",
@@ -3251,6 +3411,24 @@
           "pageSize": { "type": "integer" },
           "totalElements": { "type": "integer" },
           "totalPages": { "type": "integer" }
+        }
+      },
+      "TaxConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 12 },
+          "taxName": { "type": "string", "example": "VAT" },
+          "taxType": { "type": "string", "enum": ["flat", "percentage"], "example": "percentage" },
+          "rate": { "type": "number", "format": "float", "example": 7.50 },
+          "currency": { "type": "string", "example": "NGN" },
+          "capAmount": { "type": "number", "format": "float", "example": 2000.00 },
+          "thresholdAmount": { "type": "number", "format": "float", "example": 0.00 },
+          "regionId": { "type": "integer", "example": 1 },
+          "regionName": { "type": "string", "example": "Nigeria" },
+          "merchantName": { "type": "string", "example": "DEE LLC" },
+          "status": { "type": "string", "enum": ["active", "inactive"], "example": "active" },
+          "template": { "type": "boolean", "example": false },
+          "templateId": { "type": "integer", "example": 1 }
         }
       },
       "SubscriptionsPlanResponse": {
