@@ -467,6 +467,21 @@
                     "example": "Standard Monthly Plan",
                     "description": "Name or title of the plan"
                   },
+                  "cycleCount": {
+                    "type": "integer",
+                    "example": "3",
+                    "description": "Maximum billing cycles before the plan completes"
+                  },
+                  "retrial": {
+                    "type": "integer",
+                    "example": "3",
+                    "description": "***Note that retrial only applies to card subscriptions, not mobile money.*** Retry count for failed card payments."
+                  },
+                  "endDate": {
+                    "type": "integer",
+                    "example": "2026-10-29",
+                    "description": "The date all subscription cycles end"
+                  },
                   "frequency": {
                     "type": "string",
                     "enum": [
@@ -2589,7 +2604,7 @@
                   "planId": {
                     "type": "string",
                     "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
-                    "description": "Used when paying for a subscription plan."
+                    "description": "***Note that including this turns the payment into a subscription.** Omitting it makes it a one-time charge as it is used when paying for a subscription plan."
                   },
                   "localCurrency": {
                     "type": "string",
@@ -2610,8 +2625,8 @@
                   "mobileMoney": {
                     "type": "object",
                     "properties": {
-                      "code": {
-                        "type": "string",
+                      "provider": {
+                        "type": "telecel",
                         "example": "atl"
                       },
                       "phoneNumber": {
@@ -2719,7 +2734,7 @@
                   "planId": {
                     "type": "string",
                     "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
-                    "description": "Used when paying for a subscription plan."
+                    "description": "***Note that including this turns the payment into a subscription.** Omitting it makes it a one-time charge as it is used when paying for a subscription plan."
                   },
                   "currency": {
                     "type": "string",

@@ -1,63 +1,34 @@
 ---
 title: "Mobile Money Subscriptions"
 description: "Set up recurring billing plans and collect automated subscription payments using Mobile Money providers."
-icon: rotate
+icon: "rotate"
 ---
 
 # Mobile Money Subscriptions
 
-Spotflow supports recurring billing through mobile money, allowing you to charge customers using their Mobile Money (MoMo) wallets on a set schedule without requiring them to re-authorise each payment manually.
-
-This page covers how mobile money subscriptions work, how they differ from card subscriptions, and how to set them up. 
+Spotflow supports recurring billing through mobile money, allowing you to charge customers on a set schedule using their mobile money wallets.
 
 <Info>
-  **How MoMo Subscriptions differ from Card Subscriptions:**
-  
-  When a customer subscribes with a credit card, future charges happen automatically in the background without the customer doing anything. 
-  
-  Mobile Money networks do not allow silent background charges. Because of telecom safety rules, **the customer needs to approve the recurring payment.**
+  **How MoMo subscriptions differ from card subscriptions**
+
+  Card subscriptions charge the customer automatically in the background after the first payment. Mobile money networks do not allow silent background charges. Because of telecom rules, **the customer must approve each recurring payment directly on their phone.**
+
+  Spotflow handles this with a semi-automated workflow that sends reminders, renewal links, payment prompts, and retries on your behalf.
 </Info>
 
-To make this seamless, Spotflow uses a **semi-automated subscription workflow** that manages notifications, checkout links, payment retries, and system events for you.
-
-### What Spotflow automates:
-* **Automatic reminders:** Sent to customers via email before their next billing due date.
-* **Renewal checkout links:** Built into reminder emails so customers can log in and pay early.
-* **Direct phone prompts (STK Push):** Sent directly to the customer's phone on the exact due date for instant PIN approval.
-* **Smart retries:** Automated follow-ups if the due-date payment fails.
-* **Webhooks:** Real-time system notifications sent directly to your server when states change.
-
 ---
 
-## How It Works
+## What Spotflow Handles for You
 
-When a customer pays via mobile money for the first time on a subscription plan, Spotflow initiates a mandate request. A mandate is the customer's standing permission to debit their mobile money wallet on a recurring basis.
-
-The customer receives a prompt on their phone to approve the mandate. Once they approve it, Spotflow can charge their wallet automatically on each billing cycle without requiring them to take any action again.
-
-If the mandate is declined or expires, the subscription will not renew until a new one is authorised.
-
----
-
-## How This Differs from Card Subscriptions
-
-Card subscriptions on Spotflow use card tokenisation—after the first successful payment, a secure token replaces the card details for future charges.
-
-Mobile money subscriptions work differently:
-
-| | Card Subscriptions | Mobile Money Subscriptions |
-|---|---|---|
-| **How recurring charges work** | Card token stored after first payment | Mandate approved by customer |
-| **Customer action required** | First payment only | Mandate approval on sign-up |
-| **Renewal trigger** | Automatic via stored token | Automatic via active mandate |
-| **Failure scenario** | Card decline or expiry | Mandate declined, expired, or insufficient balance |
-| **Supported currencies** | USD, NGN, GHS, and others | Dependent on mobile money provider and region |
+- **Reminder emails** sent to customers before their next billing date
+- **Renewal checkout links** included in every reminder so customers can pay early
+- **Direct phone prompts (STK Push)** sent on the due date for one-tap approval
+- **Automatic retries** if the due-date payment fails
+- **Webhooks** sent to your server whenever a subscription changes state
 
 ---
 
 ## Supported Regions and Providers
-
-Mobile money subscriptions are available in the following regions:
 
 | Country | Provider |
 |---------|----------|
@@ -65,148 +36,376 @@ Mobile money subscriptions are available in the following regions:
 | Kenya | M-Pesa |
 
 <Info>
-  Support for additional providers and regions is being rolled out. Contact [support@spotflow.one](mailto:support@spotflow.one) to check availability for your region.
+  Support for more providers and regions is ongoing. Contact [support@spotflow.one](mailto:support@spotflow.one) to check availability for your requested region.
 </Info>
+
+---
+
+## How Card and Mobile Money Subscriptions Compare
+
+| | Card Subscriptions | Mobile Money Subscriptions |
+|---|---|---|
+| **How recurring charges work** | Card token stored after first payment | Customer approves each renewal |
+| **Customer action required** | First payment only | Phone prompt approval on each due date |
+| **Renewal trigger** | Automatic via stored token | Automatic phone prompt on due date |
+| **Failure scenario** | Card decline or expiry | Insufficient balance, prompt ignored, or timeout |
+| **Supported currencies** | USD, NGN, GHS, and others | Depends on provider and region |
 
 ---
 
 ## The Subscription Lifecycle
 
-The step-by-step process below shows how a subscription moves from start to finish:
-
 <Steps>
   <Step title="Create a Subscription Plan">
-    Create a plan the same way you would for card subscriptions. There is no difference at the plan level. Before you can subscribe a user, you must create a **Plan** that sets the price, currency, and frequency (`weekly`, `monthly`, or `yearly`).
-  
-  ```json
-{
-  "title": "Basic Plan",
-  "frequency": "MONTHLY",
-  "pricingOptions": [
-    { "amount": 5000, "currency": "GHS" }
-  ]
-}
+    Before subscribing a customer, create a plan that sets the price, currency, and billing frequency.
+
+```json
+    {
+      "title": "Standard Monthly Plan",
+      "frequency": "monthly",
+      "internalReference": "PLAN-STD-001",
+      "pricingOptions": [
+        { "amount": 123, "currency": "NGN" }
+      ]
+    }
 ```
 
-See [Create Subscription Plan](/api-reference/subscription-plans/create-single-plan) for the full API reference.
-
+    See [Create Plan](/api-reference/subscription-plans/create-single-plan) below for all available fields including trials, cycle limits, and end dates.
   </Step>
+
   <Step title="Collect the First Payment">
-    The customer authorizes the initial payment. Once successful, their active subscription cycle officially begins. When initiating the first charge, include the `planId` and set the payment channel to mobile money. Spotflow will trigger the mandate request automatically.
+    Start the subscription by initiating a payment with the customer's mobile money details and the `planId`.
 
+```json
+    {
+      "reference": "SUB-10001",
+      "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+      "currency": "GHS",
+      "localCurrency": "GHS",
+      "amount": 10,
+      "channel": "mobile_money",
+      "customer": {
+        "name": "John Doe",
+        "phoneNumber": "233XXXXXXXXX",
+        "email": "john@example.com"
+      },
+      "mobileMoney": {
+        "phoneNumber": "233XXXXXXXXX",
+        "provider": "telecel"
+      }
+    }
+```
+
+    <Warning>
+      If you omit `planId`, the payment is treated as a one-time charge, not a subscription.
+    </Warning>
+
+    Once the first payment succeeds, the subscription becomes active and the billing cycle begins.
   </Step>
+
   <Step title="Receive Renewal Reminders">
-    Before the next billing period ends, Spotflow automatically sends out reminder emails containing a secure checkout link:
-    * **Weekly Plans:** Reminders are sent 3 days before expiry.
-    * **Monthly & Yearly Plans:** Reminders are sent 1 week before expiry, and again 3 days before expiry.
+    Spotflow automatically sends reminder emails with a secure checkout link before each billing date.
+
+    - **Weekly plans:** Reminder sent 3 days before expiry
+    - **Monthly and yearly plans:** Reminders sent 1 week before expiry, then again 3 days before
   </Step>
-  <Step title="Approve the Due Date Prompt">
-    If the customer has not manually renewed early via the checkout link, Spotflow triggers an automatic request on the exact due date. A payment prompt pops up directly on the customer's mobile phone screen asking them to enter their mobile wallet PIN.
+
+  <Step title="Due Date Prompt">
+    If the customer has not renewed early using the checkout link, Spotflow sends an automatic payment prompt directly to their phone on the due date. The customer approves it by entering their mobile wallet PIN.
   </Step>
+
   <Step title="Handle Retries or Cancellation">
-    If the transaction fails (e.g., phone turned off, insufficient funds, or prompt timed out):
-    * Spotflow sends a retry email containing a fresh checkout link every **3 days** past the due date.
-    * If no payment is completed by the **4th day after the due date**, the system automatically changes the subscription status to `cancelled`.
+    If the due-date payment fails:
+
+    - A retry email with a fresh checkout link is sent every **3 days** after the due date
+    - If no payment is received by the **4th day after the due date**, the subscription is automatically cancelled
   </Step>
 </Steps>
 
+---
 
-The customer will receive a prompt on their mobile device to approve the mandate. Their subscription will only activate once they confirm.
+## Create Plan
+
+**Endpoint:** `POST /api/v1/plans`
+
+```json
+{
+  "title": "Standard Monthly Plan",
+  "frequency": "monthly",
+  "internalReference": "PLAN-STD-001",
+  "pricingOptions": [
+    { "amount": 123, "currency": "NGN" }
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      { "amount": 0, "currency": "NGN" }
+    ]
+  },
+  "endDate": "2026-10-29",
+  "cycleCount": 3,
+  "retrial": 2
+}
+```
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string | Yes | Name of the subscription plan |
+| `frequency` | string | Yes | How often to bill: `weekly`, `monthly`, `yearly` |
+| `internalReference` | string | Yes | Your own internal reference for the plan |
+| `pricingOptions` | array | Yes | List of prices per currency |
+| `trial` | object | No | Trial configuration. See [Plan Trials](/features/plan-trials-discounts-and-currency-rules) |
+| `endDate` | datetime | No | The date all subscription cycles end |
+| `cycleCount` | integer | No | Maximum number of billing cycles before the subscription completes |
+| `retrial` | integer | No | Number of retry attempts for failed payments. Applies to card subscriptions only |
+
+### Retrial Limits by Frequency
+
+| Frequency | Maximum Retries |
+|-----------|-----------------|
+| Hourly | 2 |
+| Daily | 6 |
+| Weekly | 9 |
+| Monthly | 10 |
+| Yearly | 10 |
+
+<Info>
+  `retrial` defaults to `0`, which means no retries. Set a value above `0` to enable automatic payment retries on card subscriptions.
+</Info>
 
 ---
 
 ## Subscription Statuses
 
-As a subscription progresses, it will reflect one of these four system statuses:
-
-| Status | Description |
-| :--- | :--- |
-| `active` | The subscription is healthy, and the customer is waiting for their next billing cycle prompt. |
-| `failed` | The recurring billing cycle failed completely after exhausting all automatic retry updates. |
-| `completed` | The subscription successfully reached its maximum number of set cycles. |
-| `cancelled` | The subscription was stopped manually by you, by the customer, or dropped due to non-payment. |
+| Status | What it means |
+|--------|---------------|
+| `active` | The subscription is running and waiting for the next billing cycle |
+| `failed` | All retry attempts were exhausted and payment was never collected |
+| `completed` | The subscription reached its set end date or cycle count |
+| `cancelled` | The subscription was stopped by you, the customer, or the system after non-payment |
 
 ---
 
 ## Subscription Management Endpoints
 
-Manage existing subscriptions using these standard REST routes:
-
 | Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/subscriptions` | Returns a paginated list of all customer subscriptions. |
-| `GET` | `/subscriptions/{subscription-id}` | Returns information for a single specific subscription record. |
-| `GET` | `/subscriptions/count/{plan-id}` | Returns a summary breakdown of totals grouped by status (`active`, `cancelled`, etc.). |
-| `POST` | `/subscriptions/{subscription-id}/activate` | Instantly reactivates a previously cancelled subscription profile. |
-| `POST` | `/subscriptions/{subscription-id}/cancel` | Immediately cancels an active subscription and halts future prompts. |
+|--------|----------|-------------|
+| `GET` | `/subscriptions` | Returns a paginated list of all subscriptions |
+| `GET` | `/subscriptions/{subscription-id}` | Returns details for a single subscription |
+| `GET` | `/subscriptions/count/{plan-id}` | Returns a count of subscriptions grouped by status for a plan |
+| `POST` | `/subscriptions/{subscription-id}/activate` | Reactivates a cancelled subscription |
+| `POST` | `/subscriptions/{subscription-id}/cancel` | Cancels an active subscription |
 
 ---
 
-## Webhooks & Events
+## Webhooks and Events
 
-Spotflow sends an HTTP `POST` webhook notification payload to your server whenever a subscription changes state. All subscription webhooks share the exact same JSON format structure.
+Spotflow sends a `POST` request to your webhook URL whenever a subscription changes state. All events share the same payload structure.
 
-### Webhook Payload Structure
+### Payload Structure
 
 ```json
 {
-  "event": "subscription_successful",
+  "event": "event_name",
   "data": {
     "id": "subscription-id",
     "customerId": "customer-id",
     "planId": "plan-id",
-    "status": "successful",
+    "status": "subscription-status",
     "amount": 10,
     "currency": "GHS",
     "regionName": "Ghana",
     "startDate": "2026-05-15T12:55:45.407Z",
     "nextPaymentDate": "2026-05-22T12:55:45.407Z",
     "createdAt": "2026-05-15T12:55:45.408Z",
-    "metadata": {
-      "webhook": "test"
-    }
+    "metadata": {}
   }
 }
 ```
 
-## Mandate Expiry and Renewal Failures
+### Event Reference
 
-If a customer's mandate expires or a charge fails after renewal reminders, Spotflow will not automatically retry. You have two options:
+| Event | When it fires |
+|-------|---------------|
+| `subscription_created` | A new subscription was created successfully |
+| `subscription_activated` | A cancelled subscription was reactivated |
+| `subscription_renewed` | A recurring payment succeeded before expiry |
+| `subscription_cancelled` | A subscription was cancelled |
+| `subscription_payment_failed` | A single recurring payment attempt failed |
+| `subscription_failed` | All retry attempts were exhausted and the subscription failed |
+| `subscription_completed` | The subscription reached its configured end condition |
 
-**Re-initiate the mandate**
-Send the customer back through the payment flow with the same `planId`. This will trigger a new mandate request.
+<Accordion title="subscription_created">
+```json
+{
+  "event": "subscription_created",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "active",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
 
-**Cancel the subscription**
-If the customer no longer wishes to continue, cancel their subscription via the [Cancel Subscription endpoint](/api-reference/subscriptions/subscription-cancel).
+<Accordion title="subscription_activated">
+```json
+{
+  "event": "subscription_activated",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "active",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
 
-<Warning>
-  Do not attempt to charge a mobile money wallet without an active mandate. Doing so will result in a failed transaction and may affect your account standing.
-</Warning>
+<Accordion title="subscription_renewed">
+```json
+{
+  "event": "subscription_renewed",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "active",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
+
+<Accordion title="subscription_cancelled">
+```json
+{
+  "event": "subscription_cancelled",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "cancelled",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
+
+<Accordion title="subscription_payment_failed">
+```json
+{
+  "event": "subscription_payment_failed",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "active",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
+
+<Accordion title="subscription_failed">
+```json
+{
+  "event": "subscription_failed",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "failed",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
+
+<Accordion title="subscription_completed">
+```json
+{
+  "event": "subscription_completed",
+  "data": {
+    "id": "913e4921-60e0-4883-b042-aa57d7b97380",
+    "customerId": "fdfa9e33-babb-44da-add0-a48a9b2e5854",
+    "planId": "9743add1-5f71-4d8d-a2aa-1ec5dc554a93",
+    "status": "completed",
+    "amount": 10,
+    "currency": "GHS",
+    "regionName": "Ghana",
+    "startDate": "2026-05-15T12:55:45.407Z",
+    "nextPaymentDate": "2026-05-22T12:55:45.407Z",
+    "createdAt": "2026-05-15T12:55:45.408Z",
+    "metadata": {}
+  }
+}
+```
+</Accordion>
 
 ---
 
 ## Cancelling a Mobile Money Subscription
 
-Cancellation works the same way as card subscriptions.
-
-- **Cancel a single customer's subscription:** [Cancel Subscription](/api-reference/subscriptions/subscription-cancel)
-- **Cancel the entire plan:** [Cancel Plan](/api-reference/subscription-plans/cancel-plan) — this cancels all active mandates and subscriptions under the plan
+- **Cancel one customer's subscription:** [Cancel Subscription](/api-reference/subscriptions/subscription-cancel)
+- **Cancel an entire plan:** [Cancel Plan](/api-reference/subscription-plans/cancel-plan) — stops all active subscriptions under that plan
 - **Reactivate a cancelled subscription:** [Activate Subscription](/api-reference/subscriptions/subscription-activate)
 
 ---
 
 ## Best Practices
 
-- **Always collect the customer's phone number** at enrolment. Spotflow needs it to route the mandate request to the correct wallet.
-- **Communicate the mandate clearly.** Tell customers they will receive a prompt to approve recurring charges before they start the payment flow. Unexpected prompts lead to declines.
-- **Handle mandate failures gracefully.** Build a re-enrolment flow for customers whose mandates expire or are declined, so they can re-authorise without losing their subscription.
-- **Test in test mode first.** Use Spotflow's test environment to simulate mandate approvals, declines, and renewal failures before going live.
+- **Always collect the customer's phone number** at sign-up. Spotflow needs it to send the payment prompt to the right wallet.
+- **Tell customers what to expect.** Let them know upfront that they will receive a phone prompt to approve recurring charges. Unexpected prompts are the most common reason for declines.
+- **Build a re-enrolment flow.** If a mandate expires or a subscription is cancelled due to non-payment, customers should be able to restart easily with the same plan.
+- **Notify before the first charge after a trial.** Spotflow triggers the charge automatically when a trial ends. Send your own reminder 24 hours before so the customer expects the prompt and has funds in their wallet.
+- **Test everything in test mode first.** Simulate approvals, failures, and retries before going live.
 
-Free trials and discounts are supported for mobile money subscriptions. See [Plan Trials, Discounts & Currency Rules](/features/plan-trials-discounts-and-currency-rules) to learn how to set them up.
+Free trials and discounts are fully supported for mobile money subscriptions. See [Plan Trials, Discounts & Currency Rules](/features/plan-trials-discounts-and-currency-rules).
 
 ---
 
-
 ## Need Help?
 
-If you have questions about mobile money subscriptions or need help with a specific provider or region, reach out to the team at [support@spotflow.one](mailto:support@spotflow.one).
+Reach out to the Spotflow team at [support@spotflow.one](mailto:support@spotflow.one)

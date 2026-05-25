@@ -1,0 +1,213 @@
+---
+title: "Plan Trials & Currency Rules"
+description: "Learn how to set up free trials on subscription plans, and understand how currency rules work across plans."
+icon: "gear"
+---
+
+# Plan Trials & Currency Rules
+
+This page covers two things that affect how you configure subscription plans on Spotflow: free trials, and the rules around which currencies can be combined in a single plan.
+
+---
+
+## Currency Rules
+
+### USD Plans Are Standalone
+
+If you want to bill in USD, it must be its own plan. You cannot mix USD with any other currency in the same plan.
+
+**Not allowed:**
+```json
+{
+  "title": "Pro Plan",
+  "frequency": "MONTHLY",
+  "pricingOptions": [
+    { "amount": 10, "currency": "USD" },
+    { "amount": 5000, "currency": "NGN" }
+  ]
+}
+```
+
+**Correct — USD only:**
+```json
+{
+  "title": "Pro Plan – USD",
+  "frequency": "MONTHLY",
+  "pricingOptions": [
+    { "amount": 10, "currency": "USD" }
+  ]
+}
+```
+
+---
+
+### Local Currencies Can Be Combined
+
+NGN, GHS, TZS, KES, ZAR, XOF, XAF, and other local currencies can all live in one plan. This is the recommended approach if you serve customers across multiple African markets.
+
+**Correct — multiple local currencies in one plan:**
+```json
+{
+  "title": "Pro Plan – Africa",
+  "frequency": "MONTHLY",
+  "pricingOptions": [
+    { "amount": 5000, "currency": "NGN" },
+    { "amount": 10, "currency": "GHS" },
+    { "amount": 2000, "currency": "TZS" }
+  ]
+}
+```
+
+---
+
+### Quick Reference
+
+| Combination | Allowed |
+|-------------|---------|
+| USD only | ✅ |
+| NGN + GHS | ✅ |
+| NGN + GHS + TZS + KES | ✅ |
+| USD + NGN | ❌ |
+| USD + GHS | ❌ |
+| USD + NGN + GHS | ❌ |
+
+<Info>
+  If you need to offer both USD and local currency pricing for the same product, create two separate plans and point customers to the one that matches their currency.
+</Info>
+
+---
+
+## Free Trials
+
+A free trial gives new subscribers access to a plan for a set number of days before their first charge.
+
+- **For card subscriptions:** The card is authorised but not charged during the trial period.
+- **For mobile money subscriptions:** The customer approves the mandate prompt on their phone, but no funds are taken until the trial ends.
+
+### How It Works
+
+1. The customer goes through the normal sign-up flow
+2. Their card or mobile wallet is authorised but not charged
+3. The trial runs for the number of days you set
+4. On the last day of the trial, the first billing cycle begins and the charge is collected
+
+If the customer cancels before the trial ends, they are not charged.
+
+### Setting Up a Trial
+
+Add a `trial` object when creating your plan:
+
+```json
+{
+  "title": "Pro Plan",
+  "frequency": "monthly",
+  "pricingOptions": [
+    { "amount": 5000, "currency": "NGN" },
+    { "amount": 10, "currency": "GHS" }
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      { "amount": 0, "currency": "NGN" },
+      { "amount": 0, "currency": "GHS" }
+    ]
+  }
+}
+```
+
+Setting `amount` to `0` in `pricingList` makes the trial completely free. If you omit `pricingList`, the trial also defaults to free.
+
+### Trial Object Fields
+
+<ParamField body="trial" type="object">
+  Trial configuration for the plan.
+  <Expandable title="properties">
+    <ParamField body="periodInDays" type="integer" required>
+      How long the trial lasts in calendar days. Example: `7` or `14`.
+    </ParamField>
+    <ParamField body="pricingList" type="array">
+      The price to charge during the trial. Set `amount` to `0` for a fully free trial. If omitted, defaults to free.
+      <Expandable title="properties">
+        <ParamField body="amount" type="number" required>
+          The trial price. Use `0` for free.
+        </ParamField>
+        <ParamField body="currency" type="string" required>
+          The 3-letter ISO currency code. Must match one of your `pricingOptions` currencies.
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Webhook Events During a Trial
+
+| Event | When it fires |
+|-------|---------------|
+| `subscription_trial_started` | Customer successfully enrolled in a trial |
+| `subscription_trial_ending` | 3 days before the trial ends |
+| `subscription_trial_ended` | Trial period is over and billing begins |
+| `payment_successful` | First charge after trial collected successfully |
+
+<Warning>
+  Listen for `subscription_trial_ending` and send your own reminder email. Customers who know a charge is coming are far less likely to dispute it or cancel.
+</Warning>
+
+---
+
+## Trials With Mobile Money
+
+Free trials work the same way for mobile money subscriptions as they do for card subscriptions.
+
+**For trials:** The customer approves the mandate during the trial period, but no money is taken until the trial ends. The first debit happens automatically when the trial closes.
+
+<Info>
+  The same webhook events apply for mobile money trial subscriptions. See [Mobile Money Subscriptions](/features/mobile-money-subscriptions) for the full list of events and payloads.
+</Info>
+
+---
+
+## Full Example: Regional Plan with Free Trial
+
+<CodeGroup>
+
+```bash cURL
+curl --request POST \
+  --url https://api.spotflow.one/api/v1/plans \
+  --header 'Authorization: Bearer sk_test_xxxxxxxxxx' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "title": "Pro Tier - Regional",
+    "frequency": "monthly",
+    "internalReference": "PLAN-PRO-REG-01",
+    "pricingOptions": [
+      { "amount": 5000, "currency": "NGN" },
+      { "amount": 50, "currency": "GHS" }
+    ],
+    "trial": {
+      "periodInDays": 7,
+      "pricingList": [
+        { "amount": 0, "currency": "NGN" },
+        { "amount": 0, "currency": "GHS" }
+      ]
+    }
+  }'
+```
+
+</CodeGroup>
+
+---
+
+## Best Practices
+
+- **Create separate plans for USD and local currencies.** Mixing them is not supported and will cause errors.
+- **Only offer trials when you have a plan to convert users.** A free trial with no follow-up leads to churn when billing starts.
+- **Always tell customers when their trial ends.** A surprise price jump is one of the most common reasons customers cancel.
+- **For mobile money trials:** The customer will still see a phone prompt to approve the mandate even on a free trial. Make it clear on your sign-up page that they will not be charged today, but approving the prompt is what starts the trial.
+- **Notify before the first charge after a trial ends.** Send an email or in-app notification 24 hours before so the customer is ready with funds in their wallet.
+- **Test before going live.** Run through trial enrollments, and renewal flows in test mode to make sure everything works as expected.
+
+---
+
+## Need Help?
+
+Reach out to the Spotflow team at [support@spotflow.one](mailto:support@spotflow.one)

@@ -48,7 +48,7 @@
               "features/payment-collections",
               "features/subscription-payment-collections",
               "features/mobile-money-subscriptions",
-              "features/plan-trials-discounts-and-currency-rules",
+              "features/plan-trials-and-currency-rules",
               "features/tax-collections",
               "features/single-and-bulk-disbursements",
               "features/wallets",
