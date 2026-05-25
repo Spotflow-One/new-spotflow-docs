@@ -182,7 +182,7 @@
             ]
           },
           {
-            "group": "Tax Collections Configuration",
+            "group": "Tax Configuration",
             "icon": "wrench",
             "pages": [
               "api-reference/tax-collections-configuration/get-tax-status",
