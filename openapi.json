@@ -2079,17 +2079,6 @@
                   "currency": {
                     "type": "string"
                   },
-                  "type": {
-                    "type": "string"
-                  },
-                  "source": {
-                    "type": "object",
-                    "properties": {
-                      "accountNumber": {
-                        "type": "string"
-                      }
-                    }
-                  },
                   "destination": {
                     "type": "object",
                     "properties": {
@@ -2101,23 +2090,21 @@
                       },
                       "bankCode": {
                         "type": "string"
-                      },
-                      "branchCode": {
+                      }
+                    },
+                    "branchCode": {
                         "type": "string"
                       }
-                    }
                   },
-                  "narrations": {
+                  "narration": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "reference",
                   "destination",
-                  "source",
                   "amount",
-                  "currency",
-                  "type"
+                  "currency"
                 ]
               }
             }
