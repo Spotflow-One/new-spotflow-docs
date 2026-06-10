@@ -245,7 +245,6 @@
               "api-reference/transfer-api/create-single-transfer",
               "api-reference/transfer-api/list-banks",
               "api-reference/transfer-api/transfer-resolve-account",
-              "api-reference/transfer-api/list-branches",
               "api-reference/transfer-api/transfer-by-reference"
             ]
           },
