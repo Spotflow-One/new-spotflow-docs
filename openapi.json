@@ -2746,20 +2746,6 @@
                     "example": "https://yourapp.com/callback",
                     "description": "This is the URL you want your users to be redirected to after making payments. You can also set this permanently on your Spotflow dashboard."
                   },
-                  "mobileMoney": {
-                    "type": "object",
-                    "properties": {
-                      "code": {
-                        "type": "string",
-                        "example": "atl"
-                      },
-                      "phoneNumber": {
-                        "type": "string",
-                        "example": "+2547100xxxx"
-                      }
-                    },
-                    "description": "This is the phone number of the region you want to put in. E.g mobile_money number for Ghana, Kenya, Tanzania etc."
-                  },
                   "metadata": {
                     "type": "object",
                     "properties": {
