@@ -489,7 +489,6 @@
                       "WEEKLY",
                       "MONTHLY",
                       "  QUARTERLY",
-                      "BIANNUAL",
                       "ANNUAL"
                     ],
                     "description": "Billing frequency for the plan"
