@@ -2597,12 +2597,6 @@
                     "example": "NGN",
                     "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc."
                   },
-                  "channel": {
-                    "type": "string",
-                    "enum": ["card", "bank_transfer", "mobile_money", "eft"],
-                    "description": "Channel can be Card, Bank Transfer, Mobile Money or EFT depending on the region",
-                    "example": "card"
-                  },
                   "encryptedCard": {
                     "type": "string",
                     "example": "8NqWW9RdFa+iNM6+Y4k92V0n3xxxxxxxxxxxx",
