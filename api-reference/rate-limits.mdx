@@ -1,0 +1,34 @@
+# Rate Limits
+
+All API requests are subject to rate limiting to ensure platform stability.
+
+## Limits
+
+| Key Type | Requests per Minute | Burst Limit |
+|----------|--------------------|----|
+| Test key | 60 | 10/second |
+| Live key | 300 | 30/second |
+
+## Rate Limit Headers
+
+Every API response includes these headers:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Your total requests allowed per minute |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+## What to Do When Rate Limited
+When you receive a `429 Too Many Requests` response:
+
+1. Read the `Retry-After` header for the number of seconds to wait
+2. Pause all requests for that duration
+3. Retry the original request once the window resets
+4. Use exponential backoff if you receive consecutive 429 responses
+
+## For AI Agents
+
+If you are building an autonomous agent that makes multiple API calls in
+sequence, add a minimum 200ms delay between requests and implement a token
+bucket or leaky bucket algorithm to stay within limits.

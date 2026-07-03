@@ -90,7 +90,8 @@
             "group": "Developer Resources",
             "icon": "tools",
             "pages": [
-              "developer-resources/introduction"
+              "developer-resources/introduction",
+              "developer-resources/payment-states"
             ]
           },
           {
@@ -118,6 +119,7 @@
                 "group": "Webhook Payloads",
                 "icon": "file-code",
                 "pages": [
+                  "developer-resources/webhooks/event-reference",
                   "developer-resources/webhooks/payment-collections",
                   "developer-resources/webhooks/accounts"
                 ]
@@ -166,7 +168,8 @@
             "pages": [
               "api-reference/introduction",
               "api-reference/authentication",
-              "api-reference/error-codes"
+              "api-reference/error-codes",
+              "api-reference/rate-limits"
             ]
           },
           {

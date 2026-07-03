@@ -5,6 +5,29 @@ sidebarTitle: Create Payment
 pagination_prev: null
 hide_title: true
 ---
+<Warning>
+  This endpoint requires PCI-DSS certification because you handle raw card
+  data directly. If you are not PCI-DSS certified, use the
+  [Initialize Payment endpoint](/api-reference/payments/initialize-collection)
+  instead.
+</Warning>
+
+## Which Payment Endpoint Should I Use?
+
+<CardGroup cols={2}>
+  <Card title="Initialize Payment (Redirect)" icon="arrow-up-right-from-square"
+    href="/api-reference/payments/initialize-collection">
+    **Recommended for most integrations.**
+    No PCI-DSS certification required. Spotflow hosts the checkout
+    page. Customer is redirected to complete payment.
+  </Card>
+  <Card title="Create Payment (Direct)" icon="code"
+    href="/api-reference/payments/create-collection">
+    **Requires PCI-DSS certification.**
+    You collect card details directly and pass them encrypted to
+    our API. Only use this if you are PCI-DSS certified.
+  </Card>
+</CardGroup>
 
 ## Adding Test Funds
 
@@ -13,3 +36,5 @@ hide_title: true
   
   See the full guide on [Adding Fake Funds For Testing](/expert-desk/simulating-funds).
 </Info>
+
+To learn on payment states, go to [this page](/developer-resources/payment-states)

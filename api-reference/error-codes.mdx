@@ -32,6 +32,16 @@ Spotflow leverages standardized HTTP response codes to consistently communicate 
 
 - **500, 502, 503, 504**: These codes indicate errors on Spotflow's servers. While uncommon, please report any instances of these errors you encounter to support@spotflow.one. We will work to resolve the issue on our end as soon as possible.
 
+## How to Use This Page
+
+Every error falls into one of four recovery categories:
+
+| Category | What to do |
+|----------|------------|
+| **Retry** | Wait and retry the same request with exponential backoff |
+| **Don't retry** | The request will never succeed as sent. Fix the input |
+| **Escalate** | A human needs to take action before retrying |
+| **Treat as success** | The resource already exists. No further action needed |
 
 ## Error Handling
 
@@ -55,4 +65,17 @@ Here's a breakdown of common Spotflow API error types and recommended solutions:
 |Permission Errors `(Spotflow::PermissionError)`|These errors indicate that the API key used lacks the necessary permissions for the attempted action.|<ul><li>**Double-check if you're using a restricted API** key that doesn't have access to the requested service.</li><li>**If working within the Spotflow dashboard**, ensure your user role has the required permissions to perform the action.</li></ul>
 |Rate Limit Errors `(Spotflow::RateLimitError)`|These errors occur when your application makes excessive API calls withtin a short period|<ul><li>**Retry the API call** after a reasonable delay if a single request triggers this error.</li><li>**Contact Spotflow support in advance** if you anticipate a significant increase in API traffic and require a higher rate limit.</li></ul>
 <br></br>
+
+## Error Reference
+
+| Code | HTTP Status | Message | Category | Action |
+|------|-------------|---------|----------|--------|
+| `missing_parameter` | 400 | Required field missing | Don't retry | Fix the request payload |
+| `invalid_credentials` | 401 | Invalid API key | Escalate | Check and rotate API keys |
+| `insufficient_balance` | 400 | Not enough funds | Escalate | Top up balance |
+| `duplicate_reference` | 400 | Reference already used | Treat as success | Fetch the existing resource |
+| `rate_limit_exceeded` | 429 | Too many requests | Retry | Wait for Retry-After header |
+| `server_error` | 500 | Internal server error | Retry | Retry after 30 seconds |
+
+
 By understanding these error types and implementing the recommended solutions, you can build more resilient and informative integrations with Spotflow API. 

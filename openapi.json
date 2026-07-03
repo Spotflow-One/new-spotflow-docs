@@ -2395,17 +2395,7 @@
         "description": "Get details of all payments collection done via your keys.",
         "operationId": "GetPaymentById",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "description": "Page number for pagination (default is 0).",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
+          
           {
             "name": "page",
             "in": "query",
@@ -2585,7 +2575,15 @@
                   "countryCode": {
                     "type": "string",
                     "example": "CI",
-                    "description": "***Note that, this is only needed to be passed or used for XOF and XAF currency payments***. Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM."
+                    "description": "***Note that, this is only needed to be passed or used for XOF and XAF currency payments***. Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM.",
+                      "if": {
+                        "properties": {
+                          "currency": { "enum": ["XOF", "XAF"] }
+                        }
+                      },
+                      "then": {
+                        "required": ["countryCode"]
+                      }
                   },
                   "planId": {
                     "type": "string",
@@ -2595,7 +2593,15 @@
                   "localCurrency": {
                     "type": "string",
                     "example": "NGN",
-                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc."
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc.",
+                  "if": {
+    "properties": {
+      "currency": { "const": "USD" }
+    }
+  },
+  "then": {
+    "required": ["localCurrency"]
+  }
                   },
                   "encryptedCard": {
                     "type": "string",
@@ -2606,8 +2612,8 @@
                     "type": "object",
                     "properties": {
                       "provider": {
-                        "type": "telecel",
-                        "example": "atl"
+                        "type": "string",
+                        "example": "mtn"
                       },
                       "phoneNumber": {
                         "type": "string",
@@ -2725,13 +2731,29 @@
                   "countryCode": {
                     "type": "string",
                     "example": "CI",
-                    "description": "***Note that, this is only needed to be passed or used for XOF and XAF currency payments***. Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM."
+                    "description": "***Note that, this is only needed to be passed or used for XOF and XAF currency payments***. Country code of XOF countries like Cote D'voire with code CI, or XAF countries like Cameroon with code CM.",
+                    "if": {
+                        "properties": {
+                          "currency": { "enum": ["XOF", "XAF"] }
+                        }
+                      },
+                      "then": {
+                        "required": ["countryCode"]
+                      }
                   },
                   "localCurrency": {
                     "type": "string",
                     "enum": ["NGN", "GHS", "KES", "ZAR", "TZS"],
                     "example": "NGN",
-                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc."
+                    "description": "This is the local currency of your region. Used only when currency is set to USD. According to the local region, this can either be in NGN, GHS, ZAR, TZS, KSH etc.",
+                    "if": {
+    "properties": {
+      "currency": { "const": "USD" }
+    }
+  },
+  "then": {
+    "required": ["localCurrency"]
+  }
                   },
                   "callBackUrl": {
                     "type": "string",

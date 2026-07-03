@@ -1,0 +1,54 @@
+# Payment and Subscription States
+
+## Payment Lifecycle
+
+### States
+
+| State | Description |
+|-------|-------------|
+| PENDING | Payment initiated, awaiting customer action or bank confirmation |
+| SUCCESSFUL | Payment confirmed and funds received |
+| FAILED | Payment attempt was rejected or timed out |
+| CANCELLED | Payment was cancelled before completion |
+
+### Valid Transitions
+
+| From | To | Trigger |
+|------|----|---------|
+| PENDING | SUCCESFUL | Customer completes payment, bank confirms |
+| PENDING | FAILED | Bank rejects, timeout, or customer has insufficient funds |
+| PENDING | CANCELLED | Customer cancels before completion |
+| SUCCESS | — | Terminal state. Cannot transition. |
+| FAILED | — | Terminal state. Create a new payment to retry. |
+
+### Rules for AI Agents
+- A FAILED payment cannot be retried with the same reference.
+  Create a new payment with a new unique reference.
+- Do not poll for status more than once every 5 seconds.
+- A SUCCESS status is final. No further action is required.
+- Always verify status via GET /payments/verify before acting on a webhook, in case of out-of-order delivery.
+
+## Subscription Lifecycle
+
+### States
+
+| State | Description |
+|-------|-------------|
+| active | Subscription is healthy, renewals will proceed |
+| failed | All retry attempts exhausted, no payment received |
+| completed | Subscription reached its configured end |
+| cancelled | Stopped by merchant, customer, or system |
+
+### Valid Transitions
+
+| From | To | Trigger |
+|------|----|---------|
+| active | failed | All retries exhausted |
+| active | completed | cycleCount or endDate reached |
+| active | cancelled | Cancel endpoint called |
+| failed | active | Activate endpoint called |
+| cancelled | active | Activate endpoint called |
+| completed | — | Terminal state |
+
+
+---

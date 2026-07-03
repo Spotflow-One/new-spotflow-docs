@@ -1,0 +1,199 @@
+# Webhook Event Reference
+
+Complete list of all events Spotflow can send to your webhook URL.
+
+## Payment Events
+
+| Event | When it fires |
+|-------|---------------|
+| `payment_successful` | A payment was completed successfully |
+| `payment_failed` | A payment attempt failed |
+
+### payment_successful
+
+```yaml
+{
+  "event": "payment_successful",
+  "data": {
+    "id": "f78ada70-3290-48d3-b751-6fd1a0c42564",
+    "reference": "ref-2d2dc728-57be-48b0-a1e1-ae798017f44c",
+    "spotflowReference": "SPF-PSK-a564bb4d43674d9c83c35ee99758cc7c",
+    "amount": 100,
+    "currency": "NGN",
+    "channel": "card",
+    "status": "successful",
+    "customer": {
+      "id": "2f39de57-e110-4423-8a66-9e643103da0a",
+      "name": "Olly",
+      "email": "olly@gmail.com",
+      "phoneNumber": "09098788901"
+    },
+    "providerMessage": "successful",
+    "rate": 18.5,
+    "region": "Nigeria",
+    "card": {
+      "type": "Mastercard",
+      "firstSix": "555555",
+      "lastFour": "4444"
+    },
+    "createdAt": "2025-10-28T19:07:38Z",
+    "metadata": {
+      "Test-Webhook": "test"
+    },
+    "totalTaxAmount": 0,
+    "totalLocalAmount": 100,
+    "planId": "95mn9078d-b11a-44b2-8422-a1955ca0lo7d"
+  }
+}
+```
+
+### payment_failed
+
+```yaml
+{
+    "event": "payment_failed",
+    "data": {
+        "id": "8da0788a-ef1d-43ac-915d-f2daf39f2940",
+        "reference": "ref-08ab300d-3f3a-443d-b928-312c400b3828",
+        "spotflowReference": "SPF-ISW-e68a4286577447d2a0baf3a6bcb3c110",
+        "amount": 2000.00,
+        "currency": "NGN",
+        "channel": "card",
+        "status": "failed",
+        "customer": {
+            "id": "2f39de57-e110-4423-8a66-9e643103da0a",
+            "name": "Olly",
+            "email": "olly@gmail.com",
+            "phoneNumber": "07001228900"
+        },
+        "providerMessage": "Error processing payment",
+        "rate": 1699.5,
+        "region": "Nigeria",
+        "card": {
+            "type": "Visa",
+            "firstSix": "408408",
+            "lastFour": "4081"
+        },
+        "createdAt": "2025-11-12T13:58:08Z",
+        "metadata": {
+            "SubscriptionPlan": "Test Trial",
+            "productName": "Free Trial"
+        },
+        "totalTaxAmount": 0.0000,
+        "totalLocalAmount": 2000.0000
+    }
+}
+```
+
+## Subscription Events
+
+| Event | When it fires |
+|-------|---------------|
+| `subscription_successful` | A renewal payment succeeded |
+| `subscription_cancelled` | A subscription was cancelled |
+| `subscription_payment_failed` | A single renewal attempt failed |
+| `subscription_failed` | All retries exhausted |
+| `subscription_completed` | End condition reached |
+
+### subscription_successful
+
+## Account Events
+
+### account_credit_successful
+
+```yaml
+{
+  "event": "account_credit_successful",
+  "data": {
+    "id": "294b7632-08c2-41de-8728-d52ac3bf51bf",
+    "account": {
+      "id": "04a6031a-ada4-4d25-9e49-1a9648f3fc17",
+      "account_number": "4576690890",
+      "account_name": "Main NGN Account"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa8978",
+    "reference": "API-VACT_TRA-30D70-8340643d-f26e-4650-92d0-1dc28ea01a35",
+    "spotflow_reference": "SPF-CRDT-02374ba82fdd4efd875982d9f36f00f6",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "credit",
+    "status": "successful",
+    "source": "virtual_account",
+    "description": "Transfer from AMY JAMES",
+    "sender": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:35:42Z"
+  }
+}
+```
+### account_credit_successful for sub_wallets
+
+```yaml
+{
+  "event": "account_credit_successful",
+  "data": {
+    "id": "9a4587ad-da36-4e09-ba8c-eed769da48db",
+    "account": {
+      "id": "e49a1ac2-4e32-4f5d-a41c-bc4d983e5e9a",
+      "account_number": "1370758907",
+      "account_name": "Kelly Jones"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa0410",
+    "reference": "API-VACT_TRA-30D70-bb882eaa-4850-4fb0-863b-c0f9775f65bb",
+    "spotflow_reference": "SPF-CRDT-af3c78785aa34cd9bff539576e76b75d",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "credit",
+    "status": "successful",
+    "source": "virtual_account",
+    "description": "Transfer from AMY JAMES",
+    "sender": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:43:42Z"
+  }
+}
+```
+
+#### ***Account Debit Successful from Main Wallet balances***
+
+```yaml
+{
+  "event": "account_debit_successful",
+  "data": {
+    "id": "6bca4872-546c-4755-b27f-8338baae5fe3",
+    "account": {
+      "id": "04a6031a-ada4-4d25-9e49-1a9648f3fc17",
+      "account_number": "4576690890",
+      "account_name": "Main NGN Account"
+    },
+    "merchant_id": "2br9bffb-a498-497c-9cfa-fd0412aa8978",
+    "reference": "SPF-MHB1NQRN-84326FC1-AC66-4E36-9",
+    "spotflow_reference": "SPF-TRSF-f804244ea942479194b1d48ef578b5cb",
+    "amount": 100,
+    "fee": 0,
+    "currency": "NGN",
+    "type": "debit",
+    "status": "successful",
+    "source": "transfer",
+    "description": "foodstuff",
+    "destination": {
+      "account_name": "AMY JAMES",
+      "account_number": "8083299876",
+      "bank_code": "SPB-73260",
+      "bank_name": "Paycom (Opay)"
+    },
+    "mode": "live",
+    "transaction_date": "2025-10-28T20:53:56.060729Z"
+  }
+}
+```
