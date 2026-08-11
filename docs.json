@@ -51,7 +51,7 @@
               "features/plan-trials-and-currency-rules",
               "features/tax-collections",
               "features/single-and-bulk-disbursements",
-              "features/wallets",
+              "features/static-accounts",
               "features/dynamic-accounts",
                "features/available-regions",
               "features/settlement",
