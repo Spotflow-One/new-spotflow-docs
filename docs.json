@@ -220,23 +220,29 @@
             ]
           },
           {
-            "group": "Spotflow Static Accounts",
+            "group": "Spotflow Static Virtual Accounts",
             "icon": "wallet",
             "pages": [
               "api-reference/static-account/list-spotflow-account",
-              "api-reference/static-account/main-account-balance",
-              "api-reference/static-account/account-balance",
               "api-reference/static-account/spotflow-account-id",
               "api-reference/static-account/create-account"
             ]
           },
           {
-            "group": "Dynamic Accounts",
+            "group": "Dynamic Virtual Accounts",
             "icon": "vault",
             "pages": [
               "api-reference/dynamic-accounts/create-dynamic-account",
               "api-reference/dynamic-accounts/dynamic-account-id",
               "api-reference/dynamic-accounts/list-dynamic-account"
+            ]
+          },
+          {
+            "group": "Balances",
+            "icon": "equals",
+            "pages": [
+              "api-reference/balances/main-account-balance",
+              "api-reference/balances/account-balance"
             ]
           },
           {
