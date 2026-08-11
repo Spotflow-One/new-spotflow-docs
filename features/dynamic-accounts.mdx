@@ -1,21 +1,21 @@
 ---
-title: Virtual Accounts
-description: Virtual accounts are intelligent payment routing tools that automatically channel incoming collections directly to your main Spotflow account. Think of them not as bank accounts that hold money, but as virtual smart conduits that simplify payment collection without fund segregation.
+title: Dynamic Virtual Accounts
+description: Dynamic Virtual Accounts are intelligent payment routing tools that automatically channel incoming collections directly to your main Spotflow account. Think of them not as bank accounts that hold money, but as virtual smart conduits that simplify payment collection without fund segregation.
 icon: building
 ---
 
 ### Key Features
 | **Feature**               | **Description**                                                                                                        | 
 | ---                       |  ---                                                                                                                   |
-| **Payment Routing**       | Automatically forward all incoming collections to your main merchant account.                                          | 
-| **No Fund Storage**       | Virtual accounts do not hold or store money independently—it's immediately routed.                                     | 
+| **Payment Routing**       | Automatically forward all incoming collections to your main account.                                          | 
+| **No Fund Storage**       | Dynamic virtual accounts do not hold or store money independently — it is immediately routed.                                     | 
 | **Simplified Setup**      | No lengthy verification (like BVN) is required during the creation process.                                            | 
-| **API-Driven**            | All Virtual account operations are performed seamlessly through API endpoints.                                         | 
-| **Expiry Time Limit**     | Accounts have a default maximum expiry of 30 minutes, but you can set your own time limit via the API during creation. | 
+| **API-Driven**            | All Dynamic virtual account operations are performed seamlessly through API endpoints.                                         | 
+| **Expiry Time Limit**     | Dynamic virtual accounts have a default maximum expiry of 30 minutes, but you can set your own time limit via the API during creation. | 
 
 
 ### Key Features
-Virtual accounts are collection-focused, meaning they come with strict restrictions:
+Dynamic virtual accounts are collection-focused, meaning they come with strict restrictions:
 - No Outgoing Payments: They cannot be used to process outbound transfers or payments (they're strictly a one-way street).
 - No Terminal Support: They cannot be linked to payment terminals or POS devices.
 - Routing Only: Their function is exclusively as payment collection points.
@@ -23,12 +23,12 @@ Virtual accounts are collection-focused, meaning they come with strict restricti
 ### API Operations
 | **Action**             | **Endpoint**                                                                                | **Key Detail**                                                                                             |
 | ---                    | ---                                                                                         | ---                                                                                                        |
-| **Create Account**     | [Virtual Account Creation API](/api-reference/dynamic-accounts/create-dynamic-account)      | Specify parameters (name, currency), returns a unique Virtual account number. No BVN needed for creation.  |
-| **Fetch Data**         | [Fetch Virtual Account by ID Endpoint](/api-reference/dynamic-accounts/dynamic-account-id)  | Retrieve individual account information and access its status.                                             |
-| **List All**           | [List Virtual Accounts Endpoint](/api-reference/dynamic-accounts/list-dynamic-account)      | Retrieve all accounts (test or live). Supports filtering and provides efficient, paginated responses.      |
+| **Create Dynamic Virtual Account**     | [Dynamic Virtual Account Creation API](/api-reference/dynamic-accounts/create-dynamic-account)      | Specify parameters (name, currency), returns a unique dynamic virtual account number. No BVN needed for creation.  |
+| **Fetch Account Data**         | [Fetch Dynamic Virtual Account by ID Endpoint](/api-reference/dynamic-accounts/dynamic-account-id)  | Retrieve individual dynamic virtual account information and access its status.                                             |
+| **List All**           | [List Dynamic Virtual Accounts Endpoint](/api-reference/dynamic-accounts/list-dynamic-account)      | Retrieve all dynamic virtual accounts (test or live). Supports filtering and provides efficient, paginated responses.      |
 
 ### Webhook Notifications
-You will receive webhook and email notifications when a Virtual account is funded.
+You will receive webhook and email notifications when a dynamic virtual account is funded.
 
 <Tip>
 **Action Item**: Ensure you configure your system to receive these payment status updates. Set or update your Webhook URL on the merchant dashboard under Settings → API & Webhooks → URLs.
