@@ -220,15 +220,15 @@
             ]
           },
           {
-            "group": "Spotflow Accounts",
+            "group": "Spotflow Sub-Accounts",
             "icon": "wallet",
             "pages": [
-              "api-reference/wallets/list-spotflow-wallets",
-              "api-reference/wallets/main-account-balance",
-              "api-reference/wallets/account-balance",
-              "api-reference/wallets/account-balance-spotflow-wallet",
-              "api-reference/wallets/spotflow-wallet-id",
-              "api-reference/wallets/create-account"
+              "api-reference/sub-account/list-spotflow-account",
+              "api-reference/sub-account/main-account-balance",
+              "api-reference/sub-account/account-balance",
+              "api-reference/sub-account/account-balance-spotflow-account",
+              "api-reference/sub-account/spotflow-account-id",
+              "api-reference/sub-account/create-account"
             ]
           },
           {
