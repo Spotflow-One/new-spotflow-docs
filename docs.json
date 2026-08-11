@@ -176,7 +176,6 @@
             "group": "Payment Collections",
             "icon": "money-bill",
             "pages": [
-              "api-reference/payments/create-collection",
               "api-reference/payments/initialize-collection",
               "api-reference/payments/authorize-collection",
               "api-reference/payments/fetch-collection",

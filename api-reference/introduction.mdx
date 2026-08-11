@@ -7,7 +7,7 @@ We handle everything from global payment acceptance to compliance and settlement
 ---
 
 To learn on payment states, go to [this page](/developer-resources/payment-states)
-To know more about our rate limiting, go [to](/api-reference/rate-limits) 
+To know more about our rate limiting, go [here](/api-reference/rate-limits) 
 
 ## Which Payment Endpoint Should I Use?
 
@@ -17,12 +17,6 @@ To know more about our rate limiting, go [to](/api-reference/rate-limits)
     **Recommended for most integrations.**
     No PCI-DSS certification required. Spotflow hosts the checkout
     page. Customer is redirected to complete payment.
-  </Card>
-  <Card title="Create Payment (Direct)" icon="code"
-    href="/api-reference/payments/create-collection">
-    **Requires PCI-DSS certification.**
-    You collect card details directly and pass them encrypted to
-    our API. Only use this if you are PCI-DSS certified.
   </Card>
 </CardGroup>
 
@@ -51,7 +45,7 @@ response for subsequent requests.
 
 ### Rules
 
-- The `reference` field on Create Payment and Create Disbursement is your
+- The `reference` field on Initialize Payment and Create Disbursement is your
   idempotency key
 - References must be unique per transaction type (payment references are
   separate from disbursement references)
@@ -77,7 +71,7 @@ All list endpoints return paginated results.
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `page` | integer | 1 | Page number to retrieve |
-| `limit` | integer | 20 | Number of results per page. Max: 100 |
+| `limit` | integer | 20 | Number of results per page. Max: 50 |
 
 ### Response Shape
 
@@ -90,14 +84,11 @@ All list endpoints return a consistent envelope:
     "total": 150,
     "page": 1,
     "limit": 20,
-    "totalPages": 8,
-    "hasNextPage": true,
-    "hasPrevPage": false
+    "totalPages": 8
   }
 }
 ```
 
 ### For AI Agents
 
-To retrieve all records, loop through pages until `hasNextPage` is `false`.
 Do not assume all records are returned in a single response.
