@@ -1091,7 +1091,7 @@
       }
     },
         
-    "/api/v1/accounts/{id}/deactivate": {
+    "/accounts/{id}/deactivate": {
   "delete": {
     "description": "Deactivates a static virtual account, preventing it from receiving any further payments. Once deactivated, the account status is set to inactive and any incoming transfers to it will be rejected or returned. This action cannot be undone through this endpoint — a new static virtual account must be created if collections need to resume.",
     "operationId": "DeactivateStaticVirtualAccount",
