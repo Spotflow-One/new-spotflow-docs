@@ -225,6 +225,7 @@
             "pages": [
               "api-reference/static-account/list-spotflow-account",
               "api-reference/static-account/spotflow-account-id",
+              "api-reference/static-account/deactivate-account",
               "api-reference/static-account/create-account"
             ]
           },

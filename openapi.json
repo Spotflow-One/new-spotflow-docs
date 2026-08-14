@@ -907,8 +907,8 @@
     },
     "/accounts": {
       "get": {
-        "description": "This retrieves and lists all the wallets you've created. This is both for your main account and wallets.",
-        "operationId": "ListWallets",
+        "description": "This retrieves and lists all the static virtual accounts you've created. This is both for your main account and static virtual accounts (sub-accounts).",
+        "operationId": "ListStaticVirtualAccounts",
         "parameters": [
           {
             "name": "page",
@@ -936,7 +936,7 @@
             "name": "accountTag",
             "in": "query",
             "required": false,
-            "description": "This can either be sub-account, or main-account.",
+            "description": "This can either be static virtual accounts, or main-account.",
             "schema": {
               "type": "string",
               "enum": ["sub-account", "main-account"]
@@ -946,7 +946,7 @@
             "name": "currency",
             "in": "query",
             "required": false,
-            "description": "Choose the currency you want for your sub account. According, to our currently supported currencies, this is in NGN or GHS.",
+            "description": "Choose the currency you want for your static virtual account. According, to our currently supported currencies, this is in NGN or GHS.",
             "schema": {
               "type": "string",
               "enum": ["NGN", "GHS"]
@@ -966,7 +966,7 @@
             "name": "accountNumber",
             "in": "query",
             "required": false,
-            "description": "This filters by the account number created for the sub accounts.",
+            "description": "This filters by the account number created for the static virtual accounts.",
             "schema": {
               "type": "string"
             }
@@ -996,13 +996,13 @@
         ],
         "responses": {
           "200": {
-            "description": "A JSON array of subaccounts objects.",
+            "description": "A JSON array of static virtual accounts objects.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SubAccountDetailsResponse"
+                    "$ref": "#/components/schemas/StaticVirtualAccountsDetailsResponse"
                   }
                 }
               }
@@ -1031,8 +1031,8 @@
         }
       },
       "post": {
-        "description": "Wallets are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, wallets do not require BVNs upon creation.",
-        "operationId": "WalletCreation",
+        "description": "Static virtual accounts are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, static virtual accounts do not require BVNs upon creation.",
+        "operationId": "StaticVirtualAccountsCreation",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1049,7 +1049,7 @@
                   "accountName": {
                     "type": "string",
                     "example": "Quantum Technologies",
-                    "description": "Your desired name for your sub account."
+                    "description": "Your desired name for your static virtual account."
                   }
                 }
               }
@@ -1058,11 +1058,11 @@
         },
         "responses": {
           "200": {
-            "description": "A JSON array of subaccounts objects.",
+            "description": "A JSON array of static virtual accounts objects.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateWalletDetailsResponse"
+                  "$ref": "#/components/schemas/CreateStaticVirtualAccountsDetailsResponse"
                 }
               }
             }
@@ -1090,8 +1090,70 @@
         }
       }
     },
+        
+    "/api/v1/accounts/{id}/deactivate": {
+  "delete": {
+    "description": "Deactivates a static virtual account, preventing it from receiving any further payments. Once deactivated, the account status is set to inactive and any incoming transfers to it will be rejected or returned. This action cannot be undone through this endpoint — a new static virtual account must be created if collections need to resume.",
+    "operationId": "DeactivateStaticVirtualAccount",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "The unique identifier of the static virtual account to deactivate.",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "65122475-eef0-47e6-8c47-ac461e0a080d"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "The static virtual account has been deactivated.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeactivateStaticVirtualAccountResponse"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized - Invalid or missing authentication token.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error401"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Bad Request - The account could not be deactivated (e.g. already inactive).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error400"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found - No static virtual account found for the given ID.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error404"
+            }
+          }
+        }
+      }
+    }
+  }
+},
     "/balances": {
-      "get": {
+      "get": {  
         "description": "Retrieves paginated balances for main accounts with optional currency, mode, and date filters.",
         "operationId": "ListBalances",
         "parameters": [
@@ -1197,8 +1259,8 @@
     },
     "/balances/accounts/{accountNumber}/sub-balances": {
       "get": {
-        "description": "Retrieves account balance details for all direct spotflow wallets of the specified main account in both NGN and GHS.",
-        "operationId": "ListSpotflowWalletBalances",
+        "description": "Retrieves account balance details for all direct spotflow static virtual of the specified main account in both NGN and GHS.",
+        "operationId": "ListSpotflowStaticVirtualAccountsBalances",
         "parameters": [
           {
             "name": "accountNumber",
@@ -1249,7 +1311,7 @@
     },
     "/balances/accounts/{accountNumber}/balance": {
       "get": {
-        "description": "Get account balance details for a specific spotflow-wallets before and after top-up in both NGN and GHS currency.",
+        "description": "Get account balance details for a specific spotflow-static virtual accounts before and after top-up in both NGN and GHS currency.",
         "operationId": "AccountBalance",
         "parameters": [
           {
@@ -1298,7 +1360,7 @@
     },
     "/accounts/{id}": {
       "get": {
-        "description": "Get details of your created spotflow wallet by its ID. You can get this in either NGN or GHS.",
+        "description": "Get details of your created spotflow static virtual account by its ID. You can get this in either NGN or GHS.",
         "operationId": "AccountID",
         "parameters": [
           {
@@ -1318,7 +1380,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WalletDetailsResponse"
+                  "$ref": "#/components/schemas/StaticVirtualAccountsDetailsResponse"
                 }
               }
             }
@@ -1348,7 +1410,7 @@
     },
     "/virtual-accounts/temporary": {
       "post": {
-        "description": "This endpoint is used to create a dynamic account to receive payments.",
+        "description": "This endpoint is used to create a dynamic virtual account to receive payments.",
         "operationId": "DynamicAccountCreation",
         "parameters": [],
         "requestBody": {
@@ -1385,7 +1447,7 @@
         },
         "responses": {
           "200": {
-            "description": "A JSON array of dynamic account objects.",
+            "description": "A JSON array of dynamic virtual account objects.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1426,7 +1488,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "This is the unique ID generated upon creation of your dynamic account in either NGN or GHS.",
+            "description": "This is the unique ID generated upon creation of your dynamic virtual account in either NGN or GHS.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1469,7 +1531,7 @@
     },
     "/virtual-accounts": {
       "get": {
-        "description": "This retrieves and lists all the active dynamic accounts you created.",
+        "description": "This retrieves and lists all the active dynamic virtual accounts you created.",
         "operationId": "ListDynamicAccount",
         "parameters": [
           {
@@ -1484,7 +1546,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A JSON array of dynamic details objects.",
+            "description": "A JSON array of dynamic virtual account details objects.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4068,7 +4130,7 @@
           "createdAt"
         ]
       },
-      "WalletDetailsResponse": {
+      "StaticVirtualAccountsDetailsResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4150,7 +4212,7 @@
           "createdAt"
         ]
       },
-      "CreateWalletDetailsResponse": {
+      "CreateStaticVirtualAccountsDetailsResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4221,6 +4283,97 @@
           "status"
         ]
       },
+      "DeactivateStaticVirtualAccountResponse": {
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "example": "65122475-eef0-47e6-8c47-ac461e0a080d"
+    },
+    "parentAccountId": {
+      "type": "string",
+      "format": "uuid",
+      "example": "0863bce7-2202-4f9a-8546-06fcbf7203e0"
+    },
+    "autoSweep": {
+      "type": "boolean",
+      "example": false
+    },
+    "currency": {
+      "type": "string",
+      "example": "NGN"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["test", "live"],
+      "example": "live"
+    },
+    "accountTag": {
+      "type": "string",
+      "example": "sub-account"
+    },
+    "status": {
+      "type": "string",
+      "example": "inactive",
+      "description": "Reflects the account's current state after deactivation."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2026-08-06T09:59:21.074471Z"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2026-08-14T09:52:22.830371Z"
+    },
+    "accountDetails": {
+      "$ref": "#/components/schemas/VirtualAccountDetails"
+    },
+    "virtualAccounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/VirtualAccountDetails"
+      }
+    }
+  }
+},
+"VirtualAccountDetails": {
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "example": "AELLA"
+    },
+    "accountName": {
+      "type": "string",
+      "example": "SP/pord"
+    },
+    "accountNumber": {
+      "type": "string",
+      "example": "0217222147"
+    },
+    "bankName": {
+      "type": "string",
+      "example": "Aella Microfinance Bank"
+    },
+    "default": {
+      "type": "boolean",
+      "example": true
+    },
+    "depositAddresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "countryCode": {
+      "type": "string",
+      "example": "NG"
+    }
+  }
+},
       "DynamicDetailsResponse": {
         "type": "object",
         "properties": {
