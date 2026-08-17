@@ -232,7 +232,7 @@
         }
       }
     },
-    
+
     "/subscriptions/{subscription-id}/activate": {
       "post": {
         "description": "Activate a subscription with the plan Id.",
@@ -340,8 +340,15 @@
       "description": "Returns the payment method currently linked to the subscription. The response shape depends on whether the payment method is a card or mobile money (MOMO).",
       "parameters": [
         {
-          "$ref": "#/components/parameters/SubscriptionId"
-        }
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
       ],
       "responses": {
         "200": {
@@ -406,7 +413,14 @@
       "tags": ["Payment Method"],
       "parameters": [
         {
-          "$ref": "#/components/parameters/SubscriptionId"
+          "name": "subscription-id",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the plan whose subscriptions are to be retrieved.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
         }
       ],
       "requestBody": {
@@ -653,7 +667,8 @@
                     "description": "***Note that retrial only applies to card subscriptions, not mobile money.*** Retry count for failed card payments."
                   },
                   "endDate": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "date",
                     "example": "2026-10-29",
                     "description": "The date all subscription cycles end"
                   },
@@ -663,7 +678,7 @@
                       "DAILY",
                       "WEEKLY",
                       "MONTHLY",
-                      "  QUARTERLY",
+                      "QUARTERLY",
                       "ANNUAL"
                     ],
                     "description": "Billing frequency for the plan"
