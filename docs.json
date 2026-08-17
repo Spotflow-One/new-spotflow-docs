@@ -211,12 +211,12 @@
             "group": "Subscriptions",
             "icon": "repeat",
             "pages": [
-              "api-reference/subscriptions/list-subscriptions", 
+              "api-reference/subscriptions/list-subscriptions",
+              "api-reference/subscriptions/get-subscription-payment-method",
               "api-reference/subscriptions/subscription-by-plan", 
               "api-reference/subscriptions/subscription-details",
               "api-reference/subscriptions/subscription-activate",
               "api-reference/subscriptions/subscription-cancel",
-              "api-reference/subscriptions/get-subscription-payment-method",
               "api-reference/subscriptions/update-subscription-payment-method"
             ]
           },
