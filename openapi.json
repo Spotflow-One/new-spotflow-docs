@@ -232,6 +232,7 @@
         }
       }
     },
+    
     "/subscriptions/{subscription-id}/activate": {
       "post": {
         "description": "Activate a subscription with the plan Id.",
