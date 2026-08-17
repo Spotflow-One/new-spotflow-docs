@@ -159,6 +159,7 @@
         }
       }
     },
+
     "/subscriptions/{subscription-id}": {
       "get": {
         "description": "Retrieve details of all subscriptions associated with a subscription ID.",
@@ -331,6 +332,179 @@
         }
       }
     },
+    "/subscriptions/{subscription-id}/payment-method": {
+    "get": {
+      "operationId": "getSubscriptionPaymentMethod",
+      "summary": "Get payment method associated with a subscription",
+      "description": "Returns the payment method currently linked to the subscription. The response shape depends on whether the payment method is a card or mobile money (MOMO).",
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SubscriptionId"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Payment method retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentMethodResponse"
+              },
+              "examples": {
+                "card": {
+                  "summary": "Card payment method",
+                  "value": {
+                    "type": "card",
+                    "firstSix": "506124",
+                    "lastFour": "5456",
+                    "cardType": "verve",
+                    "accountHolderName": "Jane Doe",
+                    "expirationMonth": 11,
+                    "expirationYear": 2026
+                  }
+                },
+                "momo": {
+                  "summary": "Mobile money payment method",
+                  "value": {
+                    "type": "momo",
+                    "operator": "MTN",
+                    "accountHolderName": "Jane Doe",
+                    "phoneNumber": "+2348012345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Subscription not found, or no payment method is linked to it",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Missing or invalid authentication credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "operationId": "updateSubscriptionPaymentMethod",
+      "summary": "Update payment method associated with a subscription",
+      "description": "Replaces the payment method linked to the subscription. Send either an encrypted card payload or a mobile money payload, depending on the payment type being set.",
+      "tags": ["Payment Method"],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SubscriptionId"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PaymentMethodUpdateRequest"
+            },
+            "examples": {
+              "card": {
+                "summary": "Update to a card payment method",
+                "value": {
+                  "encryptedCard": "string"
+                }
+              },
+              "momo": {
+                "summary": "Update to a mobile money payment method",
+                "value": {
+                  "mobileMoney": {
+                    "otp": "string",
+                    "code": "string",
+                    "name": "string",
+                    "phoneNumber": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Payment method updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentMethodResponse"
+              },
+              "examples": {
+                "card": {
+                  "summary": "Card payment method",
+                  "value": {
+                    "type": "card",
+                    "firstSix": "506124",
+                    "lastFour": "5456",
+                    "cardType": "verve",
+                    "accountHolderName": "Jane Doe",
+                    "expirationMonth": 11,
+                    "expirationYear": 2026
+                  }
+                },
+                "momo": {
+                  "summary": "Mobile money payment method",
+                  "value": {
+                    "type": "momo",
+                    "operator": "MTN",
+                    "accountHolderName": "Jane Doe",
+                    "phoneNumber": "+2348012345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid request body (e.g. wrong OTP/code, malformed encrypted card)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Subscription not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Missing or invalid authentication credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
     "/plans": {
       "get": {
         "description": "Retrieve details of all subscription plans available on your integration.",
@@ -3870,6 +4044,160 @@
           "totalElements",
           "totalPages"
         ]
+      },
+      "CardPaymentMethod": {
+        "type": "object",
+        "description": "Card payment method details",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["card"],
+            "description": "Discriminator identifying this as a card payment method"
+          },
+          "firstSix": {
+            "type": "string",
+            "description": "First six digits of the card (BIN)",
+            "example": "506124"
+          },
+          "lastFour": {
+            "type": "string",
+            "description": "Last four digits of the card",
+            "example": "5456"
+          },
+          "cardType": {
+            "type": "string",
+            "description": "Card scheme/brand",
+            "example": "verve"
+          },
+          "accountHolderName": {
+            "type": "string",
+            "description": "Name of the account/card holder",
+            "example": "Jane Doe"
+          },
+          "expirationMonth": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "example": 11
+          },
+          "expirationYear": {
+            "type": "integer",
+            "example": 2026
+          }
+        },
+        "required": [
+          "type",
+          "firstSix",
+          "lastFour",
+          "cardType",
+          "expirationMonth",
+          "expirationYear"
+        ]
+      },
+      "MomoPaymentMethod": {
+        "type": "object",
+        "description": "Mobile money payment method details",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["momo"],
+            "description": "Discriminator identifying this as a mobile money payment method"
+          },
+          "operator": {
+            "type": "string",
+            "description": "Mobile money operator/network",
+            "example": "MTN"
+          },
+          "accountHolderName": {
+            "type": "string",
+            "description": "Name of the account holder",
+            "example": "Jane Doe"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Mobile money phone number",
+            "example": "+2348012345678"
+          }
+        },
+        "required": ["type", "operator", "phoneNumber"]
+      },
+      "PaymentMethodResponse": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CardPaymentMethod"
+          },
+          {
+            "$ref": "#/components/schemas/MomoPaymentMethod"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "card": "#/components/schemas/CardPaymentMethod",
+            "momo": "#/components/schemas/MomoPaymentMethod"
+          }
+        }
+      },
+      "CardPaymentMethodUpdateRequest": {
+        "type": "object",
+        "description": "Update payload for setting a card as the payment method",
+        "properties": {
+          "encryptedCard": {
+            "type": "string",
+            "description": "Encrypted card payload generated client-side"
+          }
+        },
+        "required": ["encryptedCard"]
+      },
+      "MomoPaymentMethodUpdateRequest": {
+        "type": "object",
+        "description": "Update payload for setting mobile money as the payment method",
+        "properties": {
+          "mobileMoney": {
+            "type": "object",
+            "properties": {
+              "otp": {
+                "type": "string",
+                "description": "One-time PIN sent to the phone number for verification"
+              },
+              "code": {
+                "type": "string",
+                "description": "Authorization/verification code for the mobile money transaction"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the account holder"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "description": "Mobile money phone number"
+              }
+            },
+            "required": ["otp", "code", "name", "phoneNumber"]
+          }
+        },
+        "required": ["mobileMoney"]
+      },
+      "PaymentMethodUpdateRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CardPaymentMethodUpdateRequest"
+          },
+          {
+            "$ref": "#/components/schemas/MomoPaymentMethodUpdateRequest"
+          }
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
       },
       "SubscriptionPlanDetailsResponse": {
         "type": "object",
