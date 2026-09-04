@@ -1622,8 +1622,8 @@
                   },
                   "amount": {
                     "type": "number",
-                    "format": "int32",
-                    "description": "Amount should be in the subunit of our supported currency i.e NGN and GHS for now."
+                    "example": 5.00,
+                    "description": "The amount in the major unit of the currency, decimals allowed. For example 5.00 with currency GHS means five Ghana cedis, not five pesewas."
                   },
                   "expiresIn": {
                     "type": "number",
@@ -2818,8 +2818,8 @@
                   },
                   "amount": {
                     "type": "number",
-                    "example": 0,
-                    "description": "Amount should be in the subunit of our supported currency i.e your local currency or USD. This is not needed if you use a planId in your request."
+                    "example": 5.00,
+                    "description": "The amount in the major unit of the currency, decimals allowed. For example 5.00 with currency GHS means five Ghana cedis, not five pesewas. This is not needed if you use a planId in your request."
                   },
                   "expiresIn": {
                     "type": "number",
