@@ -152,22 +152,34 @@ Spotflow supports recurring billing through mobile money, allowing you to charge
 
 ```json
 {
-  "title": "Standard Monthly Plan",
-  "frequency": "monthly",
-  "internalReference": "PLAN-STD-001",
+  "title": "TestingPlan",
+  "frequency": "weekly",
+  "internalReference": "PLANS001",
   "pricingOptions": [
-    { "amount": 123, "currency": "NGN" }
+    {
+      "amount": 100,
+      "currency": "NGN"
+    },
+    {
+         "amount": 2,
+      "currency": "GHS"
+    }
   ],
   "trial": {
     "periodInDays": 7,
     "pricingList": [
-      { "amount": 0, "currency": "NGN" }
+      {
+        "amount": 0,
+        "currency": "NGN",
+        "type": "flat"
+      }
     ]
   },
-  "endDate": "2026-10-29",
-  "cycleCount": 3,
-  "retrial": 2
+ "endDate": "2026-10-30",
+ "cycleCount": 3,
+ "retrial": 2
 }
+
 ```
 
 ### Request Body

@@ -1009,58 +1009,131 @@
           }
         ],
         "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "Standard Monthly Plan",
-                    "description": "Name or title of the plan"
-                  },
-                  "frequency": {
-                    "type": "string",
-                    "enum": [
-                      "DAILY",
-                      "WEEKLY",
-                      "MONTHLY",
-                      "  QUARTERLY",
-                      "BIANNUAL",
-                      "ANNUAL"
-                    ],
-                    "description": "Billing frequency for the plan"
-                  },
-                  "internalReference": {
-                    "type": "string",
-                    "description": "Internal reference code for the plan",
-                    "example": "PLAN-STD-001"
-                  },
-                  "pricingOptions": {
-                    "type": "array",
-                    "description": "Pricing options for the plan",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "amount": {
-                          "type": "number",
-                          "description": "Amount to be charged per billing cycle"
-                        },
-                        "currency": {
-                          "type": "string",
-                          "description": "Currency code for the plan (e.g. USD, NGN)",
-                          "example": "NGN"
-                        }
-                      },
-                      "required": ["amount", "currency"]
+  "required": true,
+  "content": {
+    "application/json": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Standard Monthly Plan",
+            "description": "Name or title of the plan"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "BIANNUAL",
+              "ANNUAL"
+            ],
+            "description": "Billing frequency for the plan"
+          },
+          "internalReference": {
+            "type": "string",
+            "description": "Internal reference code for the plan",
+            "example": "PLAN-STD-001"
+          },
+          "pricingOptions": {
+            "type": "array",
+            "description": "Pricing options for the plan",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "description": "Amount to be charged per billing cycle"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code for the plan (e.g. USD, NGN)",
+                  "example": "NGN"
+                }
+              },
+              "required": ["amount", "currency"]
+            }
+          },
+          "trial": {
+            "type": "object",
+            "description": "Trial period configuration for the plan. If omitted, the plan has no trial.",
+            "properties": {
+              "periodInDays": {
+                "type": "integer",
+                "description": "Length of the trial period, in days.",
+                "example": 7
+              },
+              "pricingList": {
+                "type": "array",
+                "description": "Pricing to charge during the trial period.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount to be charged during the trial period.",
+                      "example": 0
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code for the trial pricing (e.g. USD, NGN).",
+                      "example": "NGN"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["flat"],
+                      "description": "Pricing type applied during the trial.",
+                      "example": "flat"
                     }
-                  }
+                  },
+                  "required": ["amount", "currency", "type"]
                 }
               }
-            }
+            },
+            "required": ["periodInDays", "pricingList"]
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the plan stops billing/renewing. If omitted, the plan has no fixed end date.",
+            "example": "2026-10-30"
+          },
+          "cycleCount": {
+            "type": "integer",
+            "description": "Number of billing cycles the plan runs for before it ends. If omitted, the plan runs indefinitely.",
+            "example": 3
+          },
+          "retrial": {
+            "type": "integer",
+            "description": "Number of retry attempts allowed for a failed billing charge.",
+            "example": 2
           }
         },
+        "required": ["title", "frequency", "internalReference", "pricingOptions"]
+      },
+      "example": {
+        "title": "TestingPlan",
+        "frequency": "WEEKLY",
+        "internalReference": "PLANS001",
+        "pricingOptions": [
+          { "amount": 100, "currency": "NGN" },
+          { "amount": 2, "currency": "GHS" }
+        ],
+        "trial": {
+          "periodInDays": 7,
+          "pricingList": [
+            { "amount": 0, "currency": "NGN", "type": "flat" }
+          ]
+        },
+        "endDate": "2026-10-30",
+        "cycleCount": 3,
+        "retrial": 2
+      }
+    }
+  }
+},
         "responses": {
           "201": {
             "description": "Subscription plan successfully created or updated.",
@@ -2831,6 +2904,10 @@
                     "example": "95eb086a-b11a-44b2-8422-a1955ca0fd9a",
                     "description": "***Note that including this turns the payment into a subscription.** Omitting it makes it a one-time charge as it is used when paying for a subscription plan."
                   },
+                  "applyDiscount": {
+                    "type": "boolean",
+                    "example": "true OR false"
+                },
                   "currency": {
                     "type": "string",
                     "enum": ["USD", "NGN", "GHS", "KES", "ZAR", "TZS", "XOF", "XAF"],

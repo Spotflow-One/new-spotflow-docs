@@ -39,15 +39,32 @@ To set up a [recurring billing plan](/api-reference/subscription-plans/create-si
 
 ```java Create.plan lines icon="repeat"
 {
-  "title": "My Pro Plan",
-  "frequency": "MONTHLY",
+  "title": "TestingPlan",
+  "frequency": "weekly",
+  "internalReference": "PLANS001",
   "pricingOptions": [
-    { 
-       "amount": 10000, "currency": "NGN" 
+    {
+      "amount": 100,
+      "currency": "NGN"
     },
-    {  "amount": 10, "currency": "GHS" 
+    {
+         "amount": 2,
+      "currency": "GHS"
     }
-  ]
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      {
+        "amount": 0,
+        "currency": "NGN",
+        "type": "flat"
+      }
+    ]
+  },
+ "endDate": "2026-10-30",
+ "cycleCount": 3,
+ "retrial": 2
 }
 ```
 
@@ -83,6 +100,7 @@ When initiating the charge, include the planId and customer details. Spotflow to
   "customer": 
   { "email": "customer@email.com" 
   }, // ... other charge details (encrypted card, metadata)
+  "applyDiscount": true
 }
 ```
 

@@ -19,12 +19,32 @@ If you want to bill in USD, it must be its own plan. You cannot mix USD with any
 **Not allowed:**
 ```json
 {
-  "title": "Pro Plan",
-  "frequency": "MONTHLY",
+  "title": "TestingPlan",
+  "frequency": "weekly",
+  "internalReference": "PLANS001",
   "pricingOptions": [
-    { "amount": 10, "currency": "USD" },
-    { "amount": 5000, "currency": "NGN" }
-  ]
+    {
+      "amount": 100,
+      "currency": "USD"
+    },
+    {
+         "amount": 2,
+      "currency": "GHS"
+    }
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      {
+        "amount": 0,
+        "currency": "NGN",
+        "type": "flat"
+      }
+    ]
+  },
+ "endDate": "2026-10-30",
+ "cycleCount": 3,
+ "retrial": 2
 }
 ```
 
@@ -35,7 +55,20 @@ If you want to bill in USD, it must be its own plan. You cannot mix USD with any
   "frequency": "MONTHLY",
   "pricingOptions": [
     { "amount": 10, "currency": "USD" }
-  ]
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      {
+        "amount": 0,
+        "currency": "USD",
+        "type": "flat"
+      }
+    ]
+  },
+ "endDate": "2026-10-30",
+ "cycleCount": 3,
+ "retrial": 2
 }
 ```
 
@@ -54,7 +87,20 @@ NGN, GHS, TZS, KES, ZAR, XOF, XAF, and other local currencies can all live in on
     { "amount": 5000, "currency": "NGN" },
     { "amount": 10, "currency": "GHS" },
     { "amount": 2000, "currency": "TZS" }
-  ]
+  ],
+  "trial": {
+    "periodInDays": 7,
+    "pricingList": [
+      {
+        "amount": 0,
+        "currency": "USD",
+        "type": "flat"
+      }
+    ]
+  },
+ "endDate": "2026-10-30",
+ "cycleCount": 3,
+ "retrial": 2
 }
 ```
 
@@ -108,8 +154,8 @@ Add a `trial` object when creating your plan:
   "trial": {
     "periodInDays": 7,
     "pricingList": [
-      { "amount": 0, "currency": "NGN" },
-      { "amount": 0, "currency": "GHS" }
+      { "amount": 0, "currency": "NGN", "type: "flat" (or percentage) },
+      { "amount": 0, "currency": "GHS", "type: "flat" (or percentage) }
     ]
   }
 }
@@ -133,6 +179,9 @@ Setting `amount` to `0` in `pricingList` makes the trial completely free. If you
         </ParamField>
         <ParamField body="currency" type="string" required>
           The 3-letter ISO currency code. Must match one of your `pricingOptions` currencies.
+        </ParamField>
+        <ParamField body="type" type="string" required>
+          This can either be flat or percentage.
         </ParamField>
       </Expandable>
     </ParamField>
@@ -186,8 +235,8 @@ curl --request POST \
     "trial": {
       "periodInDays": 7,
       "pricingList": [
-        { "amount": 0, "currency": "NGN" },
-        { "amount": 0, "currency": "GHS" }
+        { "amount": 0, "currency": "NGN, "type: "flat" (or percentage) },
+        { "amount": 0, "currency": "GHS", "type: "flat" (or percentage) }
       ]
     }
   }'
