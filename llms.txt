@@ -1,0 +1,169 @@
+# Spotflow Documentation
+
+> Spotflow is a Merchant of Record that handles the whole payment lifecycle - collections, subscriptions, virtual accounts, disbursements, compliance and payouts - across Africa.
+
+> This file is grouped by what you are trying to do, and the sections are in the order you would build in. Start with Authentication, take one collection route, then add payouts.
+
+## Start here
+
+> Read these first. Authentication comes before every other call.
+
+- [Spotflow Overview](https://docs.spotflow.one/introduction.md): Welcome to Spotflow, the Merchant of Record (MOR) that simplifies global payments. We handle the entire end-to-end lifecycle for your business—from managing transactions and compliance to ensuring timely payouts.
+- [API Overview](https://docs.spotflow.one/api-reference/introduction.md): Spotflow is your global Merchant of Record (MoR) that simplifies payment processing for businesses worldwide. We handle everything from global payment acceptance to compliance and settlement — empowering merchants to go global effortlessly.
+- [Authentication](https://docs.spotflow.one/api-reference/authentication.md): Secure authentication is crucial for protecting your account and ensuring authorized access. All API requests require authentication with your secret key, kindly include it in the Authorization header for secure access.
+- [Test Mode Vs Live Mode](https://docs.spotflow.one/expert-desk/test-mode-vs-live-mode.md): Learn the critical differences between Test and Live mode and how to switch between them.
+- [Developer Resources Overview](https://docs.spotflow.one/developer-resources/introduction.md): Welcome to the Spotflow Core - This section contains everything you need to successfully integrate, test, master and go live with the Spotflow platform.
+- [Error Codes](https://docs.spotflow.one/api-reference/error-codes.md): Ran into an error? Don't worry—we've got you covered. This page lists all known error codes along with simple explanations and fixes to get you back on track.
+- [Rate Limits](https://docs.spotflow.one/api-reference/rate-limits.md)
+
+## Step 1 - Take a payment
+
+> Pick one route. Initialize gives you a hosted checkout; the static and dynamic virtual account routes are for bank transfers.
+
+- [Accepting Payment Collections](https://docs.spotflow.one/features/payment-collections.md): Payments are processed by creating a transaction using our APIs, libraries, or SDKs.
+- [Payment Methods](https://docs.spotflow.one/features/payment-methods.md): This is your complete guide to the payment methods currently supported by Spotflow. We activate and manage these regional options automatically to maximize your conversion across Africa.
+- [Payment State](https://docs.spotflow.one/developer-resources/payment-states.md): This is the different payment states.
+- [Initialize Payment](https://docs.spotflow.one/api-reference/payments/initialize-collection.md): This is Spotflow's Redirect Checkout. Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers
+- [Authorize Payment](https://docs.spotflow.one/api-reference/payments/authorize-collection.md): This authorizes a payment by pre-approving the transaction before final validation. Authorization required could be PIN, OTP, 3DS, AVS, etc.
+- [Verify Payment](https://docs.spotflow.one/api-reference/payments/verify-collection.md): Confirm the status of a payment
+- [Get Payment](https://docs.spotflow.one/api-reference/payments/fetch-collection.md): Get details of a specific payment by its ID
+- [List Payments](https://docs.spotflow.one/api-reference/payments/list-collection.md): Get details of all payments collection done via your keys.
+
+## Step 2 - Know the payment landed
+
+> Verify on your server before you give the customer anything. Webhooks tell you about payments that finish after the customer has left.
+
+- [Overview](https://docs.spotflow.one/developer-resources/webhooks/overview.md): Webhooks are your essential tool for real-time notifications. They provide instant, server-to-server notifications when critical events occur within the Spotflow platform, ensuring your application is always up-to-date, enabling seamless integration.
+- [Event Reference](https://docs.spotflow.one/developer-resources/webhooks/event-reference.md): Complete list of all events Spotflow can send to your webhook URL.
+- [Payment Collections](https://docs.spotflow.one/developer-resources/webhooks/payment-collections.md): This is the structure of the data payload sent to your webhook URL whenever a payment collection is successful within Spotflow.
+- [Accounts](https://docs.spotflow.one/developer-resources/webhooks/accounts.md): This is the structure of the data payload sent to your webhook URL to notify your system about debits, credits, status updates related to Spotflow Wallets and Dynamic Accounts.
+
+## Step 3 - Pay money out
+
+> Disbursements move money from your balance to a bank account. Resolve the account first so you are not paying a name you did not check.
+
+- [Single and Bulk Disbursements](https://docs.spotflow.one/features/single-and-bulk-disbursements.md): With our APIs, initiating funds disbursements is straightforward and seamless. We maintain strict security and compliance standards to ensure every transaction is processed safely and responsibly. This process covers payouts to vendors, contractors, or moving funds between accounts.
+- [Get Main Spotflow Account Balance](https://docs.spotflow.one/api-reference/balances/main-account-balance.md): Retrieves paginated balances for main accounts with optional currency, mode, and date filters.
+- [Get Spotflow Accounts Balance](https://docs.spotflow.one/api-reference/balances/account-balance.md): Get account balance details for a specific static account before and after top-up in both NGN and GHS currency.
+- [Get All Banks](https://docs.spotflow.one/api-reference/transfer-api/list-banks.md): Get details of all banks, their names and bank codes. Currently, this is for NGN and GHS only. For NGN currency, It also returns a metadata field where the NIBSS & NIP/CBNCode is seen for banks that have it.
+- [Resolve Bank Account](https://docs.spotflow.one/api-reference/transfer-api/transfer-resolve-account.md): Get/Validate A Specific Account Number and Bank Code with its details i.e the account name
+- [Create Single Bank Disbursement](https://docs.spotflow.one/api-reference/transfer-api/create-single-transfer.md): Use this endpoint to perform payouts for currencies - NGN, GHS mobile money and bank accounts transfer using the bank code from our Get All Banks endpoint
+- [Get Transfer By Reference](https://docs.spotflow.one/api-reference/transfer-api/transfer-by-reference.md): Get details of a particular transfer by its reference id.
+- [Create Bulk Disbursement](https://docs.spotflow.one/api-reference/transfer-api/create-bulk-transfer.md): You can use this endpoint to perform bulk bank account transfer to multiple bank accounts.
+- [Validate Bulk Disbursements File](https://docs.spotflow.one/api-reference/transfer-api/validate-bulk-transfer.md): Use this endpoint to confirm your bulk disbursements CSV file has all the necessary details needed and won't fail when uploaded for the bulk transfer transaction.
+- [Get Bulk Disbursement By ID](https://docs.spotflow.one/api-reference/transfer-api/bulk-transfer-id.md): Get details of an uploaded bulk disbursement by its id.
+- [Get All Bulk Disbursements](https://docs.spotflow.one/api-reference/transfer-api/bulk-transfers.md): Get details of all bulk disbursements files you have uploaded.
+- [Get Bulk Disbursements By ID](https://docs.spotflow.one/api-reference/transfer-api/bulk-transfers-by-id.md): Fetch all transfer details present in a bulk disbursements file by its specific id to know the status of each transaction.
+- [Get Bulk Disbursement By Its Categories](https://docs.spotflow.one/api-reference/transfer-api/bulk-transfer-categories.md): Get details of an uploaded bulk disbursement by the categories you created with.
+- [Settlement](https://docs.spotflow.one/features/settlement.md): Settlement is the process of transferring collected funds from your Spotflow platform account directly into your designated bank account. Think of it as Spotflow's job of making sure your hard work actually pays the bills.
+- [Payout Structure](https://docs.spotflow.one/features/payout-structure.md): The Payout process is how your earned revenue moves from your Spotflow Balance to your preferred Bank Account via Bank Transfer. We offer flexible cycles to match your cash flow needs.
+
+## Virtual accounts
+
+> A bank account number your customer pays into. Static accounts belong to one customer; dynamic accounts are created per payment and expire.
+
+- [Spotflow Static Virtual Accounts](https://docs.spotflow.one/features/static-accounts.md): Spotflow static virtual accounts (formerly called sub-accounts) are powerful, virtual, API-only financial containers designed to store and manage funds independently within your account ecosystem.
+- [Create Spotflow Static Virtual Accounts](https://docs.spotflow.one/api-reference/static-account/create-account.md): Static virtual accounts (formerly called sub-accounts) are created through the API and also seen via the merchant dashboard UI as the virtual accounts page. They serve a unique purpose to act as a pocket of money where funds can sit in.
+- [Get All Spotflow Static Virtual Accounts](https://docs.spotflow.one/api-reference/static-account/list-spotflow-account.md): This retrieves and lists all the accounts you've created. This is both for your main account and static (sub) accounts.
+- [Get Spotflow Static Virtual Account By ID](https://docs.spotflow.one/api-reference/static-account/spotflow-account-id.md): Get details of your created static account by its ID. You can get this in either NGN or GHS.
+- [Deactivate Spotflow Static Virtual Accounts](https://docs.spotflow.one/api-reference/static-account/deactivate-account.md): Deactivates a static virtual account, preventing it from receiving any further payments. Once deactivated, the account number can no longer be credited and any incoming transfers to it will be rejected or returned.
+- [Dynamic Virtual Accounts](https://docs.spotflow.one/features/dynamic-accounts.md): Dynamic Virtual Accounts are intelligent payment routing tools that automatically channel incoming collections directly to your main Spotflow account. Think of them not as bank accounts that hold money, but as virtual smart conduits that simplify payment collection without fund segregation.
+- [Create Dynamic Virtual Account](https://docs.spotflow.one/api-reference/dynamic-accounts/create-dynamic-account.md): Dynamic virtual accounts don't act as independent money storage - they simply channel incoming payments straight to your account. These virtual accounts cannot process outgoing payments or be linked to payment terminals.
+- [Get All Dynamic Virtual Accounts](https://docs.spotflow.one/api-reference/dynamic-accounts/list-dynamic-account.md): This retrieves and lists all the expired or active dynamic virtual accounts you created.
+- [Get Dynamic Virtual Account by ID](https://docs.spotflow.one/api-reference/dynamic-accounts/dynamic-account-id.md): Get details of your created dynamic virtual account by its ID.
+
+## Recurring payments
+
+> Create a plan, then subscribe customers to it. Only needed if you are billing on a schedule.
+
+- [Subscription Payment Collections](https://docs.spotflow.one/features/subscription-payment-collections.md): Offer recurring billing for memberships, SaaS, or services with flexible cycles, tiered pricing, and automated renewals. This is your engine for predictable revenue.
+- [Mobile Money Subscriptions](https://docs.spotflow.one/features/mobile-money-subscriptions.md): Set up recurring billing plans and collect automated subscription payments using Mobile Money providers.
+- [Plan Trials & Currency Rules](https://docs.spotflow.one/features/plan-trials-and-currency-rules.md): Learn how to set up free trials on subscription plans, and understand how currency rules work across plans.
+- [Create Single Plan](https://docs.spotflow.one/api-reference/subscription-plans/create-single-plan.md): Create a subscription plan under your integration.
+- [Create Bulk Plans](https://docs.spotflow.one/api-reference/subscription-plans/create-bulk-plan.md): Create multiple subscription plans under your integration.
+- [Get All Plans](https://docs.spotflow.one/api-reference/subscription-plans/fetch-plan.md): This retrieves and lists all subscription plans available on your integration.
+- [Get Single Plan](https://docs.spotflow.one/api-reference/subscription-plans/list-single-plan.md): Retrieve details of a single subscription plan available on your integration.
+- [Update Plan](https://docs.spotflow.one/api-reference/subscription-plans/update-plan.md): Update the details of an existing subscription plan
+- [Activate Plan](https://docs.spotflow.one/api-reference/subscription-plans/activate-plan.md): Activate a subscription with the plan Id.
+- [Cancel Plan](https://docs.spotflow.one/api-reference/subscription-plans/cancel-plan.md): Cancel a subscription with the plan Id.
+- [Get All Subscriptions](https://docs.spotflow.one/api-reference/subscriptions/list-subscriptions.md): Retrieve details of all subscriptions.
+- [Get Subscriptions Details](https://docs.spotflow.one/api-reference/subscriptions/subscription-details.md): This is the unique ID of the subscription or customer you want to fetch.
+- [Subscriptions by plan](https://docs.spotflow.one/api-reference/subscriptions/subscription-by-plan.md): Retrieve details of all subscriptions associated with a customer's plan ID.
+- [Activate Subscription](https://docs.spotflow.one/api-reference/subscriptions/subscription-activate.md): Activate a subscription with the plan Id.
+- [Cancel Subscription](https://docs.spotflow.one/api-reference/subscriptions/subscription-cancel.md): Cancel a subscription with the plan Id.
+- [Get A Subscription Payment Method](https://docs.spotflow.one/api-reference/subscriptions/get-subscription-payment-method.md): Get payment method associated with a subscription
+- [Update A Subscription Payment Method](https://docs.spotflow.one/api-reference/subscriptions/update-subscription-payment-method.md): Update payment method associated with a subscription
+
+## Tax
+
+> Optional. Configure tax per country or region before it is charged.
+
+- [Tax Configuration](https://docs.spotflow.one/features/tax-collections.md): Learn how to configure collection and management of transaction taxes or extra service fees from your customers.
+- [Check Tax Activation Status](https://docs.spotflow.one/api-reference/tax-collections-configuration/get-tax-status.md): According to your request made, checks if your merchant account has been authorized by Spotflow to collect regional checkout taxes.
+- [Get Tax Settings by Country/Region](https://docs.spotflow.one/api-reference/tax-collections-configuration/get-tax-region.md): Returns a list of all custom tax rules and rates configured for a specific country.
+- [Create a New Tax Setting](https://docs.spotflow.one/api-reference/tax-collections-configuration/create-tax.md): Create a new tax rule to an approved country. You can set this up as a fixed flat fee or a percentage-based charge.
+- [Edit Tax Details](https://docs.spotflow.one/api-reference/tax-collections-configuration/update-tax.md): Updates the display name, amount, or maximum cap limit for an existing tax rule.
+- [Start or Stop Charging a Tax](https://docs.spotflow.one/api-reference/tax-collections-configuration/toggle-tax-status.md): Changes the status of a tax rule. Set to active to start charging your customers during checkout, or inactive to pause it.
+
+## Testing before you go live
+
+> Test mode takes the same calls as live with test credentials. Use these to try a payment without moving real money.
+
+- [Testing Payments](https://docs.spotflow.one/expert-desk/testing-payments.md): You can use the following details to test your implementation for card and mobile money payments before going live. Note that this works only with your test keys.
+- [Adding Fake Funds for Testing](https://docs.spotflow.one/expert-desk/simulating-funds.md): Learn how to use our funding simulator to add fake money to your virtual accounts and currency balances. This is currently for NGN and GHS only.
+- [Spotflow Checkout Demo](https://docs.spotflow.one/features/spotflow-demo-checkout.md): This is a fully realistic showcase of our redirect checkout solution that eliminates the need for direct payment gateway integration on your application. See exactly how hassle-free, professional, and smooth the user journey is for payment collections.
+
+## SDKs and libraries
+
+> Use these instead of calling the API directly from a client app.
+
+- [Inline JS](https://docs.spotflow.one/developer-resources/inline-js.md): InlineJS is Spotflow's JavaScript library designed to simplify the integration of payment functionalities into your web application. By embedding InlineJS into your checkout page, you can create a seamless payment experience without the need for redirects.
+- [React Library](https://docs.spotflow.one/developer-resources/react-library.md): The Spotflow React SDK helps you or rather enables your users to make payments seamlessly. It integrates smoothly into your application, providing a streamlined checkout experience.
+- [Angular Library](https://docs.spotflow.one/developer-resources/angular-library.md): The Spotflow Angular SDK enables users to make payments seamlessly. It integrates smoothly into your Angular application, providing a streamlined checkout experience.
+- [Vue Library](https://docs.spotflow.one/developer-resources/vue-library.md): This Spotflow Vue.js library wraps around the inline library, which enables your users to make payments seamlessly. It integrates smoothly into your Vue.js application, providing a streamlined checkout experience.
+- [iOS SDK](https://docs.spotflow.one/developer-resources/iOS-sdk.md): The Spotflow iOS SDK is a SwiftUI library that allows developers to integrate payment collection functionality into their iOS applications.
+- [Android SDK](https://docs.spotflow.one/developer-resources/android-sdk.md): The Spotflow Android SDK empowers developers to seamlessly integrate payment functionalities into their Android applications. It provides UI components and methods that allows you accept payment in your Android app.
+- [Flutter SDK](https://docs.spotflow.one/developer-resources/flutter-sdk.md): Our Flutter SDK provides a rich set of pre-built UI components and APIs to seamlessly integrate payment functionalities within your Flutter application. The Spotflow Flutter SDK pallows you to integrate smooth and secure payment flows into your Flutter apps.
+
+## Worked examples
+
+> End-to-end walkthroughs rather than single endpoints.
+
+- [Create Payment Links in under 5 minutes](https://docs.spotflow.one/developer-resources/integration-guide.md): This guide will help you create a Spotflow Payment Link in under 5 minutes with no code required.
+- [Integrate the Initialize/Redirect API](https://docs.spotflow.one/developer-resources/redirectapi-in-your-app.md): This tutorial will help you integrate the Spotflow API into your application.
+
+## Account, compliance and support
+
+> Not needed to build, needed to operate.
+
+- [Verification Process](https://docs.spotflow.one/expert-desk/verification-process.md): Learn how to successfully complete our mandatory onboarding verification process, ensuring compliance and facilitating quick approval so you can start processing payments.
+- [Available Regions](https://docs.spotflow.one/features/available-regions.md): Explore Spotflow's geographic coverage and supported payment channels.
+- [MoR VS PG](https://docs.spotflow.one/features/mor-vs-pg.md): Digital businesses often face a choice: the hands-on approach of a Payment Gateway (PG) or the simplified path of a Merchant of Record (MoR).
+- [Account Management](https://docs.spotflow.one/features/account-management.md): The Payout process is how your earned revenue moves from your Spotflow Balance to your preferred Bank Account via Bank Transfer. We offer flexible cycles to match your cash flow needs.
+- [Your Team Members](https://docs.spotflow.one/features/your-team-members.md): The Spotflow Invite/Add User feature enables you to onboard team members to your dashboard, granting them secure access based on customizable roles and permissions. Ensure secure and flexible collaboration by allowing full modification rights or restricting access to view-only mode.
+- [Collections (transaction history)](https://docs.spotflow.one/features/transactions/collections.md): The Collections page provides a detailed, real-time overview of all customer transactions processed through Spotflow. Here, you as a merchant can track collection statuses, initiate refunds, resend webhooks, and access comprehensive payment details for every transaction.
+- [Security Reporting Policy](https://docs.spotflow.one/features/security-policy.md): At Spotflow, security is foundational and we take it seriously. If you discover a vulnerability, we appreciate your responsible disclosure to help us improve our platform and maintain its integrity.
+- [Help and Support](https://docs.spotflow.one/expert-desk/help-support.md): We understand that even the most seamless platforms require a lifeline now and then. At Spotflow, we keep our support channels tight and highly technical, ensuring you get the right expert, fast.
+- [FAQs](https://docs.spotflow.one/expert-desk/faq.md): Comprehensive answers to common questions about Spotflow, covering everything from onboarding, payments, subscriptions, compliance to technical integration, designed to help you navigate and make the most of our platform.
+
+## Changelog
+
+> What changed in each release.
+
+- [Changelog Overview](https://docs.spotflow.one/changelog/introduction.md): Welcome to the Spotflow Changelog. Or, as we call it, "The Big List of Things We Just Made Better." We're constantly shipping updates to make your payment processing less of a headache. We're obsessed with building a platform that just works for global merchants.
+- [v1.52.5 (29 Oct 2025)](https://docs.spotflow.one/changelog/v1.52.5.md): This release is all about security, control, and giving you more data to work with.
+- [v1.52.4 (15 Oct 2025)](https://docs.spotflow.one/changelog/v1.52.4.md): This release was focused on getting you started faster and giving you the tools to grow.
+
+## Community contributions
+
+> Projects built on Spotflow, and how to submit your own.
+
+- [Community Contributions](https://docs.spotflow.one/contributions/overview.md): Discover community-built SDKs and libraries for Spotflow.
+- [Projects Catalog](https://docs.spotflow.one/contributions/projects.md): Community-maintained libraries and SDKs for Spotflow.
+- [Share Your Contributions](https://docs.spotflow.one/contributions/submit.md): How to add your open-source project to Spotflow's contributions directory
+
+## OpenAPI Specs
+
+> Machine-readable specifications for the endpoints above.
+
+- [openapi](/openapi.json)
