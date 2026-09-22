@@ -1,0 +1,297 @@
+---
+title: Give a Customer a Virtual Account
+sidebarTitle: Give a Customer a Virtual Account
+description: Create a dedicated account number a customer can pay into, read its balance, and close it when you are done.
+icon: "building-columns"
+---
+
+A virtual account is a bank account number that belongs to one of your customers.
+Money paid into it lands in your Spotflow balance, and you always know who sent it,
+because the account number itself identifies them.
+
+This guide creates one, reads it back, checks its balance, and deactivates it.
+
+## What you'll need
+
+- Your **secret key**. Every call in this guide authenticates with it.
+- Nothing else. You do not need an existing account — Spotflow attaches the new
+  sub-account to the main account for the currency you pick.
+
+All calls go to the **accounts** service:
+
+```
+https://api.spotflow.co/accounts/api/v1
+```
+
+<Warning>
+Virtual accounts live on `/accounts/api/v1`, not `/gateway/api/v1`. Calling the gateway
+path returns **404** `No static resource`.
+</Warning>
+
+## The shape of the flow
+
+<Steps>
+  <Step title="Create the account">
+    One call. You get back an account id and a ready-to-use account number.
+  </Step>
+  <Step title="Read it back">
+    Confirm the details, or fetch a summary with its running balance.
+  </Step>
+  <Step title="Check the balance">
+    See what the customer has paid in.
+  </Step>
+  <Step title="Deactivate it">
+    Close the account when the customer leaves.
+  </Step>
+</Steps>
+
+---
+
+## Step 1: Create the account
+
+```bash
+curl -X POST https://api.spotflow.co/accounts/api/v1/accounts \
+  -H "Authorization: Bearer YOUR_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currency": "GHS",
+    "accountName": "Edem Anagbah",
+    "accountTag": "sub-account",
+    "autoSweep": false
+  }'
+```
+
+| Field | Required | What it is |
+|---|---|---|
+| `currency` | yes* | The currency of the account. Spotflow uses this currency's main account as the parent |
+| `parentAccountId` | yes* | An explicit parent account to nest under, instead of `currency` |
+| `accountName` | no | The name shown on the account. This is what a payer sees |
+| `accountTag` | no | `sub-account` (the default) or `main-account` |
+| `autoSweep` | no | When `true`, credits are swept up to the parent account automatically. Default `false` |
+
+<Note>
+\* You must send **either** `currency` **or** `parentAccountId`. Sending neither returns
+**400** `currency_required`.
+</Note>
+
+```json
+{
+  "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
+  "accountName": "Edem Anagbah",
+  "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
+  "autoSweep": false,
+  "currency": "GHS",
+  "mode": "test",
+  "accountTag": "sub-account",
+  "status": "active",
+  "createdAt": "2026-09-22T08:09:08.987775Z",
+  "updatedAt": "2026-09-22T08:09:09.029542Z",
+  "accountDetails": {
+    "provider": "MOCK",
+    "accountName": "Edem Anagbah",
+    "accountNumber": "0313471844198",
+    "bankName": "Jollof Bank",
+    "default": true,
+    "depositAddresses": [],
+    "countryCode": "GH"
+  },
+  "virtualAccounts": [
+    {
+      "provider": "MOCK",
+      "accountName": "Edem Anagbah",
+      "accountNumber": "0313471844198",
+      "bankName": "Jollof Bank",
+      "default": true,
+      "depositAddresses": [],
+      "countryCode": "GH"
+    }
+  ]
+}
+```
+
+Two things to take from this:
+
+- **The account number already exists.** `accountDetails.accountNumber` is live the moment
+  the account is created. There is no second call to provision it. Give
+  `0313471844198` at `Jollof Bank` to your customer and they can pay in.
+- **`id` is what every later call uses**, not the account number. Keep it.
+
+In test mode the `provider` is `MOCK` and the bank is `Jollof Bank`. In live mode these
+are a real provider and a real bank.
+
+---
+
+## Step 2: Read the account back
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623 \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+This returns the same body as the create call.
+
+For an operational view, ask for the summary instead:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/summary \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
+  "accountName": "Edem Anagbah",
+  "totalTransactionVolume": 0,
+  "totalTransactionValue": 0,
+  "currency": "GHS",
+  "status": "active",
+  "accountTag": "sub-account",
+  "createdAt": "2026-09-22T08:09:08.987775Z",
+  "updatedAt": "2026-09-22T08:09:09.029542Z",
+  "currentBalance": 0.00,
+  "pendingTransactions": 0,
+  "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
+  "autoSweep": false
+}
+```
+
+The summary drops `accountDetails` but adds `currentBalance`,
+`totalTransactionVolume` (a count) and `totalTransactionValue` (a sum).
+
+You can also list just the account numbers attached to the account:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/virtual-accounts \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+[
+  {
+    "provider": "MOCK",
+    "accountName": "Edem Anagbah",
+    "accountNumber": "0313471844198",
+    "bankName": "Jollof Bank",
+    "default": true,
+    "depositAddresses": [],
+    "countryCode": "GH"
+  }
+]
+```
+
+---
+
+## Step 3: Check the balance
+
+The summary's `currentBalance` is convenient, but the balance endpoint is the one to
+poll, and it separates total from available:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/balances/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/balance \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "accountId": "d1052ba9-7da1-4885-b9c4-097534d84623",
+  "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
+  "currency": "GHS",
+  "balance": 0.00,
+  "availableBalance": 0.00,
+  "accountTag": "sub-account"
+}
+```
+
+`balance` is everything in the account. `availableBalance` is what you can actually
+move — money still settling is in `balance` but not in `availableBalance`. **Pay out
+against `availableBalance`, never `balance`.**
+
+To see every account at once, call `/balances` with no id:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/balances \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+[
+  {
+    "accountId": "272a0b58-baa2-4f74-946a-f2b40962b800",
+    "currency": "XOF",
+    "balance": 11113400995.00,
+    "availableBalance": 11113400995.00,
+    "accountTag": "main-account"
+  },
+  {
+    "accountId": "a0d5f7df-da28-4111-bb9e-81b404439a48",
+    "currency": "UGX",
+    "balance": 5000000000000.00,
+    "availableBalance": 5000000000000.00,
+    "accountTag": "main-account"
+  }
+]
+```
+
+<Note>
+If the account has its own children, `/balances/accounts/{id}/sub-balances` lists them.
+For a plain virtual account it returns `[]`.
+</Note>
+
+---
+
+## Step 4: Deactivate the account
+
+When the customer leaves, close their account number so nothing more can be paid in.
+
+```bash
+curl -X DELETE https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/deactivate \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
+  "accountName": "Edem Anagbah",
+  "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
+  "autoSweep": false,
+  "currency": "GHS",
+  "mode": "test",
+  "accountTag": "sub-account",
+  "status": "inactive",
+  "createdAt": "2026-09-22T08:09:08.987775Z",
+  "updatedAt": "2026-09-22T08:09:28.460926Z",
+  "accountDetails": {
+    "provider": "MOCK",
+    "accountName": "Edem Anagbah",
+    "accountNumber": "0313471844198",
+    "bankName": "Jollof Bank",
+    "default": true,
+    "depositAddresses": [],
+    "countryCode": "GH"
+  }
+}
+```
+
+<Warning>
+Despite the `DELETE` verb, nothing is deleted. `status` becomes `inactive`, the account
+number stays on the record, and `GET /accounts/{id}` keeps returning it. Treat this as
+"close", not "erase" — and filter on `status` in your own UI.
+</Warning>
+
+---
+
+## When things go wrong
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **400** `currency_required` | You sent neither `currency` nor `parentAccountId` | Add one of them |
+| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
+| **401** `invalid_credentials` on `/balances/currency/{currency}` | That endpoint does not accept a secret key | Use the per-account balance endpoint in Step 3 instead |
+| Balance reads 0 after a payment | The credit has not settled | Poll; compare `balance` against `availableBalance` |
+| Account still returned after deactivate | Expected — deactivate is a status change | Check `status` is `inactive` |
+
+## What to do next
+
+- [Pay one person out](/developer-resources/guides/pay-one-person-out) — move the money back out
+- [Pay many people at once](/developer-resources/guides/pay-many-people-at-once) — batch payouts from a CSV
+- [Bill a customer every month](/developer-resources/guides/bill-a-customer-every-month) — recurring charges

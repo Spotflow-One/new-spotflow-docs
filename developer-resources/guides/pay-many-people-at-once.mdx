@@ -1,0 +1,296 @@
+---
+title: Pay Many People at Once
+sidebarTitle: Pay Many People at Once
+description: Upload a CSV of payouts, check every row before you commit, then send them as one batch.
+icon: "users"
+---
+
+Paying fifty people with fifty API calls means fifty chances to half-fail. A bulk
+transfer replaces that with one CSV file: you validate it, you upload it, and Spotflow
+processes the rows.
+
+All calls are on the **accounts** service:
+
+```
+https://api.spotflow.co/accounts/api/v1
+```
+
+## What you'll need
+
+- Your **secret key**. Every call in this guide authenticates with it.
+- A funded account in the payout currency.
+- A CSV file of recipients, in the exact template below.
+
+<Warning>
+Bulk transfers are a **multipart file upload**, not a JSON body. You send
+`-F "file=@payouts.csv"`, not `-d '{...}'`. This is the single most common mistake with
+these endpoints.
+</Warning>
+
+<Warning>
+These endpoints are on `/accounts/api/v1`, including `/transfers/bulk/categories`.
+The gateway service returns **404** `No static resource`.
+</Warning>
+
+## The shape of the flow
+
+<Steps>
+  <Step title="Build the CSV">
+    The column names are fixed. Getting them wrong fails the whole file.
+  </Step>
+  <Step title="Check your categories">
+    Categories group a batch for reporting.
+  </Step>
+  <Step title="Validate the file">
+    A dry run. Every bad row is reported, and no money moves.
+  </Step>
+  <Step title="Upload the batch">
+    The same file, now for real.
+  </Step>
+  <Step title="Track the batch">
+    Read the batch back and watch the rows settle.
+  </Step>
+</Steps>
+
+---
+
+## Step 1: Build the CSV
+
+The header row must be exactly this, in **snake_case**:
+
+```csv
+amount,currency,bank_code,branch_code,account_number,account_name,narration
+5,GHS,SPB-60046,,0244123456,Edem Anagbah,Sept payout
+6,GHS,SPB-75981,,0201234567,Edem Anagbah,Sept payout
+```
+
+| Column | Required | What it is |
+|---|---|---|
+| `amount` | yes | How much to send. Must be greater than 0 |
+| `currency` | yes | The payout currency for this row |
+| `bank_code` | yes | The `SPB-…` code from [`/transfers/banks/{currency}`](/developer-resources/guides/pay-one-person-out) |
+| `branch_code` | no | Leave the column present but empty if unused |
+| `account_number` | yes | The recipient's account number |
+| `account_name` | no | The recipient's name |
+| `narration` | no | What the recipient sees |
+
+<Warning>
+**The column names are snake_case and the API will not guess.** A header row of
+`accountNumber,accountName,bankCode,amount,narration` — the camelCase spelling used
+everywhere else in the API — is rejected outright:
+
+```json
+{
+  "additionalDetails": {},
+  "errorCategory": "REQUEST_ERROR",
+  "errorCode": "bad_request",
+  "errorMessage": "Error parsing CSV file: Check template again",
+  "traceId": "5af2f5e14faf4eeeb151e08d4c2ef5b7"
+}
+```
+
+That message names no column, so it tells you nothing about which one is wrong. If you
+see it, check the spelling of the whole header row first.
+</Warning>
+
+---
+
+## Step 2: Check your categories
+
+A category labels the batch. List the ones available to you:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/transfers/bulk/categories \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+[]
+```
+
+<Note>
+An empty list is normal on a new merchant — it means no categories have been set up yet.
+The `category` query parameter in Step 4 is still **required**, so you must send a value
+whether or not it appears here.
+</Note>
+
+---
+
+## Step 3: Validate the file
+
+This is a dry run. It parses every row, applies the same validation as the real upload,
+and moves no money. Always do this before Step 4.
+
+```bash
+curl -X POST https://api.spotflow.co/accounts/api/v1/transfers/bulk/validate \
+  -H "Authorization: Bearer YOUR_SECRET_KEY" \
+  -F "file=@payouts.csv;type=text/csv"
+```
+
+A clean file returns **200**:
+
+```json
+{
+  "failedRequests": [],
+  "totalRequests": 2
+}
+```
+
+A file with problems returns **400**, and names every one of them:
+
+```json
+{
+  "failedRequests": [
+    {
+      "errorMessages": ["Amount must be positive"],
+      "errorType": "VALIDATION_ERROR",
+      "request": {
+        "amount": 0,
+        "currency": "GHS",
+        "narration": "Bad amount",
+        "accountId": null,
+        "accountName": "Edem Anagbah",
+        "accountNumber": "0201234567",
+        "bankCode": "SPB-75981",
+        "bankName": null
+      }
+    },
+    {
+      "errorMessages": [
+        "Either accountId (internal), accountNumber and bankCode (external bank), or walletId, chain and toAddress (stablecoin) must be provided"
+      ],
+      "errorType": "VALIDATION_ERROR",
+      "request": {
+        "amount": 7,
+        "currency": "GHS",
+        "narration": "No bank code",
+        "accountName": "Edem Anagbah",
+        "accountNumber": "0207654321",
+        "bankCode": null
+      }
+    }
+  ],
+  "totalRequests": 3
+}
+```
+
+Read this carefully:
+
+- **`totalRequests` is every row, not every failure.** Here 3 rows were parsed and 2
+  failed. The count of good rows is `totalRequests - failedRequests.length`.
+- **Each failure echoes the whole parsed row back** in `request`. That is how you tell
+  which line of your CSV it came from, since there is no line number.
+- The second message spells out the three valid ways to name a destination: an internal
+  `accountId`, an external `accountNumber` + `bankCode`, or a stablecoin
+  `walletId` + `chain` + `toAddress`.
+
+---
+
+## Step 4: Upload the batch
+
+The same file, with the batch settings as **query parameters**:
+
+```bash
+curl -X POST "https://api.spotflow.co/accounts/api/v1/transfers/bulk?category=Salaries&currency=GHS&narration=September%20salaries&skipErrors=false" \
+  -H "Authorization: Bearer YOUR_SECRET_KEY" \
+  -F "file=@payouts.csv;type=text/csv"
+```
+
+| Parameter | Required | What it is |
+|---|---|---|
+| `category` | yes | The label for this batch |
+| `currency` | yes | The batch currency |
+| `narration` | yes | A description for the batch as a whole |
+| `skipErrors` | no | `true` processes the good rows and skips the bad ones. `false` (the default) rejects the batch if any row fails |
+
+Omitting `category` returns **400**:
+
+```json
+{
+  "additionalDetails": { "parameter": "category" },
+  "errorCategory": "REQUEST_ERROR",
+  "errorCode": "missing_parameter",
+  "errorMessage": "Missing required parameter category",
+  "traceId": "98609e2358014286ba14ef8e184f9a13"
+}
+```
+
+<Warning>
+**This endpoint is currently returning 500 on the development environment.** Uploading a
+file that Step 3 validated cleanly returns:
+
+```json
+{
+  "additionalDetails": {},
+  "errorCategory": "SERVER_ERROR",
+  "errorCode": "internal_server_error",
+  "errorMessage": "An unexpected error occurred",
+  "traceId": "6f23fc5d1da14145b88610bce5119ad6"
+}
+```
+
+We reproduced it with one-row and two-row files, with `skipErrors` both `true` and
+`false`, with different category values, and with both a secret key and a dashboard
+token. Parameter validation passes first (omitting `category` still gives the 400 above),
+so the failure is downstream of the request itself. If you hit this, quote the `traceId`
+from your own response to support.
+
+Because no batch could be created, the response body of a successful upload is **not
+documented here** — we will not guess at it. The tracking calls in Step 5 are listed for
+completeness but are likewise unverified.
+</Warning>
+
+---
+
+## Step 5: Track the batch
+
+<Note>
+The calls in this step could not be exercised, because Step 4 does not currently return a
+batch id on dev. Shapes are from the API specification, not from a live run — check them
+against your own response before depending on them.
+</Note>
+
+List your batches:
+
+```bash
+curl "https://api.spotflow.co/accounts/api/v1/transfers/bulk?page=0&size=5" \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "content": [],
+  "pageNumber": 0,
+  "pageSize": 5,
+  "totalElements": 0,
+  "totalPages": 0
+}
+```
+
+This call **is** verified — it returns 200 and an empty page on a merchant with no
+batches. It accepts `page`, `size`, `query`, `status`, `category`, `currency`, `from` and
+`to`.
+
+The remaining three take a batch id:
+
+- `GET /transfers/bulk/{id}` — the batch itself
+- `GET /transfers/bulk/{id}/stats` — counts by status
+- `GET /transfers/bulk/{id}/transfers` — the individual payouts in the batch
+
+---
+
+## When things go wrong
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **400** `Error parsing CSV file: Check template again` | The header row is wrong | Use the exact snake_case header from Step 1 |
+| **400** with `failedRequests` | Individual rows failed validation | Fix the rows echoed back in `request`, or set `skipErrors=true` |
+| **400** `Missing required parameter category` | `category` was left off the query string | Add it — it is required even when the category list is empty |
+| **500** `internal_server_error` on upload | The known dev issue above | Quote your `traceId` to support |
+| Categories list is `[]` | No categories configured for this merchant | Expected; still send a `category` value |
+| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
+
+## What to do next
+
+- [Pay one person out](/developer-resources/guides/pay-one-person-out) — the single-transfer flow, including how to get bank codes
+- [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account) — confirm the balance you are paying from

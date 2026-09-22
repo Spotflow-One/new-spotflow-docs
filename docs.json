@@ -95,6 +95,17 @@
             ]
           },
           {
+            "group": "Guides",
+            "icon": "list-check",
+            "pages": [
+              "developer-resources/guides/give-a-customer-a-virtual-account",
+              "developer-resources/guides/pay-one-person-out",
+              "developer-resources/guides/pay-many-people-at-once",
+              "developer-resources/guides/bill-a-customer-every-month",
+              "developer-resources/guides/charge-tax-on-a-collection"
+            ]
+          },
+          {
             "group": "Integration Guides",
             "icon": "map",
             "pages": [
