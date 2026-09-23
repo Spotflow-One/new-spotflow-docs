@@ -1,0 +1,414 @@
+---
+title: Charge Tax on a Collection
+sidebarTitle: Charge Tax on a Collection
+description: Set up VAT or a flat levy for a region, update the rate, and switch it off without deleting it.
+icon: "receipt"
+---
+
+A tax configuration tells Spotflow to add VAT, a levy, or a flat duty to what you
+collect in one region. You set it up once per region, and it applies from then on.
+
+This guide finds your region, starts from a ready-made template, creates the
+configuration, changes the rate, and switches it off.
+
+All calls are on the **gateway** service:
+
+```
+https://api.spotflow.co/gateway/api/v1
+```
+
+## What you'll need
+
+- A **dashboard token** (JWT). Not your secret key — see the warning below.
+- A region you are set up to collect in.
+
+<Warning>
+**These endpoints reject the secret key.** Unlike the rest of the API, tax configuration
+takes a dashboard token only. A secret key returns:
+
+```json
+{
+  "code": "AUTH_ERROR",
+  "message": "Invalid JWT token format.",
+  "statusCode": 401
+}
+```
+
+Read that message carefully — it says your token is malformed, but the real cause is
+usually that you sent a perfectly valid secret key to an endpoint that does not take one.
+</Warning>
+
+## The shape of the flow
+
+<Steps>
+  <Step title="Find your region id">
+    Every call here is scoped to one region.
+  </Step>
+  <Step title="Look at the templates">
+    Spotflow ships the standard rate for each region.
+  </Step>
+  <Step title="Create the configuration">
+    Adopt a template, or set your own rate.
+  </Step>
+  <Step title="Change the rate">
+    Update it without recreating it.
+  </Step>
+  <Step title="Switch it off">
+    Deactivate rather than delete.
+  </Step>
+</Steps>
+
+---
+
+## Step 1: Find your region id
+
+Every tax call needs a `regionId`, and it is a **small integer**, not a UUID.
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/merchant/regions \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
+```
+
+```json
+[
+  {
+    "id": 16,
+    "name": "Benin",
+    "countryCode": "BJ",
+    "currency": "XOF",
+    "status": "active",
+    "taxStatus": "inactive",
+    "createdAt": "2025-08-19T13:43:19Z",
+    "paymentChannels": ["mobile_money"]
+  },
+  {
+    "id": 2,
+    "name": "Ghana",
+    "countryCode": "GH",
+    "currency": "GHS",
+    "status": "active",
+    "taxStatus": "inactive",
+    "createdAt": "2024-06-07T10:30:47Z",
+    "paymentChannels": ["bank_transfer", "mobile_money", "ussd", "card"]
+  },
+  {
+    "id": 1,
+    "name": "Nigeria",
+    "countryCode": "NG",
+    "currency": "NGN",
+    "status": "active",
+    "taxStatus": "inactive",
+    "createdAt": "2024-06-07T10:30:47Z",
+    "paymentChannels": ["stablecoin", "bank_transfer", "pay_with_opay", "card"]
+  }
+]
+```
+
+`id` is the `regionId` you need. `taxStatus` tells you whether tax is switched on for
+that region yet.
+
+<Note>
+`GET /merchant/regions/tax-status` returns a **narrower** list — only the regions that
+support tax at all. On our test merchant that was Ghana, Nigeria, South Africa and
+Kenya, while `/merchant/regions` returned those plus Benin, Cameroon, Côte d'Ivoire and
+Global. If a region is missing from the tax-status list, you cannot configure tax there.
+</Note>
+
+---
+
+## Step 2: Look at the templates
+
+Spotflow ships the standard rate for each region so you do not have to look it up.
+
+```bash
+curl "https://api.spotflow.co/gateway/api/v1/tax-configurations?regionId=1" \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
+```
+
+```json
+[
+  {
+    "rate": 7.5000,
+    "regionId": 1,
+    "regionName": "Nigeria",
+    "taxName": "Nigeria VAT",
+    "taxType": "percentage",
+    "template": true,
+    "templateId": 1
+  },
+  {
+    "rate": 50.0000,
+    "regionId": 1,
+    "regionName": "Nigeria",
+    "taxName": "Stamp duty",
+    "taxType": "flat",
+    "template": true,
+    "templateId": 2
+  }
+]
+```
+
+For Ghana:
+
+```json
+[
+  {
+    "rate": 12.5000,
+    "regionId": 2,
+    "regionName": "Ghana",
+    "taxName": "Ghana VAT",
+    "taxType": "percentage",
+    "template": true,
+    "templateId": 3
+  }
+]
+```
+
+**`template: true` means this is not yours yet.** It is a suggestion, it has a
+`templateId` but no `id`, and nothing is being charged. Step 3 turns it into a real
+configuration.
+
+<Warning>
+`regionId` is required. Leaving it off returns **400**:
+
+```json
+{
+  "code": "3003",
+  "message": "Missing required field: 'regionId'.  Please add a valid regionId in your request.",
+  "statusCode": 400
+}
+```
+
+A region with no template and no configuration returns `[]` — for example
+`regionId=3` (South Africa).
+</Warning>
+
+---
+
+## Step 3: Create the configuration
+
+```bash
+curl -X POST https://api.spotflow.co/gateway/api/v1/tax-configurations \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "regionId": 2,
+    "taxName": "Ghana VAT",
+    "taxType": "percentage",
+    "rate": 12.5,
+    "thresholdAmount": 10,
+    "capAmount": 500,
+    "templateId": 3
+  }'
+```
+
+| Field | Required | What it is |
+|---|---|---|
+| `regionId` | yes | The region this applies to, from Step 1 |
+| `taxName` | yes | What the tax is called on the customer's receipt |
+| `taxType` | yes | `percentage` or `flat` |
+| `rate` | yes | A percentage 0–100, or a fixed amount for `flat` |
+| `capAmount` | see below | The most tax that can be charged on one transaction |
+| `thresholdAmount` | no | Transactions below this are not taxed. Defaults to 0 |
+| `templateId` | no | The template you are basing this on |
+
+```json
+{
+  "capAmount": 500,
+  "currency": "GHS",
+  "id": 32,
+  "merchantName": "Bloper",
+  "rate": 12.5,
+  "regionId": 2,
+  "regionName": "Ghana",
+  "status": "active",
+  "taxName": "Ghana VAT",
+  "taxType": "percentage",
+  "template": false,
+  "templateId": 3,
+  "thresholdAmount": 10
+}
+```
+
+**`template` is now `false` and there is an `id`.** That is a live configuration, and
+tax is now being applied to collections in that region. Creating the first configuration
+also enables tax for the merchant-region automatically — you do not switch it on
+separately.
+
+<Note>
+The `id` is an **integer** (`32`), not a UUID, unlike accounts, transfers and plans.
+Same for `regionId` and `templateId`.
+</Note>
+
+### capAmount is required for percentage tax
+
+<Warning>
+The API specification marks `capAmount` as optional. **It is not, for `percentage`
+type.** Leaving it out returns:
+
+```json
+{
+  "code": "400",
+  "message": "Cap amount is required for percentage tax type",
+  "statusCode": 400
+}
+```
+
+This check runs **before** the rate check, so an invalid rate with a missing cap reports
+only the cap. Fix the cap first, then you will see the rate error:
+
+```json
+{
+  "code": "400",
+  "message": "Rate cannot be greater than 100% for percentage tax type",
+  "statusCode": 400
+}
+```
+
+`flat` type needs no `capAmount`.
+</Warning>
+
+### The template disappears once you create a configuration
+
+List the region again after creating:
+
+```json
+[
+  {
+    "capAmount": 500.0000,
+    "currency": "GHS",
+    "id": 32,
+    "merchantName": "Bloper",
+    "rate": 12.5000,
+    "regionId": 2,
+    "regionName": "Ghana",
+    "status": "active",
+    "taxName": "Ghana VAT",
+    "taxType": "percentage",
+    "template": false,
+    "templateId": 3,
+    "thresholdAmount": 10.0000
+  }
+]
+```
+
+The `template: true` row is gone. This endpoint returns templates **and** configurations
+mixed together, and a template stops being offered once you have adopted it. Always
+check the `template` flag rather than assuming a row is live.
+
+<Note>
+A region can hold more than one configuration — we created a second, flat `Ghana VAT 2`
+alongside this one and it was accepted with **201**. The specification suggests a
+duplicate is rejected; on dev it is not. Check the list before creating, or you can end
+up charging two taxes in one region.
+</Note>
+
+---
+
+## Step 4: Change the rate
+
+```bash
+curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taxName": "Ghana VAT",
+    "taxType": "percentage",
+    "rate": 15,
+    "thresholdAmount": 20,
+    "capAmount": 600
+  }'
+```
+
+```json
+{
+  "capAmount": 600,
+  "currency": "GHS",
+  "id": 32,
+  "merchantName": "Bloper",
+  "rate": 15,
+  "regionId": 2,
+  "regionName": "Ghana",
+  "status": "active",
+  "taxName": "Ghana VAT",
+  "taxType": "percentage",
+  "template": false,
+  "templateId": 3,
+  "thresholdAmount": 20
+}
+```
+
+<Note>
+**There is no `regionId` in the update body.** A configuration's region is fixed when you
+create it. To move a tax to a different region, deactivate this one and create a new one.
+</Note>
+
+`taxName`, `taxType` and `rate` are all required on the update, so send the full object
+even when changing one number.
+
+To read a single configuration:
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
+```
+
+---
+
+## Step 5: Switch it off
+
+There is no delete. You deactivate.
+
+```bash
+curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32/status \
+  -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "inactive" }'
+```
+
+```json
+{
+  "capAmount": 600.0000,
+  "currency": "GHS",
+  "id": 32,
+  "merchantName": "Bloper",
+  "rate": 15.0000,
+  "regionId": 2,
+  "regionName": "Ghana",
+  "status": "inactive",
+  "taxName": "Ghana VAT",
+  "taxType": "percentage",
+  "template": false,
+  "templateId": 3,
+  "thresholdAmount": 20
+}
+```
+
+Sending `{ "status": "active" }` switches it back on, with the same rate and cap intact.
+Deactivating is how you stop charging a tax while keeping the record for your own
+history.
+
+<Note>
+The status values are lowercase — `active` and `inactive` — even though the API
+specification lists them uppercase.
+</Note>
+
+---
+
+## When things go wrong
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **401** `Invalid JWT token format.` | You used a secret key | Use a dashboard token |
+| **400** `3003` `Missing required field: regionId` | `regionId` left off the query string | Add `?regionId=…` |
+| **400** `Cap amount is required for percentage tax type` | `capAmount` omitted on a percentage tax | Add a cap, even though the spec calls it optional |
+| **400** `Rate cannot be greater than 100%` | `rate` above 100 on a percentage tax | Use 0–100, or switch to `flat` |
+| **404** with `"code": "500"` in the body | The configuration id does not exist | Trust the HTTP status, not the body's `code` |
+| List returns rows with `template: true` | Those are suggestions, not live taxes | Create a configuration from the template first |
+| Two taxes charged in one region | Duplicate configurations were created | List the region and deactivate the extra |
+
+## What to do next
+
+- [Bill a customer every month](/developer-resources/guides/bill-a-customer-every-month) — recurring charges the tax applies to
+- [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account) — where collections land
+- [Pay one person out](/developer-resources/guides/pay-one-person-out) — move the proceeds on

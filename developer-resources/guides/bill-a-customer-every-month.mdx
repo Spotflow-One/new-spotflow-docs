@@ -1,0 +1,388 @@
+---
+title: Bill a Customer Every Month
+sidebarTitle: Bill a Customer Every Month
+description: Create a subscription plan, see who is on it, read a subscription, and stop the billing.
+icon: "repeat"
+---
+
+A **plan** is what you charge and how often. A **subscription** is one customer on that
+plan. You create the plan once, and each customer who signs up gets a subscription
+against it.
+
+This guide creates a plan, reads it back, looks at its subscribers, and shows how to
+stop billing.
+
+All calls are on the **gateway** service:
+
+```
+https://api.spotflow.co/gateway/api/v1
+```
+
+## What you'll need
+
+- Your **secret key**. Every call in this guide authenticates with it.
+- A currency you are set up to collect in. Your regions determine this.
+
+<Warning>
+Plans and subscriptions are on `/gateway/api/v1`, not `/accounts/api/v1`. Accounts,
+balances and transfers are the other way round.
+</Warning>
+
+## The shape of the flow
+
+<Steps>
+  <Step title="Create the plan">
+    What you charge, in what currency, how often.
+  </Step>
+  <Step title="Read the plan back">
+    Confirm the pricing and the region it resolved to.
+  </Step>
+  <Step title="See who is subscribed">
+    List subscriptions on the plan, or count them by status.
+  </Step>
+  <Step title="Read one subscription">
+    The billing dates and the card behind it.
+  </Step>
+  <Step title="Stop the billing">
+    Cancel the plan, or cancel one customer's subscription.
+  </Step>
+</Steps>
+
+---
+
+## Step 1: Create the plan
+
+```bash
+curl -X POST https://api.spotflow.co/gateway/api/v1/plans \
+  -H "Authorization: Bearer YOUR_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Blopper Monthly GHS",
+    "frequency": "MONTHLY",
+    "intervalCount": 1,
+    "intervalUnit": "month",
+    "internalReference": "ref-plan-1790064753",
+    "cycleCount": 12,
+    "retrial": 4,
+    "pricingOptions": [
+      { "amount": 5, "currency": "GHS", "countryCodes": ["GH"] }
+    ]
+  }'
+```
+
+| Field | Required | What it is |
+|---|---|---|
+| `title` | yes | The plan name your customer sees |
+| `internalReference` | yes | **Your** reference. Unique across your plans, forever |
+| `pricingOptions` | yes | One entry per currency. Each needs `amount` and `currency`; `countryCodes` is optional |
+| `frequency` | no | `MONTHLY`, `WEEKLY`, and so on |
+| `intervalCount` / `intervalUnit` | no | The billing period, e.g. `1` + `month` |
+| `cycleCount` | no | How many times to bill before stopping. `0` means forever |
+| `retrial` | no | How many times to retry a failed charge |
+| `trial` | no | A trial period: `periodInDays` plus an optional `pricingList` |
+| `endDate` | no | A date after which the plan stops billing |
+
+```json
+{
+  "id": "62060261-962c-494e-bcb5-27d2f904e221",
+  "title": "Blopper Monthly GHS",
+  "frequency": "MONTHLY",
+  "intervalCount": 1,
+  "intervalUnit": "month",
+  "internalReference": "ref-plan-1790064753",
+  "cycleCount": 12,
+  "retrial": 4,
+  "status": "active",
+  "regions": ["Ghana"],
+  "subscribers": 0,
+  "subscriptions": 0,
+  "pricingOptions": [
+    { "amount": 5, "currency": "GHS", "countryCodes": ["GH"] }
+  ]
+}
+```
+
+Three things to note:
+
+- **This returns `200`, not `201`**, even though it creates the plan.
+- **`regions` is derived, not sent.** Spotflow worked out `["Ghana"]` from the `GHS`
+  currency and the `GH` country code. You cannot set it directly.
+- **`subscribers` and `subscriptions` are separate counts.** One customer who
+  resubscribes is one subscriber and two subscriptions.
+
+### The plan is already active
+
+<Warning>
+A new plan comes back with `status: "active"`. There is a `POST /plans/{id}/activate`
+endpoint, but calling it on a plan you just created always fails:
+
+```json
+{
+  "code": "4138",
+  "message": "Plan is already active",
+  "statusCode": 400
+}
+```
+
+Do not put an activate call in your create flow. It is only for reactivating a plan you
+previously cancelled.
+</Warning>
+
+### Your internal reference is the uniqueness key
+
+Reusing an `internalReference` is rejected:
+
+```json
+{
+  "code": "400",
+  "message": "Plan with internal reference 'ref-plan-1790064753' already exists.",
+  "statusCode": 400
+}
+```
+
+That makes plan creation safe to retry: a repeated request cannot create a duplicate
+plan.
+
+---
+
+## Step 2: Read the plan back
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221 \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "id": "62060261-962c-494e-bcb5-27d2f904e221",
+  "title": "Blopper Monthly GHS",
+  "frequency": "MONTHLY",
+  "intervalCount": 1,
+  "intervalUnit": "month",
+  "internalReference": "ref-plan-1790064753",
+  "cycleCount": 12,
+  "retrial": 4,
+  "status": "active",
+  "regions": ["Ghana"],
+  "subscribers": 0,
+  "subscriptions": 0,
+  "createdAt": "2026-09-22T08:12:36Z",
+  "pricingOptions": [
+    { "amount": 5, "currency": "GHS", "countryCodes": ["GH"] }
+  ]
+}
+```
+
+Same body as the create call, plus `createdAt`.
+
+For a portfolio view across all plans:
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/plans/summary \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "activePlans": "6",
+  "totalPlans": "7",
+  "totalSubscribers": "3"
+}
+```
+
+<Note>
+Those counts are **strings**, not numbers. Parse them before doing arithmetic.
+</Note>
+
+`GET /plans` lists them all and accepts `size` and `status` filters.
+
+---
+
+## Step 3: See who is subscribed
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/plans/759d3917-379b-43fd-b9a5-7655b5f3e49b/subscriptions \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "content": [
+    {
+      "id": "3b7c1ae5-0e57-4605-9ead-5c5cb934266d",
+      "customerId": "49a95860-fc67-4624-871b-c9c09d8742e1",
+      "planId": "759d3917-379b-43fd-b9a5-7655b5f3e49b",
+      "status": "active",
+      "startDate": "2026-08-26T04:21:42Z",
+      "nextPaymentDate": "2026-09-26T04:21:42Z",
+      "createdAt": "2026-08-26T04:21:42Z",
+      "customer": {
+        "id": "49a95860-fc67-4624-871b-c9c09d8742e1",
+        "name": "Edem Anagbah",
+        "email": "customer@example.com",
+        "phoneNumber": "0244123456"
+      },
+      "metadata": { "trialAmount": "1.00" },
+      "currency": "GHS",
+      "regionName": "Ghana",
+      "amount": 1.00
+    }
+  ],
+  "pageNumber": 0,
+  "pageSize": 10,
+  "totalElements": 1,
+  "totalPages": 1
+}
+```
+
+`nextPaymentDate` is when this customer gets charged again. A brand new plan returns
+`"content": []` with `totalElements: 0`.
+
+For a status breakdown rather than the rows:
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/subscriptions/count/62060261-962c-494e-bcb5-27d2f904e221 \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "cancelled": 0,
+  "expired": 0,
+  "completed": 0,
+  "paused": 0,
+  "failed": 0,
+  "pending": 0,
+  "active": 0
+}
+```
+
+Those seven keys are the full set of subscription statuses. `completed` means the
+`cycleCount` ran out; `expired` means the plan's `endDate` passed.
+
+`GET /subscriptions` lists across all plans and accepts `status` and `size`.
+
+---
+
+## Step 4: Read one subscription
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "id": "728cdb49-e47a-47e1-bc11-f793046db89e",
+  "customerId": "911ac871-d55f-406d-b12b-09992f52c443",
+  "planId": "0b0e8cac-94f8-4c7c-be2e-3fa2f1427e21",
+  "status": "active",
+  "startDate": "2026-08-25T11:17:55Z",
+  "nextPaymentDate": "2026-09-22T11:17:55Z",
+  "createdAt": "2026-08-25T11:17:55Z",
+  "metadata": { "trialAmount": "1.00" },
+  "currency": "GHS",
+  "regionName": "Ghana",
+  "amount": 1.00
+}
+```
+
+<Warning>
+**This response has no `customer` object**, while the by-plan list in Step 3 does. There
+is a `customerId` and nothing else. If you need the customer's name, email or phone,
+fetch them from the by-plan list, not from this endpoint.
+</Warning>
+
+To see the card that will be charged:
+
+```bash
+curl https://api.spotflow.co/gateway/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e/payment-method \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "firstSix": "411111",
+  "lastFour": "2555",
+  "cardType": "VISA",
+  "expirationMonth": 12,
+  "expirationYear": 2030
+}
+```
+
+Enough to show the customer which card is on file, and to warn them before it expires.
+There is a matching `PUT` on the same path to change it.
+
+---
+
+## Step 5: Stop the billing
+
+To stop the whole plan:
+
+```bash
+curl -X POST https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/cancel \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "id": "62060261-962c-494e-bcb5-27d2f904e221",
+  "title": "Blopper Monthly GHS",
+  "frequency": "MONTHLY",
+  "intervalCount": 1,
+  "intervalUnit": "month",
+  "internalReference": "ref-plan-1790064753",
+  "cycleCount": 12,
+  "retrial": 4,
+  "status": "cancelled",
+  "regions": ["Ghana"],
+  "subscribers": 0,
+  "subscriptions": 0,
+  "createdAt": "2026-09-22T08:12:36Z",
+  "pricingOptions": [
+    { "amount": 5, "currency": "GHS", "countryCodes": ["GH"] }
+  ]
+}
+```
+
+A cancelled plan can be brought back — this is the one case where `activate` is the
+right call:
+
+```bash
+curl -X POST https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/activate \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+`status` returns to `active`.
+
+To stop one customer instead of the whole plan, cancel their subscription:
+
+```bash
+curl -X POST https://api.spotflow.co/gateway/api/v1/subscriptions/SUBSCRIPTION_ID/cancel \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+<Note>
+We did not run the subscription cancel or activate calls, so their exact response bodies
+are not shown here. Cancelling a live subscription is destructive and there was no
+disposable one to use. The plan-level cancel and activate above **are** verified.
+</Note>
+
+---
+
+## When things go wrong
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **400** `4138` `Plan is already active` | You called activate on a new plan | Skip it — create already activates |
+| **400** `Plan with internal reference … already exists` | That reference is taken | Use a new `internalReference` |
+| Plan created but returns `200` | Expected — creation does not return `201` | Treat `200` as success |
+| `regions` is not what you expected | It is derived from `pricingOptions` | Change the currency or `countryCodes` |
+| No `customer` on a subscription read | Expected on the single-subscription endpoint | Use the by-plan list in Step 3 |
+| Summary counts will not add up | They are strings | Parse them to numbers first |
+
+## What to do next
+
+- [Charge tax on a collection](/developer-resources/guides/charge-tax-on-a-collection) — add VAT to what you bill
+- [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account) — where the collected money lands
+- [Pay one person out](/developer-resources/guides/pay-one-person-out) — move it back out

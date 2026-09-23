@@ -1,0 +1,272 @@
+---
+title: Pay One Person Out
+sidebarTitle: Pay One Person Out
+description: Send money from your Spotflow balance to a single bank account, then confirm it landed.
+icon: "money-check-dollar"
+---
+
+This guide sends one payout to one bank account. You pick the bank, check the account
+name, send the money, and read the transfer back to confirm it settled.
+
+Every step is one API call. All of them live on the **accounts** service:
+
+```
+https://api.spotflow.co/accounts/api/v1
+```
+
+## What you'll need
+
+- Your **secret key**. Every call in this guide authenticates with it.
+- A funded account in the currency you are paying out. See
+  [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account)
+  for reading balances.
+- The recipient's account number and their bank.
+
+<Warning>
+Transfers are on `/accounts/api/v1`, **not** `/gateway/api/v1` — including
+`/transfers/banks/{currency}`. The gateway path returns **404** `No static resource`.
+</Warning>
+
+## The shape of the flow
+
+<Steps>
+  <Step title="Find the bank code">
+    List the banks for the currency and pick the recipient's.
+  </Step>
+  <Step title="Resolve the account name">
+    Check the account number maps to a real name before you send.
+  </Step>
+  <Step title="Send the transfer">
+    One call, with your own reference attached.
+  </Step>
+  <Step title="Read it back">
+    Look the transfer up by your reference and confirm it settled.
+  </Step>
+</Steps>
+
+---
+
+## Step 1: Find the bank code
+
+Spotflow has its own bank codes. They look like `SPB-60046` and they are not NIBSS or
+CBN codes.
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/transfers/banks/GHS \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+[
+  { "bankCode": "SPB-24009", "bankName": "Zenith Bank", "metadata": {} },
+  { "bankCode": "SPB-60046", "bankName": "GCB Bank", "metadata": {} },
+  { "bankCode": "SPB-27446", "bankName": "Dalex Finance", "metadata": {} },
+  { "bankCode": "SPB-41039", "bankName": "United Bank for Africa", "metadata": {} },
+  { "bankCode": "SPB-75981", "bankName": "Ecobank", "metadata": {} }
+]
+```
+
+The path segment is a **currency**, not a country: `GHS`, `NGN`, and so on.
+
+<Note>
+For `NGN`, some entries carry the local codes in `metadata`, which is empty for Ghana:
+
+```json
+{
+  "bankCode": "SPB-99463",
+  "bankName": "ZenithMobile",
+  "metadata": { "nibss": "100018", "cbnCode": "057" }
+}
+```
+
+You still send `bankCode` in the transfer. The `metadata` is there for reconciling
+against your own records.
+</Note>
+
+---
+
+## Step 2: Resolve the account name
+
+Before sending, confirm the account number belongs to who you think it does.
+
+```bash
+curl "https://api.spotflow.co/accounts/api/v1/transfers/resolve-account?accountNumber=0244123456&bankCode=SPB-60046" \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "accountNumber": "0244123456",
+  "accountName": "John Doe"
+}
+```
+
+Both `accountNumber` and `bankCode` are required.
+
+<Warning>
+**In test mode this does not really validate anything.** The dev resolver is a mock: it
+returns `John Doe` for any account number, and it returns **200** even for a bank code
+that does not exist, such as `SPB-00000`. Do not build a "the account is valid" check on
+a 200 from this endpoint in test mode. Verify the behaviour again in live mode before you
+rely on it.
+</Warning>
+
+---
+
+## Step 3: Send the transfer
+
+```bash
+curl -X POST https://api.spotflow.co/accounts/api/v1/transfers \
+  -H "Authorization: Bearer YOUR_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reference": "ref-single-1790064628",
+    "amount": 5,
+    "currency": "GHS",
+    "narration": "September payout",
+    "source": { "accountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f" },
+    "destination": {
+      "accountNumber": "0244123456",
+      "accountName": "Edem Anagbah",
+      "bankCode": "SPB-60046",
+      "bankName": "GCB Bank"
+    }
+  }'
+```
+
+| Field | Required | What it is |
+|---|---|---|
+| `reference` | yes | **Your** reference. 5 to 50 characters, and unique forever |
+| `amount` | yes | How much to send. Must be greater than 0 |
+| `currency` | yes | The payout currency |
+| `destination.accountNumber` | yes | The recipient's account number |
+| `destination.bankCode` | yes | The `SPB-…` code from Step 1 |
+| `destination.accountName` | no | The recipient's name |
+| `destination.bankName` | no | The bank's name, for your own records |
+| `source.accountId` | no | Which account to debit. Omit to use the currency's main account |
+| `narration` | no | What the recipient sees |
+
+```json
+{
+  "reference": "ref-single-1790064628",
+  "spotflowReference": "SPF-TRSF-1982c25c90d2466cb01ab9c40c7fb84e",
+  "amount": 5.00,
+  "fee": 12.00,
+  "currency": "GHS",
+  "transferMode": "single",
+  "destination": {
+    "accountNumber": "0244123456",
+    "accountName": "Edem Anagbah",
+    "bankCode": "SPB-60046",
+    "bankName": "GCB Bank"
+  },
+  "narration": "September payout",
+  "status": "processing"
+}
+```
+
+Three things to read carefully:
+
+- **There are two references.** Yours (`reference`) and Spotflow's
+  (`spotflowReference`, an `SPF-TRSF-…` string). You look the transfer up by yours;
+  support will ask for Spotflow's.
+- **`fee` is charged on top of `amount`, and it is flat.** Here the fee is
+  **12.00 GHS on a 5.00 GHS transfer** — more than twice the amount being sent. Batch
+  small payouts rather than sending them one at a time.
+- **`status` is `processing`, not done.** The money has been accepted, not delivered.
+
+### Your reference is the idempotency key
+
+Sending the same `reference` again is rejected:
+
+```json
+{
+  "additionalDetails": {},
+  "errorCategory": "REQUEST_ERROR",
+  "errorCode": "duplicate_reference",
+  "errorMessage": "A transfer with this reference already exists",
+  "traceId": "4e673acad2f54affbf52e1c2606630f7"
+}
+```
+
+**400**, and no second payout. This is what makes a retry safe: if your request times
+out and you do not know whether it landed, send it again with the same reference. You
+will either create it once or get this error — never pay twice.
+
+<Warning>
+A reference shorter than 5 characters is rejected before anything happens:
+
+```json
+{
+  "additionalDetails": { "reference": "Reference must be between 5 and 50 characters" },
+  "errorCategory": "REQUEST_ERROR",
+  "errorCode": "validation_error",
+  "errorMessage": "Validation failed for one or more fields"
+}
+```
+</Warning>
+
+---
+
+## Step 4: Read the transfer back
+
+Look it up with **your** reference:
+
+```bash
+curl https://api.spotflow.co/accounts/api/v1/transfers/reference/ref-single-1790064628 \
+  -H "Authorization: Bearer YOUR_SECRET_KEY"
+```
+
+```json
+{
+  "reference": "ref-single-1790064628",
+  "spotflowReference": "SPF-TRSF-1982c25c90d2466cb01ab9c40c7fb84e",
+  "amount": 5.00,
+  "fee": 12.0000,
+  "currency": "GHS",
+  "transferMode": "single",
+  "destination": {
+    "accountNumber": "0244123456",
+    "accountName": "Edem Anagbah",
+    "bankCode": "SPB-60046",
+    "bankName": "GCB Bank"
+  },
+  "narration": "September payout",
+  "status": "successful"
+}
+```
+
+`status` has moved from `processing` to `successful`. That is the transfer delivered.
+
+<Note>
+In test mode this takes a few seconds. Poll every few seconds rather than in a tight
+loop, and treat `processing` as "not finished" — not as a failure.
+</Note>
+
+If you kept the internal id instead, `GET /transfers/{id}` returns the same shape.
+
+---
+
+## When things go wrong
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **400** `duplicate_reference` | This reference was already used | The transfer exists — read it back in Step 4 instead of resending |
+| **400** `Reference must be between 5 and 50 characters` | Reference too short or too long | Use a longer reference, e.g. `ref-` plus a unique id |
+| **400** `Invalid transaction type` on `/transfers/resolve-fee` | The fee preview endpoint rejects the type values we tried | Read `fee` off the transfer response in Step 3 instead |
+| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
+| `status` stuck on `processing` | The payout has not settled yet | Keep polling Step 4 |
+| Resolve returns a name for a fake bank | Test mode mock | Do not rely on resolve as validation in test mode |
+
+<Note>
+`GET /transfers/resolve-fee` is documented as taking `amount`, `currency` and `type`,
+but every `type` value we tried on dev was rejected with
+`Invalid transaction type`, and the spec declares no enum for it. Until that is
+settled, take the fee from the `fee` field on the transfer response.
+</Note>
+
+## What to do next
+
+- [Pay many people at once](/developer-resources/guides/pay-many-people-at-once) — upload a CSV instead of one call per person
+- [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account) — check the balance you are paying from
+- [Charge tax on a collection](/developer-resources/guides/charge-tax-on-a-collection) — add VAT to what you collect
