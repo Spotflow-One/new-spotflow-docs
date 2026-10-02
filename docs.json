@@ -283,27 +283,6 @@
         ]
       },
       {
-        "tab": "Changelog",
-        "icon": "tags",
-        "groups": [
-          {
-            "group": "Changelog",
-            "icon": "list",
-            "pages": [
-              "changelog/introduction"
-            ]
-          },
-          {
-            "group": "October 2025",
-            "icon": "calendar",
-            "pages": [
-              "changelog/v1.52.5",
-              "changelog/v1.52.4"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "Contributions",
         "icon": "people-group",
         "groups": [
