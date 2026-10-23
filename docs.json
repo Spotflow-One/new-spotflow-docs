@@ -125,7 +125,7 @@
             "icon": "bell",
             "pages": [
               "developer-resources/webhooks/overview",
-              
+              "developer-resources/webhooks/verify-webhook",
               {
                 "group": "Webhook Payloads",
                 "icon": "file-code",

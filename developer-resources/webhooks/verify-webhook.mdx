@@ -1,0 +1,346 @@
+---
+title: Verify a Webhook Signature
+description: End-to-end recipe for verifying that an incoming webhook really came from Spotflow, including replay protection, idempotency, and code samples in Node.js, Python and Go.
+icon: "shield-check"
+---
+
+## Why verify?
+
+A webhook endpoint is a public URL. Anyone who learns the URL can POST to it. The only way to know a request really came from Spotflow — and not an attacker trying to credit a fake payment or trigger a payout — is to verify the signature on every request before you trust the body.
+
+This recipe covers:
+
+1. Reading the `x-spotflow-signature` header and the request body.
+2. Reconstructing the signed payload (`webhook-id.timestamp.body`).
+3. Verifying the HMAC-SHA256 signature using your webhook secret.
+4. Rejecting replays by enforcing a freshness window on `timestamp`.
+5. Making the handler idempotent on `webhook-id` so retries do not double-process.
+
+Spotflow follows the [Standard Webhooks](https://standardwebhooks.com/) specification, so any standard-webhooks client library will verify our signatures out of the box. The snippets below show the algorithm directly first, then how to do it with the official libraries.
+
+<Warning>
+Always compare signatures with a constant-time comparison. A naive `==` is vulnerable to a timing oracle that lets an attacker recover the correct signature byte-by-byte.
+</Warning>
+
+## Headers Spotflow sends
+
+Every webhook request includes these headers:
+
+| Header | What it is |
+|---|---|
+| `webhook-id` | Unique event id. Use this for idempotency — the same event may be delivered more than once. |
+| `webhook-timestamp` | Unix seconds, when Spotflow emitted the event. |
+| `webhook-signature` | Base64-encoded HMAC-SHA256 of `webhook-id.webhook-timestamp.body`, using your webhook secret as the key. (Also mirrored in `x-spotflow-signature` for legacy clients.) |
+| `content-type` | `application/json`. |
+
+## The signed payload
+
+The string that gets signed is **not** just the body. It is:
+
+```
+{webhook-id}.{webhook-timestamp}.{raw-body}
+```
+
+Where `raw-body` is the exact bytes Spotflow sent — before any JSON parsing, before any re-serialization. Two mistakes to avoid:
+
+1. Re-serializing the parsed JSON. `JSON.stringify(JSON.parse(body))` does **not** reproduce the original bytes (key order, whitespace, number formatting all differ). Always verify against the raw bytes.
+2. Verifying inside a middleware that has already consumed the body. In Express, use `express.raw({ type: 'application/json' })` *before* `express.json()`, so the verifier sees the original bytes.
+
+## Verifying the signature
+
+### Node.js
+
+```ts
+import crypto from "node:crypto";
+
+interface SpotflowHeaders {
+  "webhook-id": string;
+  "webhook-timestamp": string;
+  "webhook-signature": string;
+}
+
+const WEBHOOK_SECRET = process.env.SPOTFLOW_WEBHOOK_SECRET!;
+
+// Constant-time comparison. crypto.timingSafeEqual throws if the two
+// buffers have different lengths, so we hash both sides first to make
+// them equal-length.
+function safeEqual(a: string, b: string): boolean {
+  const aBuf = Buffer.from(a);
+  const bBuf = Buffer.from(b);
+  if (aBuf.length !== bBuf.length) return false;
+  return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+export function verifySpotflowSignature(
+  rawBody: Buffer,
+  headers: SpotflowHeaders,
+  opts: { toleranceSeconds?: number } = {},
+): { ok: true; eventId: string; timestamp: number } | { ok: false; reason: string } {
+  const tolerance = opts.toleranceSeconds ?? 300; // 5 minutes
+  const msg = `${headers["webhook-id"]}.${headers["webhook-timestamp"]}.${rawBody.toString("utf8")}`;
+  const expected = crypto
+    .createHmac("sha256", WEBHOOK_SECRET)
+    .update(msg)
+    .digest("base64");
+
+  // The signature header can carry multiple space-separated schemes
+  // ("v1,..." / "v1,base64"), per the Standard Webhooks spec. Pick the
+  // first one that parses and check it.
+  const sigs = headers["webhook-signature"].split(" ").map((s) => s.trim());
+  const matched = sigs.some((s) => {
+    const withoutVersion = s.startsWith("v1,") ? s.slice(3) : s;
+    return safeEqual(withoutVersion, expected);
+  });
+  if (!matched) return { ok: false, reason: "signature mismatch" };
+
+  const now = Math.floor(Date.now() / 1000);
+  const ts = Number(headers["webhook-timestamp"]);
+  if (!Number.isFinite(ts)) return { ok: false, reason: "bad timestamp" };
+  if (Math.abs(now - ts) > tolerance) {
+    return { ok: false, reason: `timestamp outside ±${tolerance}s window` };
+  }
+  return { ok: true, eventId: headers["webhook-id"], timestamp: ts };
+}
+```
+
+### Python
+
+```python
+import hmac
+import hashlib
+import time
+from typing import TypedDict
+
+class Headers(TypedDict):
+    webhook_id: str
+    webhook_timestamp: str
+    webhook_signature: str
+
+# Use `hmac.compare_digest` for a constant-time comparison.
+def _safe_equal(a: str, b: str) -> bool:
+    return hmac.compare_digest(a.encode(), b.encode())
+
+def verify_spotflow_signature(raw_body: bytes, headers: Headers, secret: str,
+                              tolerance_seconds: int = 300) -> tuple[bool, str]:
+    """Returns (ok, reason)."""
+    msg = f"{headers['webhook_id']}.{headers['webhook_timestamp']}.".encode() + raw_body
+    expected = hmac.new(secret.encode(), msg, hashlib.sha256).hexdigest()
+    # Spotflow returns the signature base64-encoded.
+    import base64
+    expected_b64 = base64.b64encode(bytes.fromhex(expected)).decode()
+
+    sigs = headers["webhook_signature"].split(" ")
+    matched = False
+    for sig in sigs:
+        s = sig[3:] if sig.startswith("v1,") else sig
+        if _safe_equal(s, expected_b64):
+            matched = True
+            break
+    if not matched:
+        return False, "signature mismatch"
+
+    try:
+        ts = int(headers["webhook_timestamp"])
+    except ValueError:
+        return False, "bad timestamp"
+
+    now = int(time.time())
+    if abs(now - ts) > tolerance_seconds:
+        return False, f"timestamp outside +/-{tolerance_seconds}s window"
+    return True, "ok"
+```
+
+### Go
+
+```go
+package spotflowwebhook
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/base64"
+	"fmt"
+	"math"
+	"strconv"
+	"strings"
+	"time"
+)
+
+// Verify returns nil if the signature is valid and the timestamp is fresh.
+// Otherwise it returns an error describing what failed.
+func Verify(rawBody []byte, webhookID, webhookTimestamp, webhookSignature, secret string, tolerance time.Duration) error {
+	msg := webhookID + "." + webhookTimestamp + "." + string(rawBody)
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(msg))
+	expected := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+
+	matched := false
+	for _, sig := range strings.Fields(webhookSignature) {
+		s := strings.TrimPrefix(sig, "v1,")
+		// subtle.ConstantTimeCompare is constant-time on equal-length slices.
+		if subtle.ConstantTimeCompare([]byte(s), []byte(expected)) == 1 {
+			matched = true
+			break
+		}
+	}
+	if !matched {
+		return fmt.Errorf("signature mismatch")
+	}
+
+	ts, err := strconv.ParseInt(webhookTimestamp, 10, 64)
+	if err != nil {
+		return fmt.Errorf("bad timestamp: %w", err)
+	}
+	now := time.Now().Unix()
+	if math.Abs(float64(now-ts)) > tolerance.Seconds() {
+		return fmt.Errorf("timestamp outside +/- %s window", tolerance)
+	}
+	return nil
+}
+```
+
+## Putting it together in an Express handler
+
+```ts
+import express, { Request, Response } from "express";
+import crypto from "node:crypto";
+import { verifySpotflowSignature } from "./verify";
+
+const app = express();
+
+// Order matters: register the raw-body capture BEFORE express.json().
+app.use(
+  express.json({
+    type: "application/json",
+    verify: (req, _res, buf) => {
+      // Stash the raw bytes on the request so the verifier can use them.
+      (req as any).rawBody = buf;
+    },
+  }),
+);
+
+const seenEventIds = new Set<string>(); // use Redis in production
+
+app.post("/webhooks/spotflow", async (req: Request, res: Response) => {
+  const headers = {
+    "webhook-id": req.header("webhook-id") ?? "",
+    "webhook-timestamp": req.header("webhook-timestamp") ?? "",
+    "webhook-signature": req.header("webhook-signature") ?? "",
+  };
+  if (!headers["webhook-id"] || !headers["webhook-timestamp"] || !headers["webhook-signature"]) {
+    return res.status(400).send("missing webhook headers");
+  }
+
+  const result = verifySpotflowSignature((req as any).rawBody, headers);
+  if (!result.ok) {
+    // 401 tells Spotflow (and an attacker) the request did not pass. Do not
+    // log the body — it is untrusted.
+    return res.status(401).send("invalid signature");
+  }
+
+  // Replay / idempotency: dedupe on webhook-id.
+  if (seenEventIds.has(result.eventId)) {
+    return res.status(200).json({ ok: true, deduplicated: true });
+  }
+  seenEventIds.add(result.eventId);
+
+  // NOW we can trust req.body.
+  try {
+    const event = req.body;
+    switch (event.event) {
+      case "payment_successful":
+        await creditCustomer(event.data);
+        break;
+      case "payment_failed":
+        await markPaymentFailed(event.data);
+        break;
+      default:
+        // Unknown events should be logged, not failed — Spotflow may add
+        // new event types later.
+        console.warn("unknown event", event.event);
+    }
+    seenEventIds.add(result.eventId);
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    // Returning non-2xx makes Spotflow retry. Use this for transient errors
+    // only — if you have already debited the customer, return 200 to avoid
+    // a second debit on retry.
+    console.error("handler failed", err);
+    return res.status(500).send("handler failed");
+  }
+});
+
+async function creditCustomer(_data: unknown) { /* your code */ }
+async function markPaymentFailed(_data: unknown) { /* your code */ }
+
+app.listen(3000);
+```
+
+## Replay handling
+
+Spotflow retries a webhook a few times if your endpoint returns non-2xx. That means the same event can arrive more than once. Two consequences:
+
+1. **Idempotency on `webhook-id`.** Persist the id the first time you process the event; on a duplicate, short-circuit with `200 OK` without re-running side effects. Without this, a retried `payment_successful` can credit the same customer twice.
+2. **Timestamp tolerance.** Even if the signature is valid, reject requests whose `webhook-timestamp` is older than your tolerance window (5 minutes is reasonable). A captured-and-replayed request weeks later would otherwise pass signature verification.
+
+## Using the official Standard Webhooks libraries
+
+If you do not want to manage HMAC details yourself, use the official libraries:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```bash
+    npm install standardwebhooks
+    ```
+    ```ts
+    import { Webhook } from "standardwebhooks";
+
+    const wh = new Webhook(process.env.SPOTFLOW_WEBHOOK_SECRET!);
+    // Throws on signature mismatch or stale timestamp.
+    const payload = wh.verify(rawBody, {
+      "webhook-id": req.header("webhook-id")!,
+      "webhook-timestamp": req.header("webhook-timestamp")!,
+      "webhook-signature": req.header("webhook-signature")!,
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```bash
+    pip install standardwebhooks
+    ```
+    ```python
+    from standardwebhooks import Webhook
+
+    wh = Webhook(os.environ["SPOTFLOW_WEBHOOK_SECRET"])
+    payload = wh.verify(raw_body, headers_dict)  # raises on failure
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```bash
+    go get github.com/standard-webhooks/standard-webhooks/lib/go
+    ```
+    ```go
+    import webhook "github.com/standard-webhooks/standard-webhooks/lib/go"
+
+    wh, _ := webhook.NewWebhook([]byte(secret))
+    err := wh.Verify(rawBody, headers)
+    ```
+  </Tab>
+</Tabs>
+
+## Checklist
+
+- [ ] Verify the signature on every webhook request before parsing the body.
+- [ ] Use the raw request body, not a re-serialized version.
+- [ ] Compare signatures with a constant-time comparison.
+- [ ] Reject requests whose `webhook-timestamp` is older than your tolerance window.
+- [ ] Deduplicate events on `webhook-id` so retries do not double-process.
+- [ ] Return `200` only after the side effect has committed; return `5xx` for transient errors so Spotflow retries.
+- [ ] Log unknown event types rather than failing — Spotflow may add new events.
+
+## See also
+
+- [Webhooks overview](/developer-resources/webhooks/overview)
+- [Webhook event reference](/developer-resources/webhooks/event-reference)
+- [Standard Webhooks specification](https://standardwebhooks.com/)
