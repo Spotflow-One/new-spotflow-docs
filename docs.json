@@ -14,13 +14,6 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Home",
-        "icon": "house",
-        "pages": [
-          "index"
-        ]
-      },
-      {
         "tab": "Get Started",
         "icon": "play",
         "groups": [
@@ -28,6 +21,7 @@
             "group": "Welcome",
             "icon": "hand-wave",
             "pages": [
+              "index",
               "introduction",
               "get-started/how-spotflow-works",
               "quickstart",
@@ -59,13 +53,14 @@
             ]
           },
           {
-            "group": "Test mode",
+            "group": "Test and go live",
             "icon": "flask",
             "pages": [
               "expert-desk/test-mode-vs-live-mode",
               "expert-desk/testing-payments",
               "expert-desk/simulating-funds",
-              "features/spotflow-demo-checkout"
+              "features/spotflow-demo-checkout",
+              "get-started/go-live"
             ]
           }
         ]
@@ -327,6 +322,17 @@
   "api": {
     "playground": {
       "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "javascript",
+        "python",
+        "go",
+        "php",
+        "java"
+      ],
+      "defaults": "all"
     }
   },
   "logo": {

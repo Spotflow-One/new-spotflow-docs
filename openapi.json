@@ -2729,6 +2729,7 @@
         "description": "Retrieves a list of supported branches for a for transfers in the specified mode and selected currency",
         "operationId": "BranchesBankCode",
         "parameters": [
+          { "name": "bank-code", "in": "path", "required": true, "description": "The code of the bank whose branches you want to list.", "schema": { "type": "string" } },
           {
             "name": "bankCode",
             "in": "query",
