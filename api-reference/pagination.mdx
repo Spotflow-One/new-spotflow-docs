@@ -1,0 +1,54 @@
+---
+title: "Pagination"
+description: "How to page through lists of payments, subscriptions, plans, accounts, balances and bulk transfers."
+icon: "list-ol"
+---
+
+List endpoints return results one page at a time. Choose the page and its size with query parameters, and the response tells you how many pages there are.
+
+```bash Paginated request
+curl "https://api.spotflow.co/api/v1/payments?page=0&size=10" \
+  -H "Authorization: Bearer sk_test_..."
+```
+
+```json Paginated response
+{
+  "content": [],
+  "pageNumber": 0,
+  "pageSize": 10,
+  "totalElements": 0,
+  "totalPages": 0
+}
+```
+
+## Query parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | `0` | The page to return. Pages start at **0** |
+| `size` | integer | `10` | How many items per page |
+
+## Response attributes
+
+| Attribute | Description |
+|---|---|
+| `content` | The items on this page |
+| `pageNumber` | The page you're on, starting at 0 |
+| `pageSize` | The number of items per page |
+| `totalElements` | The number of items across all pages |
+| `totalPages` | The number of pages |
+
+You've reached the last page when `pageNumber + 1` equals `totalPages`. Don't assume every record comes back in one response.
+
+## Paginated endpoints
+
+- [List payments](/api-reference/payments/list-collection)
+- [List subscriptions](/api-reference/subscriptions/list-subscriptions)
+- [List subscription plans](/api-reference/subscription-plans/list-single-plan)
+- [List static virtual accounts](/api-reference/static-account/list-spotflow-account)
+- [Balances](/api-reference/balances/main-account-balance)
+- [List bulk transfers](/api-reference/transfer-api/bulk-transfers) and [transfers in a bulk transfer](/api-reference/transfer-api/bulk-transfers-by-id)
+
+<Tip>
+  Many list endpoints also take filters, such as `status`, `currency`, `from` and `to`. Each endpoint page lists the filters it accepts.
+</Tip>

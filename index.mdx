@@ -1,0 +1,288 @@
+---
+title: "Spotflow Documentation"
+sidebarTitle: "Home"
+description: "Guides, API reference and tools for building with Spotflow, the Merchant of Record for collections, subscriptions, virtual accounts, disbursements and payouts across Africa."
+mode: "custom"
+---
+
+export const Product = ({ icon, title, children, links }) => (
+  <div className="sf-card">
+    <div className="sf-card-head">
+      <span className="sf-icon"><Icon icon={icon} size={16} color="var(--sf-accent)" /></span>
+      <h3 className="sf-card-title">{title}</h3>
+    </div>
+    <p className="sf-card-text">{children}</p>
+    <div className="sf-card-links">
+      {links.map(([label, href]) => (
+        <a key={href} href={href}>{label}<span>→</span></a>
+      ))}
+    </div>
+  </div>
+);
+
+export const TaskCol = ({ icon, title, tasks }) => (
+  <div className="sf-taskcol">
+    <p className="sf-taskcol-title"><Icon icon={icon} size={14} color="var(--sf-accent)" />{title}</p>
+    {tasks.map(([label, href]) => (
+      <a key={href} href={href} className="sf-task">{label}</a>
+    ))}
+  </div>
+);
+
+export const TRY_ITEMS = [
+  {
+    label: "Start a payment",
+    method: "POST",
+    path: "/payments/initialize",
+    href: "/api-reference/payments/initialize-collection",
+    code: 'curl -X POST https://api.spotflow.co/api/v1/payments/initialize \\\n  -H "Authorization: Bearer sk_test_..." \\\n  -H "Content-Type: application/json" \\\n  -d \'{\n    "reference": "order-1001",\n    "amount": 5.00,\n    "currency": "GHS",\n    "customer": { "email": "john@example.com" }\n  }\'',
+  },
+  {
+    label: "Verify a payment",
+    method: "GET",
+    path: "/payments/verify",
+    href: "/api-reference/payments/verify-collection",
+    code: 'curl "https://api.spotflow.co/api/v1/payments/verify?reference=order-1001" \\\n  -H "Authorization: Bearer sk_test_..."',
+  },
+  {
+    label: "List payments",
+    method: "GET",
+    path: "/payments",
+    href: "/api-reference/payments/list-collection",
+    code: 'curl "https://api.spotflow.co/api/v1/payments?page=0&size=10" \\\n  -H "Authorization: Bearer sk_test_..."',
+  },
+  {
+    label: "Create a dynamic account",
+    method: "POST",
+    path: "/virtual-accounts/temporary",
+    href: "/api-reference/dynamic-accounts/create-dynamic-account",
+    code: 'curl -X POST https://api.spotflow.co/api/v1/virtual-accounts/temporary \\\n  -H "Authorization: Bearer sk_test_..." \\\n  -H "Content-Type: application/json" \\\n  -d \'{\n    "currency": "NGN",\n    "accountName": "Quantum Technologies",\n    "amount": 5.00\n  }\'',
+  },
+  {
+    label: "Check your balances",
+    method: "GET",
+    path: "/balances",
+    href: "/api-reference/balances/main-account-balance",
+    code: 'curl "https://api.spotflow.co/api/v1/balances?page=0&size=10" \\\n  -H "Authorization: Bearer sk_test_..."',
+  },
+];
+
+export const TryIt = () => {
+  const [active, setActive] = useState(0);
+  const item = TRY_ITEMS[active];
+  return (
+    <div className="sf-try">
+      <div className="sf-try-list" role="tablist">
+        {TRY_ITEMS.map((it, i) => (
+          <button
+            key={it.label}
+            role="tab"
+            aria-selected={i === active}
+            className={i === active ? "sf-try-item sf-try-item-active" : "sf-try-item"}
+            onClick={() => setActive(i)}
+          >
+            {it.label}
+          </button>
+        ))}
+      </div>
+      <div className="sf-code sf-try-code">
+        <div className="sf-code-bar">
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <span className="sf-dots"><span /><span /><span /></span>
+            <span className="sf-method">{item.method}</span>{item.path}
+          </span>
+          <span>test mode</span>
+        </div>
+        <div className="sf-pre">
+          {item.code.split("\n").map((line, i) => (
+            <div key={i} className="sf-line">{line}</div>
+          ))}
+        </div>
+        <div className="sf-try-foot">
+          <a href={item.href} className="sf-link">Open in the API playground →</a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const L = ({ children }) => <div className="sf-line">{children}</div>;
+export const K = ({ children }) => <span className="sf-k">{children}</span>;
+export const S = ({ children }) => <span className="sf-s">{children}</span>;
+export const N = ({ children }) => <span className="sf-n">{children}</span>;
+
+export const Row = ({ href, title, meta }) => (
+  <a href={href} className="sf-row"><span>{title}</span><span className="sf-meta">{meta}</span></a>
+);
+
+<div className="sf-home">
+
+  <section className="sf-hero">
+    <div className="sf-container">
+      <div className="sf-hero-grid">
+        <div>
+          <p className="sf-eyebrow">Spotflow Docs</p>
+          <h1 className="sf-title">Get paid across Africa. We handle the rest.</h1>
+          <p className="sf-lede">
+            Spotflow is your Merchant of Record: collections, subscriptions, virtual accounts, disbursements and payouts, with local payment methods, tax and compliance handled for you.
+          </p>
+          <div className="sf-actions">
+            <a href="/quickstart" className="sf-btn sf-btn-primary">Start the quickstart</a>
+            <a href="/api-reference/introduction" className="sf-btn sf-btn-secondary">API reference</a>
+            <a href="/get-started/use-cases" className="sf-btn sf-btn-ghost">Find your use case →</a>
+          </div>
+        </div>
+
+        <div className="sf-code">
+          <div className="sf-code-bar">
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <span className="sf-dots"><span /><span /><span /></span>
+              <span className="sf-method">POST</span>/payments/initialize
+            </span>
+            <span>test mode</span>
+          </div>
+          <div className="sf-pre">
+            <L><K>curl</K> -X POST https://api.spotflow.co/api/v1/payments/initialize {"\\"}</L>
+            <L>{"  "}-H <S>{'"Authorization: Bearer sk_test_..."'}</S> {"\\"}</L>
+            <L>{"  "}-H <S>{'"Content-Type: application/json"'}</S> {"\\"}</L>
+            <L>{"  "}-d {"'{"} <K>{'"reference"'}</K>: <S>{'"order-1001"'}</S>, <K>{'"amount"'}</K>: <N>5.00</N>,</L>
+            <L>{"        "}<K>{'"currency"'}</K>: <S>{'"GHS"'}</S>, <K>{'"customer"'}</K>: {"{"} <K>{'"email"'}</K>: <S>{'"john@example.com"'}</S> {"}"} {"}'"}</L>
+          </div>
+          <div className="sf-code-divider"><span className="sf-status" />200 OK</div>
+          <div className="sf-pre">
+            <L>{"{"}</L>
+            <L>{"  "}<K>{'"reference"'}</K>: <S>{'"order-1001"'}</S>,</L>
+            <L>{"  "}<K>{'"checkoutUrl"'}</K>: <S>{'"https://checkout.spotflow.co/..."'}</S>,</L>
+            <L>{"  "}<K>{'"status"'}</K>: <S>{'"pending"'}</S>,</L>
+            <L>{"  "}<K>{'"mode"'}</K>: <S>{'"TEST"'}</S></L>
+            <L>{"}"}</L>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section className="sf-section sf-section-tight">
+    <div className="sf-container">
+      <div className="sf-tasks">
+        <TaskCol icon="credit-card" title="Collections" tasks={[["Accept a payment", "/features/payment-collections"], ["Bill a customer every month", "/developer-resources/guides/bill-a-customer-every-month"], ["Charge tax on a collection", "/developer-resources/guides/charge-tax-on-a-collection"]]} />
+        <TaskCol icon="building-columns" title="Accounts" tasks={[["Give a customer a virtual account", "/developer-resources/guides/give-a-customer-a-virtual-account"], ["Hold funds in static accounts", "/features/static-accounts"], ["Route payments with dynamic accounts", "/features/dynamic-accounts"]]} />
+        <TaskCol icon="paper-plane" title="Payouts" tasks={[["Pay one person out", "/developer-resources/guides/pay-one-person-out"], ["Pay many people at once", "/developer-resources/guides/pay-many-people-at-once"], ["Get settled to your bank", "/features/settlement"]]} />
+        <TaskCol icon="code" title="Developers" tasks={[["Set up test mode", "/expert-desk/test-mode-vs-live-mode"], ["Receive webhooks", "/developer-resources/webhooks/overview"], ["Use an SDK", "/developer-resources/iOS-sdk"]]} />
+      </div>
+    </div>
+  </section>
+
+  <section className="sf-section">
+    <div className="sf-container">
+      <div className="sf-head">
+        <div>
+          <h2 className="sf-h2">Try it out</h2>
+          <p className="sf-sub">Pick a task to see the request, then send it for real from the API playground with your test key.</p>
+        </div>
+        <a href="/api-reference/introduction" className="sf-link">API reference →</a>
+      </div>
+      <TryIt />
+    </div>
+  </section>
+
+  <section className="sf-section">
+    <div className="sf-container">
+      <div className="sf-head">
+        <div>
+          <h2 className="sf-h2">Start building</h2>
+          <p className="sf-sub">From test key to your first verified payment in three steps.</p>
+        </div>
+        <a href="/quickstart" className="sf-link">Open the quickstart →</a>
+      </div>
+      <div className="sf-grid sf-grid-3">
+        <a href="/api-reference/authentication" className="sf-step">
+          <span className="sf-step-num">01</span>
+          <p className="sf-step-title">Get your test key</p>
+          <p className="sf-step-text">Generate an sk_test_ key from your Spotflow dashboard.</p>
+        </a>
+        <a href="/quickstart" className="sf-step">
+          <span className="sf-step-num">02</span>
+          <p className="sf-step-title">Take a test payment</p>
+          <p className="sf-step-text">Start a payment, pay at checkout, and verify it.</p>
+        </a>
+        <a href="/expert-desk/verification-process" className="sf-step">
+          <span className="sf-step-num">03</span>
+          <p className="sf-step-title">Go live</p>
+          <p className="sf-step-text">Complete KYB verification, then switch to your live key.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section className="sf-section">
+    <div className="sf-container">
+      <div className="sf-head">
+        <div>
+          <h2 className="sf-h2">Products</h2>
+          <p className="sf-sub">Everything you can build with Spotflow.</p>
+        </div>
+        <a href="/get-started/use-cases" className="sf-link">Find your use case →</a>
+      </div>
+      <div className="sf-grid sf-grid-products">
+        <Product icon="credit-card" title="Payment Collections" links={[["Accept payments", "/features/payment-collections"], ["Payment methods", "/features/payment-methods"]]}>
+          Collect one-time payments with cards, bank transfers, mobile money and more, through a hosted checkout or our SDKs.
+        </Product>
+        <Product icon="repeat" title="Subscriptions" links={[["Subscription billing", "/features/subscription-payment-collections"], ["Mobile money subscriptions", "/features/mobile-money-subscriptions"]]}>
+          Recurring billing with flexible cycles, trials and automated renewals, including over mobile money.
+        </Product>
+        <Product icon="building-columns" title="Virtual Accounts" links={[["Static accounts", "/features/static-accounts"], ["Dynamic accounts", "/features/dynamic-accounts"]]}>
+          Dedicated account numbers to hold funds or route customer payments straight to your balance.
+        </Product>
+        <Product icon="paper-plane" title="Disbursements" links={[["Single and bulk payouts", "/features/single-and-bulk-disbursements"], ["Pay many people at once", "/developer-resources/guides/pay-many-people-at-once"]]}>
+          Send money to one bank account or many in a single batch, straight from your Spotflow balance.
+        </Product>
+        <Product icon="percent" title="Tax Configuration" links={[["Tax collection", "/features/tax-collections"], ["Charge tax on a collection", "/developer-resources/guides/charge-tax-on-a-collection"]]}>
+          Collect VAT or a flat levy by region, update rates, and switch taxes on or off.
+        </Product>
+        <Product icon="money-bill-transfer" title="Settlement and Payouts" links={[["Settlement", "/features/settlement"], ["Payout structure", "/features/payout-structure"]]}>
+          Move your earned revenue from your Spotflow balance to your bank account on a cycle that suits you.
+        </Product>
+      </div>
+    </div>
+  </section>
+
+  <section className="sf-section">
+    <div className="sf-container">
+      <div className="sf-lists">
+        <div>
+          <h2 className="sf-h2">Popular guides</h2>
+          <div className="sf-list">
+            <Row href="/get-started/how-spotflow-works" title="How Spotflow works" meta="concept" />
+            <Row href="/developer-resources/payment-states" title="Payment lifecycle" meta="concept" />
+            <Row href="/developer-resources/guides/give-a-customer-a-virtual-account" title="Give a customer a virtual account" meta="guide" />
+            <Row href="/developer-resources/guides/pay-one-person-out" title="Pay one person out" meta="guide" />
+            <Row href="/developer-resources/integration-guide" title="Payment links with no code" meta="no-code" />
+          </div>
+        </div>
+        <div>
+          <h2 className="sf-h2">Developer tools</h2>
+          <div className="sf-list">
+            <Row href="/api-reference/introduction" title="API reference and playground" meta="REST · JSON" />
+            <Row href="/developer-resources/webhooks/overview" title="Webhooks" meta="events" />
+            <Row href="/expert-desk/simulating-funds" title="Fund simulator" meta="test mode" />
+            <Row href="/developer-resources/iOS-sdk" title="SDKs and libraries" meta="iOS · Android · Flutter · JS" />
+            <Row href="/changelog/introduction" title="Changelog" meta="releases" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section className="sf-section">
+    <div className="sf-container">
+      <div className="sf-help">
+        <p>Need help? <a href="/expert-desk/help-support">Contact support</a>.</p>
+        <p>New on Spotflow? <a href="/changelog/introduction">Read the changelog</a>.</p>
+        <p>Common questions? <a href="/expert-desk/faq">See the FAQs</a>.</p>
+        <p>LLM? <a href="https://docs.spotflow.one/llms.txt">Read llms.txt</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</div>

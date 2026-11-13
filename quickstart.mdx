@@ -1,80 +1,170 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Authenticate, start a payment, pay at checkout and verify it, all in test mode, in about ten minutes."
+icon: "rocket"
 ---
 
-## Get started in three steps
+This quickstart takes you from a test key to a verified payment without moving real money. Every call runs in **test mode**.
 
-Get your documentation site running locally and make your first customization.
+<RequestExample>
 
-### Step 1: Set up your local environment
+```bash cURL
+curl -X POST https://api.spotflow.co/api/v1/payments/initialize \
+  -H "Authorization: Bearer $SPOTFLOW_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reference": "order-1001",
+    "amount": 5.00,
+    "currency": "GHS",
+    "customer": { "email": "john@example.com" }
+  }'
+```
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+```javascript Node.js
+const res = await fetch("https://api.spotflow.co/api/v1/payments/initialize", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.SPOTFLOW_SECRET_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    reference: "order-1001",
+    amount: 5.0,
+    currency: "GHS",
+    customer: { email: "john@example.com" },
+  }),
+});
+const payment = await res.json();
+console.log(payment.checkoutUrl);
+```
 
-### Step 2: Deploy your changes
+```python Python
+import os, requests
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+res = requests.post(
+    "https://api.spotflow.co/api/v1/payments/initialize",
+    headers={"Authorization": f"Bearer {os.environ['SPOTFLOW_SECRET_KEY']}"},
+    json={
+        "reference": "order-1001",
+        "amount": 5.00,
+        "currency": "GHS",
+        "customer": {"email": "john@example.com"},
+    },
+)
+print(res.json()["checkoutUrl"])
+```
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+</RequestExample>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+<ResponseExample>
 
-### Step 3: Go live
+```json 200
+{
+  "reference": "order-1001",
+  "checkoutUrl": "https://checkout.spotflow.co/paymentCode",
+  "paymentCode": "PAY123456789",
+  "status": "pending",
+  "mode": "TEST",
+  "expiryTime": "2025-11-03T10:16:26.948278058"
+}
+```
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+</ResponseExample>
+
+## Before you start
+
+- A Spotflow account. [Sign up](https://app.spotflow.co/signup) if you don't have one.
+- You don't need KYB verification to use test mode. You'll need it before you can go live. See [KYB verification](/expert-desk/verification-process).
+
+<Steps>
+  <Step title="Get your test secret key">
+    In the [Spotflow dashboard](https://app.spotflow.co/), switch to **test mode** and open **Settings → API Keys**. Copy your secret key. It starts with `sk_test_`.
+
+    Store it as an environment variable, never in code:
+
+    ```bash
+    export SPOTFLOW_SECRET_KEY="sk_test_..."
+    ```
+
+    <Warning>
+      Your secret key grants full access to your account. Keep it on your server and never put it in frontend code. Client-side integrations use your public key (`pk_test_…`). See [Authentication](/api-reference/authentication).
+    </Warning>
+  </Step>
+
+  <Step title="Start a payment">
+    Call [Initialize Payment](/api-reference/payments/initialize-collection) with a unique `reference`, the `amount`, the `currency` and the customer's email. The request and response are shown alongside this page, in cURL, Node.js and Python.
+
+    - `amount` is in the **major unit** of the currency: `5.00` with `GHS` means five Ghana cedis.
+    - `reference` is yours. Keep it unique per payment. It's also your [idempotency key](/api-reference/idempotency), so a retry with the same reference won't create a second payment.
+
+    The response includes a `checkoutUrl` and a `status` of `pending`.
+  </Step>
+
+  <Step title="Pay at checkout">
+    Open the `checkoutUrl` in your browser and pay with one of the test cards or test mobile money numbers on [Testing payments](/expert-desk/testing-payments). Test details only work with test keys.
+  </Step>
+
+  <Step title="Verify the payment">
+    Check the result with [Verify Payment](/api-reference/payments/verify-collection), using your reference:
+
+    <CodeGroup>
+
+    ```bash cURL
+    curl "https://api.spotflow.co/api/v1/payments/verify?reference=order-1001" \
+      -H "Authorization: Bearer $SPOTFLOW_SECRET_KEY"
+    ```
+
+    ```javascript Node.js
+    const res = await fetch(
+      "https://api.spotflow.co/api/v1/payments/verify?reference=order-1001",
+      { headers: { Authorization: `Bearer ${process.env.SPOTFLOW_SECRET_KEY}` } }
+    );
+    console.log(await res.json());
+    ```
+
+    ```python Python
+    res = requests.get(
+        "https://api.spotflow.co/api/v1/payments/verify",
+        params={"reference": "order-1001"},
+        headers={"Authorization": f"Bearer {os.environ['SPOTFLOW_SECRET_KEY']}"},
+    )
+    print(res.json())
+    ```
+
+    </CodeGroup>
+
+    A payment moves from `PENDING` to `SUCCESSFUL`, `FAILED` or `CANCELLED`. See [Payment lifecycle](/developer-resources/payment-states).
+
+    <Tip>
+      Don't poll more than once every 5 seconds. In production, use [webhooks](/developer-resources/webhooks/overview) to learn when a payment completes, then verify it before you fulfil the order.
+    </Tip>
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+| What you see | What it means | What to do |
+|---|---|---|
+| **401** Unauthorized | Missing or invalid secret key | Send `Authorization: Bearer sk_test_...` over HTTPS |
+| **400** on Initialize Payment | A required field is missing or invalid | Send `reference`, `currency` and `customer.email`, plus `amount` unless you use a `planId` |
+| **429** Too Many Requests | Rate limit reached | Wait for the seconds in `Retry-After`. See [Rate limits](/api-reference/rate-limits) |
+| A test card is declined | Using test details with a live key, or the wrong test details | Use your `sk_test_` key and the details on [Testing payments](/expert-desk/testing-payments) |
+| Payment stays `PENDING` | The customer hasn't completed checkout | Finish paying at the `checkoutUrl`, then verify again |
+| Retrying a `FAILED` payment fails | A failed payment can't be retried with the same reference | Start a new payment with a new reference |
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Receive webhooks" icon="bell" href="/developer-resources/webhooks/overview">
+    Get notified when payments, subscriptions and accounts change.
+  </Card>
+  <Card title="Try the API in your browser" icon="terminal" href="/api-reference/payments/initialize-collection">
+    Every endpoint page has an interactive playground for test requests.
+  </Card>
+  <Card title="Bill a customer every month" icon="repeat" href="/developer-resources/guides/bill-a-customer-every-month">
+    Set up a subscription plan and recurring billing.
+  </Card>
+  <Card title="Go live" icon="rocket" href="/expert-desk/verification-process">
+    Complete KYB verification, then switch to your live key.
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
