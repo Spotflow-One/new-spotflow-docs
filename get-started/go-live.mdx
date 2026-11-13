@@ -1,0 +1,45 @@
+---
+title: "Go live checklist"
+description: "Everything to check before you switch from test mode to live payments."
+icon: "rocket"
+---
+
+Test mode and live mode are fully separate: API keys, webhooks and transaction history created in one don't exist in the other. Work through this list before you take real payments.
+
+## Before you switch
+
+<Steps>
+  <Step title="Complete KYB verification">
+    Live mode unlocks only after your identity and business verification are approved. See [KYB verification](/expert-desk/verification-process).
+  </Step>
+  <Step title="Check your regions and payment methods">
+    Payment methods are activated automatically once your account is verified, your region coverage is added and live mode is enabled. Confirm the markets you sell in on [Available regions](/features/available-regions).
+  </Step>
+  <Step title="Generate live keys">
+    Switch the dashboard to **live mode** and generate your keys in **Settings → API Keys**. Live keys start with `sk_live_` and `pk_live_`. Keep the secret key on your server.
+  </Step>
+  <Step title="Set your live webhook URL">
+    Webhooks are configured per environment, so add your production URL in live mode too. See [Webhooks](/developer-resources/webhooks/overview).
+  </Step>
+</Steps>
+
+## Make sure your integration is production-ready
+
+| Check | Why |
+|---|---|
+| Use a unique `reference` for every payment and disbursement | It's your [idempotency key](/api-reference/idempotency), so retries never charge or pay twice |
+| Verify webhook signatures and ignore repeated `webhook-id`s | Webhooks can be retried and arrive out of order |
+| Call [Verify Payment](/api-reference/payments/verify-collection) before you fulfil an order | Confirms the final state, whatever order events arrive in |
+| Handle `429` responses | Live keys allow 300 requests per minute. Wait for `Retry-After`. See [Rate limits](/api-reference/rate-limits) |
+| Remove test card and test mobile money details | Test payment details only work in test mode |
+
+## What changes in live mode
+
+| | Test mode | Live mode |
+|---|---|---|
+| Payments | Simulated | Real |
+| Payouts to your bank account | Not available | Available |
+| Real-time fraud detection | Not available | Active |
+| Rate limit | 60 requests per minute | 300 requests per minute |
+
+See [Test mode vs live mode](/expert-desk/test-mode-vs-live-mode) for the full comparison.

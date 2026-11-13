@@ -1,92 +1,78 @@
 ---
 title: 'Introduction'
 sidebarTitle: 'Introduction'
-icon: 'scroll'
-description: 'Spotflow is your global Merchant of Record (MoR) that simplifies payment processing for businesses worldwide.
-We handle everything from global payment acceptance to compliance and settlement — empowering merchants to go global effortlessly. Learn how to easily integrate our APIs to streamline your in-app payments.'
+icon: 'code'
+description: 'The Spotflow API lets you collect payments, run subscriptions, create virtual accounts, check balances and send disbursements, with Spotflow as your Merchant of Record.'
 ---
 
-To learn on payment states, go to [this page](/developer-resources/payment-states)
-To know more about our rate limiting, go [here](/api-reference/rate-limits) 
+New to the API? Start with the [Quickstart](/quickstart): it takes you from a test key to a verified payment.
 
-## Which Payment Endpoint Should I Use?
+## Which payment endpoint should I use?
 
-  <Card title="Initialize Payment (Redirect)" icon="arrow-up-right-from-square"
-    href="/api-reference/payments/initialize-collection">
-    **Recommended for most integrations.**
-    No PCI-DSS certification required. Spotflow hosts the checkout
-    page. Customer is redirected to complete payment.
-  </Card>
+<Card title="Initialize Payment (redirect)" icon="arrow-up-right-from-square" href="/api-reference/payments/initialize-collection">
+  **Recommended for most integrations.** No PCI-DSS certification required. Spotflow hosts the checkout page and the customer is redirected to complete payment.
+</Card>
 
+## API conventions
 
-Spotflow API helps global merchants collect payments in local currency. Learn how to easily integrate our APIs to streamline your in-app payments.
+### Base URL
 
-Spotflow API is designed to be <span style={{color: "red"}}>`RESTful`</span>, utilizing familiar resource structures for most interactions. However, there might be a few exceptions from the strict REST principles for specific functionalities. These exceptions will be clearly documented within the API reference. This means you can expect:
-
-
-- **Predictable Resource-Oriented URLs**: URLs are designed to be clear and intuitive, reflecting the resources you're interacting with (e.g., /payments, /plans).
-- **Form-Encoded Request Bodies**: Data sent to the API uses a simple, well-understood format called form-encoded data.
-- **JSON-Encoded Responses**: Our API returns data in JSON response format, providing structured and easy-to-parse data.
-- **Standard HTTP Methods and Response Codes**: Our API utilizes standard HTTP verbs for different actions like GET for retrieving data, POST for creating new resources, PUT for updating existing ones and DEL for trashing existing ones. It also returns standard HTTP response codes to indicate success or failure (e.g., 200 for success, 400 for bad request).
-- **Content-Type**: When sending request to the API, you should ensure your request includes a Content-Type header set to application/JSON. This informs the API about the format of the data you are sending.
-
-### API Keys and Authentication:
-
-To ensure secure communication with Spotflow APIs, you'll need to authenticate your requests using an API key. All endpoints access requires authentication with your API Keys. Your API key acts as a unique identifier for your application and allows us to differentiate between test and live mode usage. Specific instructions for including your API key within your requests will be provided in the documentation for each API endpoint. Your API Keys can be found on the API Keys and webhooks section of your dashboard.
-
-## Idempotency
-
-All POST requests that create or initiate transactions accept an idempotency
-key via the `reference` field in the request body. If you send two requests
-with the same `reference`, Spotflow will process it once and return the same
-response for subsequent requests.
-
-### Rules
-
-- The `reference` field on Initialize Payment and Create Disbursement is your
-  idempotency key
-- References must be unique per transaction type (payment references are
-  separate from disbursement references)
-- Deduplication window: 24 hours
-- If the first request failed with a 5xx error, it is safe to retry with
-  the same reference
-- If the first request succeeded, retrying with the same reference returns
-  the original response without creating a duplicate
-
-### For AI Agents
-
-Before retrying any failed POST request, check whether the original request
-may have succeeded. Call the corresponding GET endpoint with your reference
-to check status. If the resource exists, do not retry.
-
-
-## Pagination
-
-All list endpoints return paginated results.
-
-### Request Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `page` | integer | 1 | Page number to retrieve |
-| `limit` | integer | 20 | Number of results per page. Max: 50 |
-
-### Response Shape
-
-All list endpoints return a consistent envelope:
-
-```json
-{
-  "data": [...],
-  "meta": {
-    "total": 150,
-    "page": 1,
-    "limit": 20,
-    "totalPages": 8
-  }
-}
+```
+https://api.spotflow.co/api/v1
 ```
 
-### For AI Agents
+There's one base URL for test and live mode. Your API key decides which environment a request runs in. See [Test mode vs live mode](/expert-desk/test-mode-vs-live-mode).
 
-Do not assume all records are returned in a single response.
+### Authentication
+
+Every request authenticates with your secret key in the `Authorization` header:
+
+```bash
+Authorization: Bearer sk_test_...
+```
+
+Use `sk_test_` keys in test mode and `sk_live_` keys in live mode. Your public key (`pk_…`) is only for client-side integrations such as Spotflow Inline and the mobile SDKs. Find your keys in **Settings → API Keys** on the [dashboard](https://app.spotflow.co/). See [Authentication](/api-reference/authentication).
+
+### Requests and responses
+
+- **HTTPS only.** Requests over plain HTTP fail.
+- **JSON in, JSON out.** Send request bodies as JSON with `Content-Type: application/json`. Responses are JSON.
+- **RESTful.** Resource-oriented URLs such as `/payments` and `/plans`, standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`) and standard status codes. Any exceptions are documented on the endpoint.
+- **Amounts** are in the major unit of the currency. `5.00` with `GHS` means five Ghana cedis, not five pesewas.
+- **References are yours.** Send a unique `reference` when you create a payment or a disbursement. It identifies the transaction and is its [idempotency key](/api-reference/idempotency).
+
+### Versioning
+
+The current API version is **v1**, and it's part of every path (`/api/v1`). See the [Changelog](/changelog/introduction) for what has changed.
+
+### Errors and limits
+
+- Calls without valid authentication return `401 Unauthorized`. See [Error codes](/api-reference/error-codes).
+- Requests are rate-limited per key: 60 per minute in test mode and 300 per minute in live mode. A `429` response tells you how long to wait in `Retry-After`. See [Rate limits](/api-reference/rate-limits).
+
+### Every endpoint page
+
+Each endpoint in this reference lists its parameters, request body and documented status codes with example responses. Use the **Try it** playground on any endpoint page to send a request with your **test** secret key and inspect the response in your browser.
+
+## More conventions
+
+<CardGroup cols={3}>
+  <Card title="Idempotency" icon="repeat" href="/api-reference/idempotency">
+    Retry safely without creating duplicates.
+  </Card>
+  <Card title="Pagination" icon="list-ol" href="/api-reference/pagination">
+    Walk through long lists with `page` and `size`.
+  </Card>
+  <Card title="Payment lifecycle" icon="arrows-spin" href="/developer-resources/payment-states">
+    Every state a payment and subscription can be in.
+  </Card>
+  <Card title="Rate limits" icon="gauge-high" href="/api-reference/rate-limits">
+    Limits per key, and what to do on a 429.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/developer-resources/webhooks/overview">
+    Real-time notifications for your server.
+  </Card>
+  <Card title="Error codes" icon="triangle-exclamation" href="/api-reference/error-codes">
+    What each error means and how to fix it.
+  </Card>
+</CardGroup>

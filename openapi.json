@@ -23,6 +23,7 @@
   "paths": {
     "/plans/{plan-id}/subscriptions": {
       "get": {
+        "summary": "Subscriptions by plan",
         "description": "Retrieve details of all subscriptions associated with a customer's plan ID.",
         "operationId": "SubscriptionsbyPlan",
         "parameters": [
@@ -38,6 +39,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -76,6 +78,7 @@
     },
     "/subscriptions": {
       "get": {
+        "summary": "Get All Subscriptions",
         "description": "Retrieve details of all subscriptions associated with a customer's plan ID or customer's email.",
         "operationId": "listSubscriptions",
         "parameters": [
@@ -123,6 +126,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -162,6 +166,7 @@
 
     "/subscriptions/{subscription-id}": {
       "get": {
+        "summary": "Get Subscriptions Details",
         "description": "Retrieve details of all subscriptions associated with a subscription ID.",
         "operationId": "SubscriptionDetails",
         "parameters": [
@@ -199,6 +204,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -235,6 +241,7 @@
 
     "/subscriptions/{subscription-id}/activate": {
       "post": {
+        "summary": "Activate Subscription",
         "description": "Activate a subscription with the plan Id.",
         "operationId": "ActivateSubscription",
         "parameters": [
@@ -250,6 +257,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -285,6 +293,7 @@
     },
     "/subscriptions/{subscription-id}/cancel": {
       "post": {
+        "summary": "Cancel Subscription",
         "description": "Cancel a subscription with the plan Id.",
         "operationId": "CancelSubscription",
         "parameters": [
@@ -300,6 +309,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -351,6 +361,7 @@
           }
       ],
       "responses": {
+        "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
         "200": {
           "description": "Payment method retrieved successfully",
           "content": {
@@ -453,6 +464,7 @@
         }
       },
       "responses": {
+        "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
         "200": {
           "description": "Payment method updated successfully",
           "content": {
@@ -522,6 +534,7 @@
 
     "/plans": {
       "get": {
+        "summary": "Get All Plans",
         "description": "Retrieve details of all subscription plans available on your integration.",
         "operationId": "SubsciptionsPlan",
         "parameters": [
@@ -605,6 +618,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -641,6 +655,7 @@
         }
       },
       "post": {
+        "summary": "Create Single Plan",
         "description": "Create a subscription plan under your integration.",
         "operationId": "singleSubsciptionsPlan",
         "parameters": [],
@@ -741,6 +756,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -779,6 +795,7 @@
     },
     "/plans/{plan-id}/cancel": {
       "post": {
+        "summary": "Cancel Plan",
         "description": "Cancel a subscription with the plan Id.",
         "operationId": "CancelSubscriptionPlan",
         "parameters": [
@@ -794,6 +811,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -829,6 +847,7 @@
     },
     "/bulk-plans": {
       "post": {
+        "summary": "Create Bulk Plans",
         "description": "Create multiple subscription plans under your integration.",
         "operationId": "CreateBulkSubscriptionPlans",
         "parameters": [],
@@ -861,6 +880,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -896,6 +916,7 @@
     },
     "/plans/{plan-id}/activate": {
       "post": {
+        "summary": "Activate Plan",
         "description": "Activate a subscription with the plan Id.",
         "operationId": "ActivateSubscriptionPlan",
         "parameters": [
@@ -911,6 +932,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of subscription objects.",
             "content": {
@@ -946,6 +968,7 @@
     },
     "/plans/{plan-id}": {
       "get": {
+        "summary": "Get Single Plan",
         "description": "Retrieve details of a single subscription plan available on your integration.",
         "operationId": "GetSubscriptionPlan",
         "parameters": [
@@ -961,6 +984,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "Successfully retrieved subscription plan details.",
             "content": {
@@ -994,6 +1018,7 @@
         }
       },
       "post": {
+        "summary": "Update Plan",
         "description": "Create or update a subscription plan under your integration using the provided plan ID.",
         "operationId": "CreateOrUpdateSubscriptionPlan",
         "parameters": [
@@ -1135,6 +1160,8 @@
   }
 },
         "responses": {
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "201": {
             "description": "Subscription plan successfully created or updated.",
             "content": {
@@ -1170,6 +1197,7 @@
     },
     "/accounts": {
       "get": {
+        "summary": "Get All Spotflow Static Virtual Accounts",
         "description": "This retrieves and lists all the static virtual accounts you've created. This is both for your main account and static virtual accounts (sub-accounts).",
         "operationId": "ListStaticVirtualAccounts",
         "parameters": [
@@ -1258,6 +1286,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of static virtual accounts objects.",
             "content": {
@@ -1294,6 +1323,7 @@
         }
       },
       "post": {
+        "summary": "Create Spotflow Static Virtual Accounts",
         "description": "Static virtual accounts are created only through the API and serve a unique purpose to act as a pocket of money where funds can sit in. Importantly, static virtual accounts do not require BVNs upon creation.",
         "operationId": "StaticVirtualAccountsCreation",
         "parameters": [],
@@ -1320,6 +1350,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of static virtual accounts objects.",
             "content": {
@@ -1356,6 +1387,7 @@
         
     "/accounts/{id}/deactivate": {
   "delete": {
+    "summary": "Deactivate Spotflow Static Virtual Accounts",
     "description": "Deactivates a static virtual account, preventing it from receiving any further payments. Once deactivated, the account status is set to inactive and any incoming transfers to it will be rejected or returned. This action cannot be undone through this endpoint — a new static virtual account must be created if collections need to resume.",
     "operationId": "DeactivateStaticVirtualAccount",
     "parameters": [
@@ -1372,6 +1404,7 @@
       }
     ],
     "responses": {
+      "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
       "200": {
         "description": "The static virtual account has been deactivated.",
         "content": {
@@ -1417,6 +1450,7 @@
 },
     "/balances": {
       "get": {  
+        "summary": "Get Main Spotflow Account Balance",
         "description": "Retrieves paginated balances for main accounts with optional currency, mode, and date filters.",
         "operationId": "ListBalances",
         "parameters": [
@@ -1484,6 +1518,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of balances objects.",
             "content": {
@@ -1522,6 +1557,7 @@
     },
     "/balances/accounts/{accountNumber}/sub-balances": {
       "get": {
+        "summary": "Get Spotflow Accounts Balance By Account Number",
         "description": "Retrieves account balance details for all direct spotflow static virtual of the specified main account in both NGN and GHS.",
         "operationId": "ListSpotflowStaticVirtualAccountsBalances",
         "parameters": [
@@ -1536,6 +1572,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of balances objects.",
             "content": {
@@ -1574,6 +1611,7 @@
     },
     "/balances/accounts/{accountNumber}/balance": {
       "get": {
+        "summary": "Get Spotflow Accounts Balance",
         "description": "Get account balance details for a specific spotflow-static virtual accounts before and after top-up in both NGN and GHS currency.",
         "operationId": "AccountBalance",
         "parameters": [
@@ -1588,6 +1626,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of balances objects.",
             "content": {
@@ -1623,6 +1662,7 @@
     },
     "/accounts/{id}": {
       "get": {
+        "summary": "Get Spotflow Static Virtual Account By ID",
         "description": "Get details of your created spotflow static virtual account by its ID. You can get this in either NGN or GHS.",
         "operationId": "AccountID",
         "parameters": [
@@ -1638,6 +1678,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of account details objects.",
             "content": {
@@ -1673,6 +1714,7 @@
     },
     "/virtual-accounts/temporary": {
       "post": {
+        "summary": "Create Dynamic Virtual Account",
         "description": "This endpoint is used to create a dynamic virtual account to receive payments.",
         "operationId": "DynamicAccountCreation",
         "parameters": [],
@@ -1709,6 +1751,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of dynamic virtual account objects.",
             "content": {
@@ -1744,6 +1787,7 @@
     },
     "/virtual-accounts/{id}": {
       "get": {
+        "summary": "Get Dynamic Virtual Account by ID",
         "description": "Get details of your created virtual account by its ID.",
         "operationId": "DynamicAccountID",
         "parameters": [
@@ -1759,6 +1803,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of dynamic details objects.",
             "content": {
@@ -1794,6 +1839,7 @@
     },
     "/virtual-accounts": {
       "get": {
+        "summary": "Get All Dynamic Virtual Accounts",
         "description": "This retrieves and lists all the active dynamic virtual accounts you created.",
         "operationId": "ListDynamicAccount",
         "parameters": [
@@ -1808,6 +1854,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of dynamic virtual account details objects.",
             "content": {
@@ -1846,6 +1893,7 @@
     },
     "/transfers/bulk": {
       "post": {
+        "summary": "Create Bulk Disbursement",
         "description": "You can use this endpoint to perform bulk bank account transfer to multiple bank accounts.",
         "operationId": "CreateBulkTransfer",
         "parameters": [],
@@ -1886,6 +1934,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "201": {
             "description": "Bulk transfer created successfully.",
             "content": {
@@ -1919,6 +1968,7 @@
         }
       },
       "get": {
+        "summary": "Get All Bulk Disbursements",
         "description": "Get details of all bulk transfer files you have uploaded.",
         "operationId": "listBulkTransfers",
         "parameters": [
@@ -2000,6 +2050,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bulk disbursements objects.",
             "content": {
@@ -2050,6 +2101,7 @@
     },
     "/transfers/bulk/{id}": {
       "get": {
+        "summary": "Get Bulk Disbursement By ID",
         "description": "Get details of an uploaded bulk disbursement by its id.",
         "operationId": "BulkTransferID",
         "parameters": [
@@ -2064,6 +2116,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bulk disbursement details objects.",
             "content": {
@@ -2099,6 +2152,7 @@
     },
     "/transfers/bulk/categories": {
       "get": {
+        "summary": "Get Bulk Disbursement By Its Categories",
         "description": "Get details of an uploaded bulk disbursement by the categories you created with.",
         "operationId": "BulkTransferCategories",
         "parameters": [
@@ -2113,6 +2167,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bulk disbursement details objects.",
             "content": {
@@ -2152,6 +2207,7 @@
     },
     "/transfers/bulk/{id}/transfers": {
       "get": {
+        "summary": "Get Bulk Disbursements By ID",
         "description": "Get details of all bulk transfer files you have uploaded.",
         "operationId": "listBulkTransfersByID",
         "parameters": [
@@ -2253,6 +2309,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bulk disbursements objects.",
             "content": {
@@ -2312,6 +2369,7 @@
     },
     "/transfers/bulk/validate": {
       "post": {
+        "summary": "Validate Bulk Disbursements File",
         "description": "Use this endpoint to confirm your bulk disbursement CSV file has all the necessary details needed and won't fail when uploaded for the bulk transfer transaction.",
         "operationId": "ValidateBulkTransfer",
         "parameters": [],
@@ -2337,6 +2395,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "201": {
             "description": "A JSON array of create bulk disbursement objects.",
             "content": {
@@ -2382,6 +2441,7 @@
     },
     "/transfers": {
       "post": {
+        "summary": "Create Single Bank Disbursement",
         "description": "You can use this endpoint to perform bank account transfer from your main account",
         "operationId": "CreateSingleDisbursement",
         "parameters": [],
@@ -2435,6 +2495,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "201": {
             "description": "A JSON array of create single disbursement objects.",
             "content": {
@@ -2470,6 +2531,7 @@
     },
     "/transfers/banks/{currency}": {
       "get": {
+        "summary": "Get All Banks",
         "description": "Get details of all bulk transfer files you have uploaded.",
         "operationId": "TransferBank",
         "parameters": [
@@ -2484,6 +2546,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bank list objects.",
             "content": {
@@ -2532,6 +2595,7 @@
     },
     "/transfers/resolve-account": {
       "get": {
+        "summary": "Resolve Bank Account",
         "description": "Get details of all bulk transfer files you have uploaded.",
         "operationId": "ResolveAccount",
         "parameters": [
@@ -2564,6 +2628,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of resolve transfers objects.",
             "content": {
@@ -2609,6 +2674,7 @@
     },
     "/transfers/reference/{reference}": {
       "get": {
+        "summary": "Get Transfer By Reference",
         "description": "Get details of a particular transfer by its reference id.",
         "operationId": "TransactionReference",
         "parameters": [
@@ -2623,6 +2689,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "",
             "content": {
@@ -2658,9 +2725,11 @@
     },
     "/transfers/banks/{bank-code}/branches": {
       "get": {
+        "summary": "Get All Branches",
         "description": "Retrieves a list of supported branches for a for transfers in the specified mode and selected currency",
         "operationId": "BranchesBankCode",
         "parameters": [
+          { "name": "bank-code", "in": "path", "required": true, "description": "The code of the bank whose branches you want to list.", "schema": { "type": "string" } },
           {
             "name": "bankCode",
             "in": "query",
@@ -2672,6 +2741,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of bank branches objects.",
             "content": {
@@ -2717,6 +2787,7 @@
     },
     "/payments": {
       "get": {
+        "summary": "List Payments",
         "description": "Get details of all payments collection done via your keys.",
         "operationId": "GetPaymentById",
         "parameters": [
@@ -2815,6 +2886,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of payment objects.",
             "content": {
@@ -2874,6 +2946,7 @@
     },
     "/payments/initialize": {
       "post": {
+        "summary": "Initialize Payment",
         "description": "This is Spotflow's Redirect Checkout. Initiate a payment request to generate a unique payment reference, payment code and checkout URL for your customers",
         "operationId": "IntializePayment",
         "parameters": [],
@@ -2976,6 +3049,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of initialize payment objects.",
             "content": {
@@ -3053,6 +3127,7 @@
     },
     "/payments/authorize": {
       "post": {
+        "summary": "Authorize Payment",
         "description": "This authorizes a payment by pre-approving the transaction before final validation. Authorization required could be PIN, OTP, 3DS, AVS, etc. ",
         "operationId": "AuthorizePayment",
         "parameters": [],
@@ -3089,6 +3164,7 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of authorize payment objects.",
             "content": {
@@ -3179,6 +3255,7 @@
     },
     "/payments/{payment-id}": {
       "get": {
+        "summary": "Get Payment",
         "description": "Get details of a specific payment by its ID",
         "operationId": "GetPaymentById",
         "parameters": [
@@ -3194,6 +3271,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of payment objects.",
             "content": {
@@ -3283,6 +3361,8 @@
         "summary": "Check Tax Activation Status",
         "description": "According to your request made, checks if your merchant account has been authorized by Spotflow to collect regional checkout taxes.",
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
           "200": {
             "description": "Returns true if tax features are enabled for your account.",
             "content": {
@@ -3311,6 +3391,8 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
           "200": {
             "description": "A list of configured tax settings.",
             "content": {
@@ -3348,6 +3430,8 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
           "201": {
             "description": "Tax setting created successfully.",
             "content": {
@@ -3388,6 +3472,8 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
           "200": {
             "description": "Tax details updated successfully.",
             "content": {
@@ -3427,6 +3513,8 @@
           }
         },
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
+          "401": { "description": "Unauthorized - missing or invalid secret key" },
           "200": {
             "description": "Tax status updated successfully.",
             "content": {
@@ -3440,6 +3528,7 @@
     },
     "/payments/verify": {
       "get": {
+        "summary": "Verify Payment",
         "description": "Confirm the status of a payment",
         "operationId": "VerifyPayment",
         "parameters": [
@@ -3455,6 +3544,7 @@
           }
         ],
         "responses": {
+          "429": { "description": "Too Many Requests - rate limit exceeded. Wait for the number of seconds in the Retry-After header" },
           "200": {
             "description": "A JSON array of payment objects.",
             "content": {

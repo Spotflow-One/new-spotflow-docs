@@ -1,0 +1,126 @@
+---
+title: "Webhook validator"
+description: "Check a Spotflow webhook signature in your browser, to debug your verification code."
+icon: "badge-check"
+---
+
+export const WebhookValidator = () => {
+  const [secret, setSecret] = useState("");
+  const [webhookId, setWebhookId] = useState("");
+  const [timestamp, setTimestamp] = useState("");
+  const [signature, setSignature] = useState("");
+  const [body, setBody] = useState("");
+  const [result, setResult] = useState(null);
+
+  const toBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+  const fromBase64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+  const validate = async () => {
+    try {
+      if (!window.crypto || !window.crypto.subtle) {
+        setResult({ error: "Your browser doesn't support the Web Crypto API." });
+        return;
+      }
+      let keyBytes;
+      try {
+        keyBytes = fromBase64(secret.trim().replace(/^whsec_/, ""));
+      } catch (e) {
+        setResult({ error: "The secret isn't valid base64. Copy the full webhook secret from your dashboard, with or without the whsec_ prefix." });
+        return;
+      }
+      const signedContent = `${webhookId.trim()}.${timestamp.trim()}.${body}`;
+      const key = await window.crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+      const expected = toBase64(await window.crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedContent)));
+      const received = signature.trim().split(" ").filter(Boolean).map((s) => (s.includes(",") ? s.split(",").slice(1).join(",") : s));
+      const ts = Number(timestamp.trim());
+      const ageSeconds = Number.isFinite(ts) ? Math.round(Math.abs(Date.now() / 1000 - ts)) : null;
+      setResult({ expected: `v1,${expected}`, match: received.includes(expected), ageSeconds });
+    } catch (e) {
+      setResult({ error: String(e && e.message ? e.message : e) });
+    }
+  };
+
+  return (
+    <div className="not-prose sf-v">
+      <label className="sf-v-label">Webhook secret</label>
+      <input className="sf-v-field" type="password" autoComplete="off" value={secret} onChange={(e) => setSecret(e.target.value)} placeholder="Your test webhook secret" />
+      <label className="sf-v-label">webhook-id</label>
+      <input className="sf-v-field" value={webhookId} onChange={(e) => setWebhookId(e.target.value)} />
+      <label className="sf-v-label">webhook-timestamp</label>
+      <input className="sf-v-field" value={timestamp} onChange={(e) => setTimestamp(e.target.value)} placeholder="Unix seconds" />
+      <label className="sf-v-label">x-spotflow-signature</label>
+      <input className="sf-v-field" value={signature} onChange={(e) => setSignature(e.target.value)} placeholder="v1,…" />
+      <label className="sf-v-label">Raw request body</label>
+      <textarea className="sf-v-field" rows={8} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Paste the body exactly as received, byte for byte" />
+      <button onClick={validate} className="sf-v-btn">Validate signature</button>
+      {result && result.error && <p className="sf-v-error">{result.error}</p>}
+      {result && !result.error && (
+        <div className="sf-v-result">
+          <p className={result.match ? "sf-v-ok" : "sf-v-error"}>
+            {result.match ? "✓ Signature is valid" : "✗ Signature does not match"}
+          </p>
+          <p>Expected signature: <code style={{ wordBreak: "break-all" }}>{result.expected}</code></p>
+          {result.ageSeconds !== null && (
+            <p>Timestamp age: {result.ageSeconds} seconds {result.ageSeconds > 300 ? "(older than 5 minutes: verification libraries reject this)" : "(within 5 minutes)"}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+<Warning>
+  Everything runs in your browser and nothing is sent anywhere. Even so, use your **test-mode** webhook secret here, never your live one.
+</Warning>
+
+## Gather what you need
+
+| Input | Where to find it |
+|---|---|
+| Webhook secret | Your Spotflow dashboard, where you set your webhook URL (**Settings → API Keys**). Test and live mode are configured separately |
+| `webhook-id` | Request header on the webhook. Also use it to ignore duplicate deliveries |
+| `webhook-timestamp` | Request header, in Unix seconds |
+| `x-spotflow-signature` | Request header on the webhook. It looks like `v1,` followed by a base64 string |
+| Raw request body | Log it on your server **before** parsing it as JSON |
+
+## Validate
+
+<WebhookValidator />
+
+## What it checks
+
+Spotflow webhooks follow the [Standard Webhooks](https://www.standardwebhooks.com/) specification. The validator does what the official Standard Webhooks libraries do:
+
+1. Takes your secret, removes any `whsec_` prefix, and base64-decodes it.
+2. Computes an HMAC-SHA256 of `{webhook-id}.{webhook-timestamp}.{raw body}`.
+3. Base64-encodes the result and compares it with each `v1,` signature in the header.
+
+It also tells you whether the timestamp is within the 5-minute window the libraries enforce.
+
+## Verify in your code
+
+Use the official library rather than writing your own comparison:
+
+```javascript
+import { Webhook } from "standardwebhooks";
+
+const webhook = new Webhook(process.env.SPOTFLOW_WEBHOOK_KEY);
+
+// rawBody must be the exact text you received, not re-serialised JSON
+const payload = webhook.verify(rawBody, {
+  "webhook-id": req.headers["webhook-id"],
+  "webhook-timestamp": req.headers["webhook-timestamp"],
+  // Spotflow sends the signature as x-spotflow-signature
+  "webhook-signature": req.headers["x-spotflow-signature"],
+});
+```
+
+## If the signature doesn't match
+
+- **The body changed.** Parsing and re-serialising JSON changes whitespace and key order. Verify the raw bytes you received.
+- **Wrong secret.** Test and live mode have different webhook secrets.
+- **Extra whitespace.** Copy header values exactly, with no trailing spaces or line breaks.
+- **Wrong separator.** The three parts are joined with a single `.` and nothing else.
+- **Wrong encoding.** The signature is base64, after the `v1,` prefix.
+
+See [Webhooks](/developer-resources/webhooks/overview) for setup and delivery behaviour.

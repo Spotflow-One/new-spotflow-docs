@@ -1,0 +1,57 @@
+---
+title: "Idempotency"
+description: "How to retry requests safely without creating duplicate payments or disbursements."
+icon: "repeat"
+---
+
+When a request times out, you don't know whether it reached Spotflow, so you need to be able to retry without charging a customer or paying someone twice.
+
+All `POST` requests that create or initiate transactions take an idempotency key in the `reference` field of the request body. If you send two requests with the same `reference`, Spotflow processes it once and returns the same response for the second request.
+
+```bash Idempotent request
+curl -X POST https://api.spotflow.co/api/v1/payments/initialize \
+  -H "Authorization: Bearer sk_test_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reference": "order-1001",
+    "amount": 5.00,
+    "currency": "GHS",
+    "customer": { "email": "john@example.com" }
+  }'
+```
+
+## Rules
+
+| Rule | Detail |
+|---|---|
+| Where | The `reference` field on [Initialize Payment](/api-reference/payments/initialize-collection) and [Create Disbursement](/api-reference/transfer-api/create-single-transfer) |
+| Scope | References must be unique per transaction type. Payment references are separate from disbursement references |
+| Window | Duplicates are detected for 24 hours |
+| After a 5xx | It's safe to retry with the same reference |
+| After a success | Retrying with the same reference returns the original response, without creating a duplicate |
+
+## Retrying safely
+
+<Steps>
+  <Step title="Create the reference once">
+    Generate it from your own record, for example your order ID, and save it **before** you call the API.
+  </Step>
+  <Step title="Check before you retry">
+    If a request fails or times out, check whether it actually succeeded first. For payments, call [Verify Payment](/api-reference/payments/verify-collection) with your reference. For disbursements, call [Get Transfer by Reference](/api-reference/transfer-api/transfer-by-reference).
+  </Step>
+  <Step title="Retry with the same reference">
+    If the transaction doesn't exist, send the exact same request again with the same reference.
+  </Step>
+</Steps>
+
+<Warning>
+  Never generate a new `reference` to retry a request whose outcome you don't know. That's how a customer gets charged twice or a payout goes out twice.
+</Warning>
+
+## Failed payments
+
+A `FAILED` payment can't be retried with the same reference. Create a new payment with a new reference. See [Payment lifecycle](/developer-resources/payment-states).
+
+## Webhooks
+
+Each webhook includes a unique `webhook-id` header. Store it and ignore events you've already processed, because the same event can be delivered more than once. See [Webhooks](/developer-resources/webhooks/overview).

@@ -8,41 +8,87 @@
     "dark": "#0D0D0D"
   },
   "fonts": {
-  "family": "IBM Plex Sans"
-},
+    "family": "IBM Plex Sans"
+  },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
-        "icon": "scroll",
+        "tab": "Get Started",
+        "icon": "play",
         "groups": [
           {
-            "group": "Getting Started",
-            "icon": "play",
+            "group": "Welcome",
+            "icon": "hand-wave",
             "pages": [
+              "index",
               "introduction",
-              {
-                "group": "KYB Verification",
-                "icon": "id-card",
-                "pages": [
-                  "expert-desk/verification-process"
-                ]
-              }
+              "get-started/how-spotflow-works",
+              "quickstart",
+              "developer-resources/payment-states",
+              "features/mor-vs-pg"
             ]
           },
           {
-            "group": "How We Operate",
-            "icon": "building",
+            "group": "Onboard with us",
+            "icon": "id-card",
+            "pages": [
+              "expert-desk/verification-process"
+            ]
+          },
+          {
+            "group": "Find your use case",
+            "icon": "compass",
+            "pages": [
+              "get-started/use-cases"
+            ]
+          },
+          {
+            "group": "What we support",
+            "icon": "globe",
             "pages": [
               "features/payment-methods",
-              "/features/payout-structure",
-              "features/mor-vs-pg",
-              "features/security-policy"
+              "features/available-regions",
+              "features/payout-structure"
             ]
           },
           {
-            "group": "Features",
+            "group": "Test and go live",
+            "icon": "flask",
+            "pages": [
+              "expert-desk/test-mode-vs-live-mode",
+              "expert-desk/testing-payments",
+              "expert-desk/simulating-funds",
+              "features/spotflow-demo-checkout",
+              "get-started/go-live"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Overview",
+            "icon": "compass",
+            "pages": [
+              "developer-resources/introduction"
+            ]
+          },
+          {
+            "group": "How-to guides",
+            "icon": "list-check",
+            "pages": [
+              "developer-resources/guides/give-a-customer-a-virtual-account",
+              "developer-resources/guides/pay-one-person-out",
+              "developer-resources/guides/pay-many-people-at-once",
+              "developer-resources/guides/bill-a-customer-every-month",
+              "developer-resources/guides/charge-tax-on-a-collection"
+            ]
+          },
+          {
+            "group": "Products",
             "icon": "star",
             "pages": [
               "features/payment-collections",
@@ -53,7 +99,6 @@
               "features/single-and-bulk-disbursements",
               "features/static-accounts",
               "features/dynamic-accounts",
-               "features/available-regions",
               "features/settlement",
               {
                 "group": "Transactions",
@@ -67,56 +112,10 @@
             ]
           },
           {
-            "group": "Expert Desk",
-            "icon": "user-tie",
-            "pages": [
-              {
-                "group": "Support Channels",
-                "icon": "headset",
-                "pages": [
-                  "expert-desk/help-support"
-                ]
-              },
-              "expert-desk/faq"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Developer Resources",
-        "icon": "code-simple",
-        "groups": [
-          {
-            "group": "Developer Resources",
-            "icon": "tools",
-            "pages": [
-              "developer-resources/introduction",
-              "developer-resources/payment-states"
-            ]
-          },
-          {
-            "group": "How Tos",
-            "icon": "list-check",
-            "pages": [
-              "developer-resources/guides/give-a-customer-a-virtual-account",
-              "developer-resources/guides/pay-one-person-out",
-              "developer-resources/guides/pay-many-people-at-once",
-              "developer-resources/guides/bill-a-customer-every-month",
-              "developer-resources/guides/charge-tax-on-a-collection"
-            ]
-          },
-          {
-            "group": "Integration Guides",
+            "group": "Integration guides",
             "icon": "map",
             "pages": [
-              "developer-resources/integration-guide"
-            ]
-          },
-          {
-            "group": "Cookbooks",
-            "tag": "New",
-            "icon": "utensils",
-            "pages": [
+              "developer-resources/integration-guide",
               "developer-resources/redirectapi-in-your-app"
             ]
           },
@@ -125,7 +124,7 @@
             "icon": "bell",
             "pages": [
               "developer-resources/webhooks/overview",
-              
+              "developer-resources/webhooks/validator",
               {
                 "group": "Webhook Payloads",
                 "icon": "file-code",
@@ -135,16 +134,6 @@
                   "developer-resources/webhooks/accounts"
                 ]
               }
-            ]
-          },
-          {
-            "group": "Testing & Demo Tools",
-            "icon": "vial",
-            "pages": [
-              "expert-desk/test-mode-vs-live-mode",
-              "expert-desk/testing-payments",
-              "expert-desk/simulating-funds",
-              "features/spotflow-demo-checkout"
             ]
           },
           {
@@ -161,10 +150,18 @@
             "group": "Libraries",
             "icon": "books",
             "pages": [
-
               "developer-resources/react-library",
               "developer-resources/angular-library",
               "developer-resources/vue-library"
+            ]
+          },
+          {
+            "group": "Help and support",
+            "icon": "life-ring",
+            "pages": [
+              "expert-desk/help-support",
+              "expert-desk/faq",
+              "features/security-policy"
             ]
           }
         ]
@@ -174,13 +171,15 @@
         "icon": "code-branch",
         "groups": [
           {
-            "group": "API Reference",
-            "icon": "history",
+            "group": "Get started",
+            "icon": "code",
             "pages": [
               "api-reference/introduction",
               "api-reference/authentication",
               "api-reference/error-codes",
-              "api-reference/rate-limits"
+              "api-reference/rate-limits",
+              "api-reference/idempotency",
+              "api-reference/pagination"
             ]
           },
           {
@@ -224,7 +223,7 @@
             "pages": [
               "api-reference/subscriptions/list-subscriptions",
               "api-reference/subscriptions/get-subscription-payment-method",
-              "api-reference/subscriptions/subscription-by-plan", 
+              "api-reference/subscriptions/subscription-by-plan",
               "api-reference/subscriptions/subscription-details",
               "api-reference/subscriptions/subscription-activate",
               "api-reference/subscriptions/subscription-cancel",
@@ -321,10 +320,21 @@
       }
     ]
   },
-   "api": {
+  "api": {
     "playground": {
-    "display": "interactive"
-  }
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "javascript",
+        "python",
+        "go",
+        "php",
+        "java"
+      ],
+      "defaults": "all"
+    }
   },
   "logo": {
     "light": "/logo/logo-light.png",
@@ -353,7 +363,7 @@
   },
   "footer": {
     "socials": {
-       "x": "https://x.com/spotflow_one",
+      "x": "https://x.com/spotflow_one",
       "linkedin": "https://www.linkedin.com/company/sptflw/",
       "website": "https://spotflow.one",
       "slack": "https://join.slack.com/t/spotflowdevel-cki6990/shared_invite/zt-3g5nposk7-0ZeocaWKq4YxxqhIdQ9Y_g",
@@ -472,10 +482,6 @@
       "destination": "/developer-resources/mobile-integration"
     },
     {
-      "source": "/quickstart",
-      "destination": "/introduction"
-    },
-    {
       "source": "/features/dispute-best-practices",
       "destination": "/features/transactions/disputes"
     },
@@ -511,5 +517,9 @@
       "source": "/developer-resources/mobile-integration-flutter",
       "destination": "/developer-resources/mobile-integration"
     }
-  ]
+  ],
+  "appearance": {
+    "default": "system",
+    "strict": false
+  }
 }

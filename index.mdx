@@ -1,0 +1,202 @@
+---
+title: "Welcome to the Docs"
+sidebarTitle: "Home"
+description: "Guides, resources and references to build with Spotflow, your Merchant of Record for collections, subscriptions, virtual accounts, disbursements and payouts across Africa."
+icon: "house"
+mode: "frame"
+---
+
+export const Hero = () => (
+  <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.1fr) minmax(0,1fr)", gap: "48px", alignItems: "center", margin: "8px 0 40px" }} className="pp-hero">
+    <div>
+      <h1 className="text-gray-950 dark:text-white" style={{ fontSize: "48px", lineHeight: 1.1, fontWeight: 700, letterSpacing: "-0.02em", margin: 0 }}>Welcome to the Docs</h1>
+      <p className="text-gray-700 dark:text-gray-300" style={{ fontSize: "20px", lineHeight: 1.5, marginTop: "16px" }}>
+        Here you'll find guides, resources, and references to build with Spotflow, your Merchant of Record across Africa.
+      </p>
+    </div>
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: "340px", borderRadius: "16px", padding: "24px", background: "#fff", color: "#0d0d0d", boxShadow: "0 20px 50px -20px rgba(19,38,253,0.35), 0 0 0 1px rgba(0,0,0,0.06)", transform: "rotate(-2deg)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, fontSize: "16px" }}>
+          <span style={{ width: "22px", height: "22px", borderRadius: "50%", background: "#0d0d0d", display: "inline-block" }} />spotflow
+        </div>
+        <div style={{ marginTop: "16px", fontSize: "12px", opacity: 0.6 }}>Tech Workshop 2025</div>
+        <div style={{ fontSize: "22px", fontWeight: 700, marginTop: "2px" }}>GHS 50.00</div>
+        <div style={{ marginTop: "16px", fontSize: "12px", fontWeight: 600, opacity: 0.6 }}>Select your preferred payment method</div>
+        {[["mobile-screen", "Mobile Money"], ["building-columns", "Bank Transfer"], ["credit-card", "Card"]].map(([ic, t]) => (
+          <div key={t} style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "10px", border: "1px solid #e4e4e7", borderRadius: "10px", padding: "10px 12px", fontSize: "14px" }}>
+            <Icon icon={ic} size={14} color="#1326FD" />{t}
+          </div>
+        ))}
+        <div style={{ marginTop: "16px", height: "38px", borderRadius: "10px", background: "#1326FD", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: "14px" }}>Pay GHS 50.00</div>
+      </div>
+    </div>
+  </div>
+);
+
+export const Section = ({ children }) => (
+  <h2 className="text-gray-950 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.01em", margin: "56px 0 16px" }}>{children}</h2>
+);
+
+export const PP_TRY = [
+  {
+    label: "Start a payment",
+    method: "POST",
+    path: "/payments/initialize",
+    href: "/api-reference/payments/initialize-collection",
+    code: 'curl -X POST https://api.spotflow.co/api/v1/payments/initialize \\\n  -H "Authorization: Bearer sk_test_..." \\\n  -H "Content-Type: application/json" \\\n  -d \'{\n    "reference": "order-1001",\n    "amount": 5.00,\n    "currency": "GHS",\n    "customer": { "email": "john@example.com" }\n  }\'',
+  },
+  {
+    label: "Verify a payment",
+    method: "GET",
+    path: "/payments/verify",
+    href: "/api-reference/payments/verify-collection",
+    code: 'curl "https://api.spotflow.co/api/v1/payments/verify?reference=order-1001" \\\n  -H "Authorization: Bearer sk_test_..."',
+  },
+  {
+    label: "Create a virtual account",
+    method: "POST",
+    path: "/virtual-accounts/temporary",
+    href: "/api-reference/dynamic-accounts/create-dynamic-account",
+    code: 'curl -X POST https://api.spotflow.co/api/v1/virtual-accounts/temporary \\\n  -H "Authorization: Bearer sk_test_..." \\\n  -H "Content-Type: application/json" \\\n  -d \'{\n    "currency": "NGN",\n    "accountName": "Quantum Technologies",\n    "amount": 5.00\n  }\'',
+  },
+];
+
+export const TryMini = () => {
+  const [active, setActive] = useState(0);
+  const item = PP_TRY[active];
+  return (
+    <div>
+      <div className="pp-chips" role="tablist">
+        {PP_TRY.map((it, i) => (
+          <button key={it.label} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={i === active ? "pp-chip pp-chip-active" : "pp-chip"}>
+            {it.label}
+          </button>
+        ))}
+      </div>
+      <div className="pp-code">
+        <div className="pp-code-bar">
+          <span><span className="pp-method">{item.method}</span>{item.path}</span>
+          <a href={item.href} className="pp-code-link">Try it in the playground →</a>
+        </div>
+        <div className="pp-pre">
+          {item.code.split("\n").map((line, i) => (<div key={i} className="pp-line">{line}</div>))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const PPStyles = () => (
+  <style>{`
+    .pp-root { --pp-accent: #1326FD; }
+    html.dark .pp-root { --pp-accent: #6FA0FF; }
+    .pp-cta { color: var(--pp-accent); }
+    .pp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .pp-chip { padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid rgba(127,127,127,0.3); background: transparent; color: inherit; opacity: 0.75; transition: all .15s; }
+    .pp-chip:hover { opacity: 1; }
+    .pp-chip-active { opacity: 1; border-color: var(--pp-accent); color: var(--pp-accent); background: rgba(19,38,253,0.06); }
+    html.dark .pp-chip-active { background: rgba(111,160,255,0.1); }
+    .pp-code { border-radius: 12px; overflow: hidden; background: #0b0b0c; border: 1px solid #232326; }
+    .pp-code-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #232326; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #a1a1aa; }
+    .pp-method { color: #6FA0FF; font-weight: 600; margin-right: 8px; }
+    .pp-code-link { color: #a1a1aa !important; text-decoration: none !important; border: 0 !important; font-family: inherit; white-space: nowrap; }
+    .pp-code-link:hover { color: #fff !important; }
+    .pp-pre { padding: 16px 20px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; line-height: 1.75; color: #d4d4d8; min-height: 200px; }
+    .pp-line { white-space: pre; min-height: 1.75em; }
+    @media (max-width: 767px) { .pp-entries { grid-template-columns: minmax(0, 1fr) !important; } .pp-hero { grid-template-columns: minmax(0, 1fr) !important; } .pp-code-bar { flex-direction: column; align-items: flex-start; } }
+  `}</style>
+);
+
+export const Entry = ({ icon, title, children, cta, href }) => (
+  <a href={href} style={{ display: "flex", flexDirection: "column", padding: "24px", borderRadius: "12px", border: "1px solid rgba(127,127,127,0.25)", textDecoration: "none", minHeight: "190px" }} className="text-gray-900 dark:text-gray-100">
+    <Icon icon={icon} size={20} color="var(--pp-accent)" />
+    <p style={{ margin: "14px 0 0", fontWeight: 700, fontSize: "17px" }}>{title}</p>
+    <p style={{ margin: "6px 0 0", fontSize: "14px", lineHeight: 1.55, opacity: 0.7, flex: 1 }}>{children}</p>
+    <p className="pp-cta" style={{ margin: "16px 0 0", fontSize: "14px", fontWeight: 600 }}>{cta} →</p>
+  </a>
+);
+
+<PPStyles />
+
+<div className="pp-root" style={{ maxWidth: "1040px", margin: "0 auto", padding: "40px 32px 80px" }}>
+
+<Hero />
+
+<div className="pp-entries" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "16px" }}>
+  <Entry icon="rocket" title="Quickstart" cta="Get started" href="/quickstart">
+    Learn Spotflow's key concepts and take your first test payment.
+  </Entry>
+  <Entry icon="code" title="API Reference" cta="View reference" href="/api-reference/introduction">
+    Explore every endpoint and try requests in the playground.
+  </Entry>
+  <Entry icon="link" title="Payment Links" cta="Build without code" href="/developer-resources/integration-guide">
+    Create a payment link in under 5 minutes, no code required.
+  </Entry>
+</div>
+
+<Section>Try it out</Section>
+
+<TryMini />
+
+<Section>Payments and Collections</Section>
+
+<CardGroup cols={2}>
+  <Card title="Payment Collections" icon="credit-card" href="/features/payment-collections" horizontal>
+    Accept one-time payments with local methods across Africa.
+  </Card>
+  <Card title="Payment Methods" icon="wallet" href="/features/payment-methods" horizontal>
+    Cards, bank transfers, mobile money, USSD and EFT, activated automatically.
+  </Card>
+  <Card title="Subscriptions" icon="repeat" href="/features/subscription-payment-collections" horizontal>
+    Recurring billing with flexible cycles and automated renewals.
+  </Card>
+  <Card title="Mobile Money Subscriptions" icon="mobile-screen" href="/features/mobile-money-subscriptions" horizontal>
+    Collect recurring payments through mobile money providers.
+  </Card>
+</CardGroup>
+
+<Section>Accounts</Section>
+
+<CardGroup cols={2}>
+  <Card title="Static Virtual Accounts" icon="building-columns" href="/features/static-accounts" horizontal>
+    Hold and manage funds independently within your account.
+  </Card>
+  <Card title="Dynamic Virtual Accounts" icon="route" href="/features/dynamic-accounts" horizontal>
+    Route incoming payments straight to your main balance.
+  </Card>
+</CardGroup>
+
+<Section>Payouts and Settlement</Section>
+
+<CardGroup cols={2}>
+  <Card title="Single and Bulk Disbursements" icon="paper-plane" href="/features/single-and-bulk-disbursements" horizontal>
+    Pay one recipient or many in a single batch.
+  </Card>
+  <Card title="Settlement" icon="money-bill-transfer" href="/features/settlement" horizontal>
+    Move collected funds from Spotflow to your bank account.
+  </Card>
+</CardGroup>
+
+<Section>Tax and Compliance</Section>
+
+<CardGroup cols={2}>
+  <Card title="Tax Configuration" icon="percent" href="/features/tax-collections" horizontal>
+    Collect VAT or a flat levy by region.
+  </Card>
+  <Card title="MoR vs PG" icon="scale-balanced" href="/features/mor-vs-pg" horizontal>
+    Why Spotflow is your legal seller, and what that takes off your plate.
+  </Card>
+  <Card title="KYB Verification" icon="id-card" href="/expert-desk/verification-process" horizontal>
+    Verify your business to unlock live mode.
+  </Card>
+</CardGroup>
+
+<Section>Developer community</Section>
+
+<CardGroup cols={3}>
+  <Card title="Slack" icon="slack" href="https://join.slack.com/t/spotflowdevel-cki6990/shared_invite/zt-3g5nposk7-0ZeocaWKq4YxxqhIdQ9Y_g" horizontal />
+  <Card title="GitHub" icon="github" href="https://github.com/Spotflow-One" horizontal />
+  <Card title="X" icon="x-twitter" href="https://x.com/spotflow_one" horizontal />
+</CardGroup>
+
+</div>
