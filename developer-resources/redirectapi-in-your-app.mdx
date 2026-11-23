@@ -58,7 +58,7 @@ Before we start, make sure you have:
 Retrieve the basic customer information you need to process their transactions. E.g., name, email address, amount, etc.
 You can retrieve customer information from your database or from an HTML form, just like the one in the example below.
 
-```yaml
+```html
 <form action="" method="post" >
 {% csrf_token %}
 <div class="field">Name:
@@ -74,7 +74,7 @@ You can retrieve customer information from your database or from an HTML form, j
 </form>
 ```
 
-```yaml
+```python
 def ticket(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -85,7 +85,7 @@ def ticket(request):
 
 ## Step 2: Temporarily store the retrieved data if you are using the HTML form method
 
-```yaml
+```python
 def ticket(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -109,12 +109,12 @@ def ticket(request):
 You can use the test secret key when testing the API, and the live key when you are ready to go live.
 </Note>
 
-```yaml
+```python
 API_KEY = "YOUR_SECRET_KEY"
 ```
 
 ## Step 4: Set the authorization header.
-```yaml
+```python
 headers = {
 "Authorization": f"Bearer {API_KEY}",
 "Content-Type": "application/json"
@@ -125,7 +125,7 @@ headers = {
 This represents the specific URL you want to redirect customers to immediately after the checkout process.
 You can set this on your Spotflow dashboard in **Settings --> Payments --> API Keys --> Webhooks & CallBack --> CallBack URL**.
 
-```yaml
+```python
 callBackUrl = "https://spotflow-demo.onrender.com/verify/"
 ```
 
@@ -136,7 +136,7 @@ You can skip this for now and add it later once you set up the verification page
 ## Step 6: Retrieve all the information you need to send a request to the `initalize` API in your checkout function.
 Information like username, amount, and email is compulsory.
 
-```yaml
+```python
 def checkout(request):
     ticket = request.session.get("ticket")  # retrieves the number of tickets
     username = request.session.get("username")  # retrieves the username 
@@ -190,7 +190,7 @@ headers = {
 
 ## Step 8: Set the `initialize payment` endpoint and pass in the body parameters.
 
-```yaml
+```python
 response = requests.post("https://api.spotflow.co/api/v1/payments/initialize", json=payload, headers=headers)
 ```
 
@@ -323,7 +323,7 @@ urlpatterns = [
 
 2. In your views function, set up a simple POST request that Spotflow can send updates to.
 
-```yaml
+```python
 import json
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -425,9 +425,9 @@ reference = request.GET.get("reference")
 #### Step 2: Get your API keys and set your headers.
 
 
-#### Step 3: Pass the `reference` ID as a path parameter to the `verify payment` endpoint.
+#### Step 3: Pass the `reference` ID as a query parameter to the `verify payment` endpoint.
 
-```yaml
+```python
 response = requests.get(f" https://api.spotflow.co/api/v1/payments/verify?reference={reference}", headers=headers)
 ```
 

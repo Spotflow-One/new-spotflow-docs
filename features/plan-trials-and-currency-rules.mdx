@@ -154,8 +154,8 @@ Add a `trial` object when creating your plan:
   "trial": {
     "periodInDays": 7,
     "pricingList": [
-      { "amount": 0, "currency": "NGN", "type: "flat" (or percentage) },
-      { "amount": 0, "currency": "GHS", "type: "flat" (or percentage) }
+      { "amount": 0, "currency": "NGN", "type": "flat" },
+      { "amount": 0, "currency": "GHS", "type": "flat" }
     ]
   }
 }
@@ -221,7 +221,7 @@ Free trials work the same way for mobile money subscriptions as they do for card
 
 ```bash cURL
 curl --request POST \
-  --url https://api.spotflow.one/api/v1/plans \
+  --url https://api.spotflow.co/api/v1/plans \
   --header 'Authorization: Bearer sk_test_xxxxxxxxxx' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -235,8 +235,8 @@ curl --request POST \
     "trial": {
       "periodInDays": 7,
       "pricingList": [
-        { "amount": 0, "currency": "NGN, "type: "flat" (or percentage) },
-        { "amount": 0, "currency": "GHS", "type: "flat" (or percentage) }
+        { "amount": 0, "currency": "NGN", "type": "flat" },
+        { "amount": 0, "currency": "GHS", "type": "flat" }
       ]
     }
   }'

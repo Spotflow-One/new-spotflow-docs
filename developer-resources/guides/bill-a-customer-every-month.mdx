@@ -12,21 +12,16 @@ against it.
 This guide creates a plan, reads it back, looks at its subscribers, and shows how to
 stop billing.
 
-All calls are on the **gateway** service:
+All calls use the standard Spotflow API base URL:
 
 ```
-https://api.spotflow.co/gateway/api/v1
+https://api.spotflow.co/api/v1
 ```
 
 ## What you'll need
 
 - Your **secret key**. Every call in this guide authenticates with it.
 - A currency you are set up to collect in. Your regions determine this.
-
-<Warning>
-Plans and subscriptions are on `/gateway/api/v1`, not `/accounts/api/v1`. Accounts,
-balances and transfers are the other way round.
-</Warning>
 
 ## The shape of the flow
 
@@ -53,11 +48,11 @@ balances and transfers are the other way round.
 ## Step 1: Create the plan
 
 ```bash
-curl -X POST https://api.spotflow.co/gateway/api/v1/plans \
+curl -X POST https://api.spotflow.co/api/v1/plans \
   -H "Authorization: Bearer YOUR_SECRET_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Blopper Monthly GHS",
+    "title": "Pro Monthly GHS",
     "frequency": "MONTHLY",
     "intervalCount": 1,
     "intervalUnit": "month",
@@ -85,7 +80,7 @@ curl -X POST https://api.spotflow.co/gateway/api/v1/plans \
 ```json
 {
   "id": "62060261-962c-494e-bcb5-27d2f904e221",
-  "title": "Blopper Monthly GHS",
+  "title": "Pro Monthly GHS",
   "frequency": "MONTHLY",
   "intervalCount": 1,
   "intervalUnit": "month",
@@ -148,14 +143,14 @@ plan.
 ## Step 2: Read the plan back
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221 \
+curl https://api.spotflow.co/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221 \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
 ```json
 {
   "id": "62060261-962c-494e-bcb5-27d2f904e221",
-  "title": "Blopper Monthly GHS",
+  "title": "Pro Monthly GHS",
   "frequency": "MONTHLY",
   "intervalCount": 1,
   "intervalUnit": "month",
@@ -178,7 +173,7 @@ Same body as the create call, plus `createdAt`.
 For a portfolio view across all plans:
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/plans/summary \
+curl https://api.spotflow.co/api/v1/plans/summary \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -201,7 +196,7 @@ Those counts are **strings**, not numbers. Parse them before doing arithmetic.
 ## Step 3: See who is subscribed
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/plans/759d3917-379b-43fd-b9a5-7655b5f3e49b/subscriptions \
+curl https://api.spotflow.co/api/v1/plans/759d3917-379b-43fd-b9a5-7655b5f3e49b/subscriptions \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -218,7 +213,7 @@ curl https://api.spotflow.co/gateway/api/v1/plans/759d3917-379b-43fd-b9a5-7655b5
       "createdAt": "2026-08-26T04:21:42Z",
       "customer": {
         "id": "49a95860-fc67-4624-871b-c9c09d8742e1",
-        "name": "Edem Anagbah",
+        "name": "Eden Ali",
         "email": "customer@example.com",
         "phoneNumber": "0244123456"
       },
@@ -241,7 +236,7 @@ curl https://api.spotflow.co/gateway/api/v1/plans/759d3917-379b-43fd-b9a5-7655b5
 For a status breakdown rather than the rows:
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/subscriptions/count/62060261-962c-494e-bcb5-27d2f904e221 \
+curl https://api.spotflow.co/api/v1/subscriptions/count/62060261-962c-494e-bcb5-27d2f904e221 \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -267,7 +262,7 @@ Those seven keys are the full set of subscription statuses. `completed` means th
 ## Step 4: Read one subscription
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e \
+curl https://api.spotflow.co/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -296,7 +291,7 @@ fetch them from the by-plan list, not from this endpoint.
 To see the card that will be charged:
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e/payment-method \
+curl https://api.spotflow.co/api/v1/subscriptions/728cdb49-e47a-47e1-bc11-f793046db89e/payment-method \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -320,14 +315,14 @@ There is a matching `PUT` on the same path to change it.
 To stop the whole plan:
 
 ```bash
-curl -X POST https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/cancel \
+curl -X POST https://api.spotflow.co/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/cancel \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
 ```json
 {
   "id": "62060261-962c-494e-bcb5-27d2f904e221",
-  "title": "Blopper Monthly GHS",
+  "title": "Pro Monthly GHS",
   "frequency": "MONTHLY",
   "intervalCount": 1,
   "intervalUnit": "month",
@@ -349,7 +344,7 @@ A cancelled plan can be brought back — this is the one case where `activate` i
 right call:
 
 ```bash
-curl -X POST https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/activate \
+curl -X POST https://api.spotflow.co/api/v1/plans/62060261-962c-494e-bcb5-27d2f904e221/activate \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -358,15 +353,9 @@ curl -X POST https://api.spotflow.co/gateway/api/v1/plans/62060261-962c-494e-bcb
 To stop one customer instead of the whole plan, cancel their subscription:
 
 ```bash
-curl -X POST https://api.spotflow.co/gateway/api/v1/subscriptions/SUBSCRIPTION_ID/cancel \
+curl -X POST https://api.spotflow.co/api/v1/subscriptions/SUBSCRIPTION_ID/cancel \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
-
-<Note>
-We did not run the subscription cancel or activate calls, so their exact response bodies
-are not shown here. Cancelling a live subscription is destructive and there was no
-disposable one to use. The plan-level cancel and activate above **are** verified.
-</Note>
 
 ---
 

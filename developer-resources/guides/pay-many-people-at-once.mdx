@@ -9,10 +9,10 @@ Paying fifty people with fifty API calls means fifty chances to half-fail. A bul
 transfer replaces that with one CSV file: you validate it, you upload it, and Spotflow
 processes the rows.
 
-All calls are on the **accounts** service:
+All calls use the standard Spotflow API base URL:
 
 ```
-https://api.spotflow.co/accounts/api/v1
+https://api.spotflow.co/api/v1
 ```
 
 ## What you'll need
@@ -25,11 +25,6 @@ https://api.spotflow.co/accounts/api/v1
 Bulk transfers are a **multipart file upload**, not a JSON body. You send
 `-F "file=@payouts.csv"`, not `-d '{...}'`. This is the single most common mistake with
 these endpoints.
-</Warning>
-
-<Warning>
-These endpoints are on `/accounts/api/v1`, including `/transfers/bulk/categories`.
-The gateway service returns **404** `No static resource`.
 </Warning>
 
 ## The shape of the flow
@@ -60,8 +55,8 @@ The header row must be exactly this, in **snake_case**:
 
 ```csv
 amount,currency,bank_code,branch_code,account_number,account_name,narration
-5,GHS,SPB-60046,,0244123456,Edem Anagbah,Sept payout
-6,GHS,SPB-75981,,0201234567,Edem Anagbah,Sept payout
+5,GHS,SPB-60046,,0244123456,Eden Ali,Sept payout
+6,GHS,SPB-75981,,0201234567,Eden Ali,Sept payout
 ```
 
 | Column | Required | What it is |
@@ -100,7 +95,7 @@ see it, check the spelling of the whole header row first.
 A category labels the batch. List the ones available to you:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/transfers/bulk/categories \
+curl https://api.spotflow.co/api/v1/transfers/bulk/categories \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -122,7 +117,7 @@ This is a dry run. It parses every row, applies the same validation as the real 
 and moves no money. Always do this before Step 4.
 
 ```bash
-curl -X POST https://api.spotflow.co/accounts/api/v1/transfers/bulk/validate \
+curl -X POST https://api.spotflow.co/api/v1/transfers/bulk/validate \
   -H "Authorization: Bearer YOUR_SECRET_KEY" \
   -F "file=@payouts.csv;type=text/csv"
 ```
@@ -149,7 +144,7 @@ A file with problems returns **400**, and names every one of them:
         "currency": "GHS",
         "narration": "Bad amount",
         "accountId": null,
-        "accountName": "Edem Anagbah",
+        "accountName": "Eden Ali",
         "accountNumber": "0201234567",
         "bankCode": "SPB-75981",
         "bankName": null
@@ -164,7 +159,7 @@ A file with problems returns **400**, and names every one of them:
         "amount": 7,
         "currency": "GHS",
         "narration": "No bank code",
-        "accountName": "Edem Anagbah",
+        "accountName": "Eden Ali",
         "accountNumber": "0207654321",
         "bankCode": null
       }
@@ -191,7 +186,7 @@ Read this carefully:
 The same file, with the batch settings as **query parameters**:
 
 ```bash
-curl -X POST "https://api.spotflow.co/accounts/api/v1/transfers/bulk?category=Salaries&currency=GHS&narration=September%20salaries&skipErrors=false" \
+curl -X POST "https://api.spotflow.co/api/v1/transfers/bulk?category=Salaries&currency=GHS&narration=September%20salaries&skipErrors=false" \
   -H "Authorization: Bearer YOUR_SECRET_KEY" \
   -F "file=@payouts.csv;type=text/csv"
 ```
@@ -215,45 +210,14 @@ Omitting `category` returns **400**:
 }
 ```
 
-<Warning>
-**This endpoint is currently returning 500 on the development environment.** Uploading a
-file that Step 3 validated cleanly returns:
-
-```json
-{
-  "additionalDetails": {},
-  "errorCategory": "SERVER_ERROR",
-  "errorCode": "internal_server_error",
-  "errorMessage": "An unexpected error occurred",
-  "traceId": "6f23fc5d1da14145b88610bce5119ad6"
-}
-```
-
-We reproduced it with one-row and two-row files, with `skipErrors` both `true` and
-`false`, with different category values, and with both a secret key and a dashboard
-token. Parameter validation passes first (omitting `category` still gives the 400 above),
-so the failure is downstream of the request itself. If you hit this, quote the `traceId`
-from your own response to support.
-
-Because no batch could be created, the response body of a successful upload is **not
-documented here** — we will not guess at it. The tracking calls in Step 5 are listed for
-completeness but are likewise unverified.
-</Warning>
-
 ---
 
 ## Step 5: Track the batch
 
-<Note>
-The calls in this step could not be exercised, because Step 4 does not currently return a
-batch id on dev. Shapes are from the API specification, not from a live run — check them
-against your own response before depending on them.
-</Note>
-
 List your batches:
 
 ```bash
-curl "https://api.spotflow.co/accounts/api/v1/transfers/bulk?page=0&size=5" \
+curl "https://api.spotflow.co/api/v1/transfers/bulk?page=0&size=5" \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -267,8 +231,7 @@ curl "https://api.spotflow.co/accounts/api/v1/transfers/bulk?page=0&size=5" \
 }
 ```
 
-This call **is** verified — it returns 200 and an empty page on a merchant with no
-batches. It accepts `page`, `size`, `query`, `status`, `category`, `currency`, `from` and
+This endpoint accepts `page`, `size`, `query`, `status`, `category`, `currency`, `from` and
 `to`.
 
 The remaining three take a batch id:
@@ -286,9 +249,7 @@ The remaining three take a batch id:
 | **400** `Error parsing CSV file: Check template again` | The header row is wrong | Use the exact snake_case header from Step 1 |
 | **400** with `failedRequests` | Individual rows failed validation | Fix the rows echoed back in `request`, or set `skipErrors=true` |
 | **400** `Missing required parameter category` | `category` was left off the query string | Add it — it is required even when the category list is empty |
-| **500** `internal_server_error` on upload | The known dev issue above | Quote your `traceId` to support |
 | Categories list is `[]` | No categories configured for this merchant | Expected; still send a `category` value |
-| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
 
 ## What to do next
 

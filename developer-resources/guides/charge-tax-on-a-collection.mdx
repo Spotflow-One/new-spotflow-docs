@@ -11,10 +11,10 @@ collect in one region. You set it up once per region, and it applies from then o
 This guide finds your region, starts from a ready-made template, creates the
 configuration, changes the rate, and switches it off.
 
-All calls are on the **gateway** service:
+All calls use the standard Spotflow API base URL:
 
 ```
-https://api.spotflow.co/gateway/api/v1
+https://api.spotflow.co/api/v1
 ```
 
 ## What you'll need
@@ -65,7 +65,7 @@ usually that you sent a perfectly valid secret key to an endpoint that does not 
 Every tax call needs a `regionId`, and it is a **small integer**, not a UUID.
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/merchant/regions \
+curl https://api.spotflow.co/api/v1/merchant/regions \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
 ```
 
@@ -109,9 +109,8 @@ that region yet.
 
 <Note>
 `GET /merchant/regions/tax-status` returns a **narrower** list — only the regions that
-support tax at all. On our test merchant that was Ghana, Nigeria, South Africa and
-Kenya, while `/merchant/regions` returned those plus Benin, Cameroon, Côte d'Ivoire and
-Global. If a region is missing from the tax-status list, you cannot configure tax there.
+support tax at all. If a region appears in `/merchant/regions` but is missing from `/merchant/regions/tax-status`,
+tax configuration is not supported for that region.
 </Note>
 
 ---
@@ -121,7 +120,7 @@ Global. If a region is missing from the tax-status list, you cannot configure ta
 Spotflow ships the standard rate for each region so you do not have to look it up.
 
 ```bash
-curl "https://api.spotflow.co/gateway/api/v1/tax-configurations?regionId=1" \
+curl "https://api.spotflow.co/api/v1/tax-configurations?regionId=1" \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
 ```
 
@@ -188,7 +187,7 @@ A region with no template and no configuration returns `[]` — for example
 ## Step 3: Create the configuration
 
 ```bash
-curl -X POST https://api.spotflow.co/gateway/api/v1/tax-configurations \
+curl -X POST https://api.spotflow.co/api/v1/tax-configurations \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -217,7 +216,7 @@ curl -X POST https://api.spotflow.co/gateway/api/v1/tax-configurations \
   "capAmount": 500,
   "currency": "GHS",
   "id": 32,
-  "merchantName": "Bloper",
+  "merchantName": "Acme Commerce",
   "rate": 12.5,
   "regionId": 2,
   "regionName": "Ghana",
@@ -278,7 +277,7 @@ List the region again after creating:
     "capAmount": 500.0000,
     "currency": "GHS",
     "id": 32,
-    "merchantName": "Bloper",
+    "merchantName": "Acme Commerce",
     "rate": 12.5000,
     "regionId": 2,
     "regionName": "Ghana",
@@ -297,10 +296,8 @@ mixed together, and a template stops being offered once you have adopted it. Alw
 check the `template` flag rather than assuming a row is live.
 
 <Note>
-A region can hold more than one configuration — we created a second, flat `Ghana VAT 2`
-alongside this one and it was accepted with **201**. The specification suggests a
-duplicate is rejected; on dev it is not. Check the list before creating, or you can end
-up charging two taxes in one region.
+A region can hold more than one tax configuration. Always check existing configurations
+for the region before creating a new one so you do not charge two taxes unintentionally.
 </Note>
 
 ---
@@ -308,7 +305,7 @@ up charging two taxes in one region.
 ## Step 4: Change the rate
 
 ```bash
-curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
+curl -X PUT https://api.spotflow.co/api/v1/tax-configurations/32 \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -325,7 +322,7 @@ curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
   "capAmount": 600,
   "currency": "GHS",
   "id": 32,
-  "merchantName": "Bloper",
+  "merchantName": "Acme Commerce",
   "rate": 15,
   "regionId": 2,
   "regionName": "Ghana",
@@ -349,7 +346,7 @@ even when changing one number.
 To read a single configuration:
 
 ```bash
-curl https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
+curl https://api.spotflow.co/api/v1/tax-configurations/32 \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN"
 ```
 
@@ -360,7 +357,7 @@ curl https://api.spotflow.co/gateway/api/v1/tax-configurations/32 \
 There is no delete. You deactivate.
 
 ```bash
-curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32/status \
+curl -X PUT https://api.spotflow.co/api/v1/tax-configurations/32/status \
   -H "Authorization: Bearer YOUR_DASHBOARD_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{ "status": "inactive" }'
@@ -371,7 +368,7 @@ curl -X PUT https://api.spotflow.co/gateway/api/v1/tax-configurations/32/status 
   "capAmount": 600.0000,
   "currency": "GHS",
   "id": 32,
-  "merchantName": "Bloper",
+  "merchantName": "Acme Commerce",
   "rate": 15.0000,
   "regionId": 2,
   "regionName": "Ghana",
