@@ -8,10 +8,10 @@ icon: "money-check-dollar"
 This guide sends one payout to one bank account. You pick the bank, check the account
 name, send the money, and read the transfer back to confirm it settled.
 
-Every step is one API call. All of them live on the **accounts** service:
+Every step is one API call. All of them use the standard Spotflow API base URL:
 
 ```
-https://api.spotflow.co/accounts/api/v1
+https://api.spotflow.co/api/v1
 ```
 
 ## What you'll need
@@ -21,11 +21,6 @@ https://api.spotflow.co/accounts/api/v1
   [Give a Customer a Virtual Account](/developer-resources/guides/give-a-customer-a-virtual-account)
   for reading balances.
 - The recipient's account number and their bank.
-
-<Warning>
-Transfers are on `/accounts/api/v1`, **not** `/gateway/api/v1` — including
-`/transfers/banks/{currency}`. The gateway path returns **404** `No static resource`.
-</Warning>
 
 ## The shape of the flow
 
@@ -52,7 +47,7 @@ Spotflow has its own bank codes. They look like `SPB-60046` and they are not NIB
 CBN codes.
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/transfers/banks/GHS \
+curl https://api.spotflow.co/api/v1/transfers/banks/GHS \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -90,7 +85,7 @@ against your own records.
 Before sending, confirm the account number belongs to who you think it does.
 
 ```bash
-curl "https://api.spotflow.co/accounts/api/v1/transfers/resolve-account?accountNumber=0244123456&bankCode=SPB-60046" \
+curl "https://api.spotflow.co/api/v1/transfers/resolve-account?accountNumber=0244123456&bankCode=SPB-60046" \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -104,11 +99,9 @@ curl "https://api.spotflow.co/accounts/api/v1/transfers/resolve-account?accountN
 Both `accountNumber` and `bankCode` are required.
 
 <Warning>
-**In test mode this does not really validate anything.** The dev resolver is a mock: it
-returns `John Doe` for any account number, and it returns **200** even for a bank code
-that does not exist, such as `SPB-00000`. Do not build a "the account is valid" check on
-a 200 from this endpoint in test mode. Verify the behaviour again in live mode before you
-rely on it.
+**In test mode, account resolution is mocked.** It returns `John Doe` for any account
+number and returns **200** even for a non-existent bank code. Verify account validation
+behaviour in live mode before relying on it.
 </Warning>
 
 ---
@@ -116,7 +109,7 @@ rely on it.
 ## Step 3: Send the transfer
 
 ```bash
-curl -X POST https://api.spotflow.co/accounts/api/v1/transfers \
+curl -X POST https://api.spotflow.co/api/v1/transfers \
   -H "Authorization: Bearer YOUR_SECRET_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -127,7 +120,7 @@ curl -X POST https://api.spotflow.co/accounts/api/v1/transfers \
     "source": { "accountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f" },
     "destination": {
       "accountNumber": "0244123456",
-      "accountName": "Edem Anagbah",
+      "accountName": "Eden Ali",
       "bankCode": "SPB-60046",
       "bankName": "GCB Bank"
     }
@@ -156,7 +149,7 @@ curl -X POST https://api.spotflow.co/accounts/api/v1/transfers \
   "transferMode": "single",
   "destination": {
     "accountNumber": "0244123456",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "bankCode": "SPB-60046",
     "bankName": "GCB Bank"
   },
@@ -170,9 +163,8 @@ Three things to read carefully:
 - **There are two references.** Yours (`reference`) and Spotflow's
   (`spotflowReference`, an `SPF-TRSF-…` string). You look the transfer up by yours;
   support will ask for Spotflow's.
-- **`fee` is charged on top of `amount`, and it is flat.** Here the fee is
-  **12.00 GHS on a 5.00 GHS transfer** — more than twice the amount being sent. Batch
-  small payouts rather than sending them one at a time.
+- **`fee` is charged on top of `amount`.** Check the `fee` returned in the transfer
+  response (and your account's configured fee schedule) when reconciling balances.
 - **`status` is `processing`, not done.** The money has been accepted, not delivered.
 
 ### Your reference is the idempotency key
@@ -213,7 +205,7 @@ A reference shorter than 5 characters is rejected before anything happens:
 Look it up with **your** reference:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/transfers/reference/ref-single-1790064628 \
+curl https://api.spotflow.co/api/v1/transfers/reference/ref-single-1790064628 \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -227,7 +219,7 @@ curl https://api.spotflow.co/accounts/api/v1/transfers/reference/ref-single-1790
   "transferMode": "single",
   "destination": {
     "accountNumber": "0244123456",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "bankCode": "SPB-60046",
     "bankName": "GCB Bank"
   },
@@ -253,17 +245,8 @@ If you kept the internal id instead, `GET /transfers/{id}` returns the same shap
 |---|---|---|
 | **400** `duplicate_reference` | This reference was already used | The transfer exists — read it back in Step 4 instead of resending |
 | **400** `Reference must be between 5 and 50 characters` | Reference too short or too long | Use a longer reference, e.g. `ref-` plus a unique id |
-| **400** `Invalid transaction type` on `/transfers/resolve-fee` | The fee preview endpoint rejects the type values we tried | Read `fee` off the transfer response in Step 3 instead |
-| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
 | `status` stuck on `processing` | The payout has not settled yet | Keep polling Step 4 |
 | Resolve returns a name for a fake bank | Test mode mock | Do not rely on resolve as validation in test mode |
-
-<Note>
-`GET /transfers/resolve-fee` is documented as taking `amount`, `currency` and `type`,
-but every `type` value we tried on dev was rejected with
-`Invalid transaction type`, and the spec declares no enum for it. Until that is
-settled, take the fee from the `fee` field on the transfer response.
-</Note>
 
 ## What to do next
 

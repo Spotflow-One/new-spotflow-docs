@@ -24,7 +24,7 @@ Secure your API requests by including an Authorization header in the following f
 
 ```yaml theme={null}
 {
-    "Authorization": "Bearer sk_test_6988f8d1539a48ab945764ec361fa3eb"
+    "Authorization": "Bearer sk_test_xxxxx"
 }
 ```
 
@@ -1369,7 +1369,7 @@ Your customer just clicks and pays.
 ## Step 6:  Test Your Payment Link
 
 Spotflow includes a Test Mode, allowing you to simulate real payments without charging anything.
-Create a payment link in test mode, open it and use the provided [test card details](https://docs.spotflow.one/testing-payment).
+Create a payment link in test mode, open it and use the provided [test card details](https://docs.spotflow.one/expert-desk/testing-payments).
 
 <Frame>
   <img alt="Test Payment Link page" />
@@ -2915,7 +2915,7 @@ Live Mode will be available only post successful completion of Identity verifica
 </Note>
 
 API Hostnames for Test Mode and Live Mode are below:
-The API Hostnames for both environments is [`app.spotflow.co`](https://api.spotflow.co)
+The API Hostnames for both environments is [`api.spotflow.co`](https://api.spotflow.co)
 
 ## Key Highlights
 
@@ -3977,7 +3977,7 @@ Free trials work the same way for mobile money subscriptions as they do for card
 <CodeGroup>
   ```bash cURL theme={null}
   curl --request POST \
-    --url https://api.spotflow.one/api/v1/plans \
+    --url https://api.spotflow.co/api/v1/plans \
     --header 'Authorization: Bearer sk_test_xxxxxxxxxx' \
     --header 'Content-Type: application/json' \
     --data '{

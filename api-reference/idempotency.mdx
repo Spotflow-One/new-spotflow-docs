@@ -6,7 +6,7 @@ icon: "repeat"
 
 When a request times out, you don't know whether it reached Spotflow, so you need to be able to retry without charging a customer or paying someone twice.
 
-All `POST` requests that create or initiate transactions take an idempotency key in the `reference` field of the request body. If you send two requests with the same `reference`, Spotflow processes it once and returns the same response for the second request.
+All `POST` requests that create or initiate transactions take an idempotency key in the `reference` field of the request body. If you send a second request with a `reference` that has already been used, Spotflow rejects the duplicate with a `400` error so the transaction is not created twice.
 
 ```bash Idempotent request
 curl -X POST https://api.spotflow.co/api/v1/payments/initialize \
@@ -28,7 +28,7 @@ curl -X POST https://api.spotflow.co/api/v1/payments/initialize \
 | Scope | References must be unique per transaction type. Payment references are separate from disbursement references |
 | Window | Duplicates are detected for 24 hours |
 | After a 5xx | It's safe to retry with the same reference |
-| After a success | Retrying with the same reference returns the original response, without creating a duplicate |
+| After a success | Retrying with the same reference returns a `400` duplicate-reference error without creating a second transaction |
 
 ## Retrying safely
 

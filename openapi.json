@@ -1555,17 +1555,17 @@
         }
       }
     },
-    "/balances/accounts/{accountNumber}/sub-balances": {
+    "/balances/accounts/{accountId}/sub-balances": {
       "get": {
         "summary": "Get Spotflow Accounts Balance By Account Number",
         "description": "Retrieves account balance details for all direct spotflow static virtual of the specified main account in both NGN and GHS.",
         "operationId": "ListSpotflowStaticVirtualAccountsBalances",
         "parameters": [
           {
-            "name": "accountNumber",
+            "name": "accountId",
             "in": "path",
             "required": true,
-            "description": "",
+            "description": "Account ID (UUID)",
             "schema": {
               "type": "string"
             }
@@ -1609,17 +1609,17 @@
         }
       }
     },
-    "/balances/accounts/{accountNumber}/balance": {
+    "/balances/accounts/{accountId}/balance": {
       "get": {
         "summary": "Get Spotflow Accounts Balance",
         "description": "Get account balance details for a specific spotflow-static virtual accounts before and after top-up in both NGN and GHS currency.",
         "operationId": "AccountBalance",
         "parameters": [
           {
-            "name": "accountNumber",
+            "name": "accountId",
             "in": "path",
             "required": true,
-            "description": "",
+            "description": "Account ID (UUID)",
             "schema": {
               "type": "string"
             }

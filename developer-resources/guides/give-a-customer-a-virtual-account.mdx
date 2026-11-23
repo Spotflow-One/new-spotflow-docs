@@ -17,16 +17,11 @@ This guide creates one, reads it back, checks its balance, and deactivates it.
 - Nothing else. You do not need an existing account — Spotflow attaches the new
   sub-account to the main account for the currency you pick.
 
-All calls go to the **accounts** service:
+All calls use the standard Spotflow API base URL:
 
 ```
-https://api.spotflow.co/accounts/api/v1
+https://api.spotflow.co/api/v1
 ```
-
-<Warning>
-Virtual accounts live on `/accounts/api/v1`, not `/gateway/api/v1`. Calling the gateway
-path returns **404** `No static resource`.
-</Warning>
 
 ## The shape of the flow
 
@@ -50,12 +45,12 @@ path returns **404** `No static resource`.
 ## Step 1: Create the account
 
 ```bash
-curl -X POST https://api.spotflow.co/accounts/api/v1/accounts \
+curl -X POST https://api.spotflow.co/api/v1/accounts \
   -H "Authorization: Bearer YOUR_SECRET_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "currency": "GHS",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "accountTag": "sub-account",
     "autoSweep": false
   }'
@@ -77,7 +72,7 @@ curl -X POST https://api.spotflow.co/accounts/api/v1/accounts \
 ```json
 {
   "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
-  "accountName": "Edem Anagbah",
+  "accountName": "Eden Ali",
   "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
   "autoSweep": false,
   "currency": "GHS",
@@ -88,7 +83,7 @@ curl -X POST https://api.spotflow.co/accounts/api/v1/accounts \
   "updatedAt": "2026-09-22T08:09:09.029542Z",
   "accountDetails": {
     "provider": "MOCK",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "accountNumber": "0313471844198",
     "bankName": "Jollof Bank",
     "default": true,
@@ -98,7 +93,7 @@ curl -X POST https://api.spotflow.co/accounts/api/v1/accounts \
   "virtualAccounts": [
     {
       "provider": "MOCK",
-      "accountName": "Edem Anagbah",
+      "accountName": "Eden Ali",
       "accountNumber": "0313471844198",
       "bankName": "Jollof Bank",
       "default": true,
@@ -124,7 +119,7 @@ are a real provider and a real bank.
 ## Step 2: Read the account back
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623 \
+curl https://api.spotflow.co/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623 \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -133,14 +128,14 @@ This returns the same body as the create call.
 For an operational view, ask for the summary instead:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/summary \
+curl https://api.spotflow.co/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/summary \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
 ```json
 {
   "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
-  "accountName": "Edem Anagbah",
+  "accountName": "Eden Ali",
   "totalTransactionVolume": 0,
   "totalTransactionValue": 0,
   "currency": "GHS",
@@ -161,7 +156,7 @@ The summary drops `accountDetails` but adds `currentBalance`,
 You can also list just the account numbers attached to the account:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/virtual-accounts \
+curl https://api.spotflow.co/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/virtual-accounts \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -169,7 +164,7 @@ curl https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-09
 [
   {
     "provider": "MOCK",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "accountNumber": "0313471844198",
     "bankName": "Jollof Bank",
     "default": true,
@@ -187,7 +182,7 @@ The summary's `currentBalance` is convenient, but the balance endpoint is the on
 poll, and it separates total from available:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/balances/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/balance \
+curl https://api.spotflow.co/api/v1/balances/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/balance \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -209,7 +204,7 @@ against `availableBalance`, never `balance`.**
 To see every account at once, call `/balances` with no id:
 
 ```bash
-curl https://api.spotflow.co/accounts/api/v1/balances \
+curl https://api.spotflow.co/api/v1/balances \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
@@ -244,14 +239,14 @@ For a plain virtual account it returns `[]`.
 When the customer leaves, close their account number so nothing more can be paid in.
 
 ```bash
-curl -X DELETE https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/deactivate \
+curl -X DELETE https://api.spotflow.co/api/v1/accounts/d1052ba9-7da1-4885-b9c4-097534d84623/deactivate \
   -H "Authorization: Bearer YOUR_SECRET_KEY"
 ```
 
 ```json
 {
   "id": "d1052ba9-7da1-4885-b9c4-097534d84623",
-  "accountName": "Edem Anagbah",
+  "accountName": "Eden Ali",
   "parentAccountId": "81e1e5cb-86db-4fbe-871c-b034632b7b6f",
   "autoSweep": false,
   "currency": "GHS",
@@ -262,7 +257,7 @@ curl -X DELETE https://api.spotflow.co/accounts/api/v1/accounts/d1052ba9-7da1-48
   "updatedAt": "2026-09-22T08:09:28.460926Z",
   "accountDetails": {
     "provider": "MOCK",
-    "accountName": "Edem Anagbah",
+    "accountName": "Eden Ali",
     "accountNumber": "0313471844198",
     "bankName": "Jollof Bank",
     "default": true,
@@ -285,7 +280,6 @@ number stays on the record, and `GET /accounts/{id}` keeps returning it. Treat t
 | What you see | What it means | What to do |
 |---|---|---|
 | **400** `currency_required` | You sent neither `currency` nor `parentAccountId` | Add one of them |
-| **404** `No static resource` | You called the gateway service | Use `/accounts/api/v1` |
 | **401** `invalid_credentials` on `/balances/currency/{currency}` | That endpoint does not accept a secret key | Use the per-account balance endpoint in Step 3 instead |
 | Balance reads 0 after a payment | The credit has not settled | Poll; compare `balance` against `availableBalance` |
 | Account still returned after deactivate | Expected — deactivate is a status change | Check `status` is `inactive` |

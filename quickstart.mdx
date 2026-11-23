@@ -35,6 +35,10 @@ const res = await fetch("https://api.spotflow.co/api/v1/payments/initialize", {
   }),
 });
 const payment = await res.json();
+if (!res.ok) {
+  console.error("Initialize payment failed:", res.status, payment);
+  process.exit(1);
+}
 console.log(payment.checkoutUrl);
 ```
 
@@ -51,7 +55,10 @@ res = requests.post(
         "customer": {"email": "john@example.com"},
     },
 )
-print(res.json()["checkoutUrl"])
+data = res.json()
+if not res.ok:
+    raise SystemExit(f"Initialize payment failed ({res.status_code}): {data}")
+print(data["checkoutUrl"])
 ```
 
 </RequestExample>
